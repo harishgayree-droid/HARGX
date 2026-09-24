@@ -115,3 +115,73 @@ body {
 .shopify-section > .full-width {
   grid-column: 1 / -1;
 }
+
+
+/* ========================================
+   HARGX — Global Design System
+   ======================================== */
+
+/* Typography */
+
+body {
+  font-family: var(--font-primary--family);
+  font-style: var(--font-primary--style);
+  font-weight: var(--font-primary--weight);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading--family);
+  font-style: var(--font-heading--style);
+  font-weight: var(--font-heading--weight);
+}
+
+/* Global links */
+
+a {
+  color: inherit;
+}
+
+/* Global buttons */
+
+button,
+.button,
+.shopify-payment-button__button {
+  border-radius: var(--button-radius);
+}
+
+/* Global inputs */
+
+input,
+textarea,
+select {
+  border-radius: var(--border-radius);
+}
+
+/* HARGX warm background utility */
+
+.hargx-warm-bg {
+  background-color: var(--color-warm-background);
+}
+
+/* HARGX container */
+
+.hargx-container {
+  width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+  margin-inline: auto;
+}
+
+/* HARGX section spacing */
+
+.hargx-section {
+  padding-block: var(--section-spacing);
+}
