@@ -12,6 +12,7 @@
       class="hargx-header__mobile-toggle"
       aria-label="Open menu"
       aria-expanded="false"
+      aria-controls="HargxMobileMenu-{{ section.id }}"
     >
       <span></span>
       <span></span>
@@ -44,19 +45,77 @@
       aria-label="Main navigation"
     >
       {% for link in section.settings.menu.links %}
-        <a
-          href="{{ link.url }}"
-          class="hargx-header__nav-link"
-          {% if link.current %}
-            aria-current="page"
-          {% endif %}
+
+        <div
+          class="hargx-header__nav-item{% if link.links != blank %} has-dropdown{% endif %}"
         >
-          {{ link.title }}
+
+          <a
+            href="{{ link.url }}"
+            class="hargx-header__nav-link"
+            {% if link.current %}
+              aria-current="page"
+            {% endif %}
+          >
+            {{ link.title }}
+
+            {% if link.links != blank %}
+              <span class="hargx-header__chevron" aria-hidden="true">
+                ↓
+              </span>
+            {% endif %}
+          </a>
 
           {% if link.links != blank %}
-            <span class="hargx-header__chevron">⌄</span>
+            <div class="hargx-header__dropdown">
+
+              {% for child_link in link.links %}
+
+                <div class="hargx-header__dropdown-item">
+
+                  <a
+                    href="{{ child_link.url }}"
+                    class="hargx-header__dropdown-link"
+                    {% if child_link.current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {{ child_link.title }}
+
+                    {% if child_link.links != blank %}
+                      <span class="hargx-header__dropdown-arrow">
+                        →
+                      </span>
+                    {% endif %}
+                  </a>
+
+                  {% if child_link.links != blank %}
+                    <div class="hargx-header__sub-dropdown">
+
+                      {% for grandchild_link in child_link.links %}
+                        <a
+                          href="{{ grandchild_link.url }}"
+                          class="hargx-header__sub-dropdown-link"
+                          {% if grandchild_link.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{ grandchild_link.title }}
+                        </a>
+                      {% endfor %}
+
+                    </div>
+                  {% endif %}
+
+                </div>
+
+              {% endfor %}
+
+            </div>
           {% endif %}
-        </a>
+
+        </div>
+
       {% endfor %}
     </nav>
 
@@ -101,6 +160,152 @@
     </div>
 
   </div>
+
+  <!-- ========================================
+       MOBILE MENU
+       ======================================== -->
+
+  <div
+    id="HargxMobileMenu-{{ section.id }}"
+    class="hargx-mobile-menu"
+    aria-hidden="true"
+  >
+
+    <div class="hargx-mobile-menu__overlay"></div>
+
+    <div
+      class="hargx-mobile-menu__drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile navigation"
+    >
+
+      <div class="hargx-mobile-menu__header">
+
+        <span class="hargx-mobile-menu__title">
+          Menu
+        </span>
+
+        <button
+          type="button"
+          class="hargx-mobile-menu__close"
+          aria-label="Close menu"
+        >
+          <span></span>
+          <span></span>
+        </button>
+
+      </div>
+
+      <nav
+        class="hargx-mobile-menu__nav"
+        aria-label="Mobile navigation"
+      >
+
+        {% for link in section.settings.menu.links %}
+
+          <div class="hargx-mobile-menu__item">
+
+            {% if link.links != blank %}
+
+              <button
+                type="button"
+                class="hargx-mobile-menu__link hargx-mobile-menu__toggle-submenu"
+                aria-expanded="false"
+              >
+                <span>{{ link.title }}</span>
+
+                <span
+                  class="hargx-mobile-menu__arrow"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </button>
+
+              <div class="hargx-mobile-menu__submenu">
+
+                <a
+                  href="{{ link.url }}"
+                  class="hargx-mobile-menu__submenu-link hargx-mobile-menu__submenu-link--parent"
+                >
+                  View {{ link.title }}
+                </a>
+
+                {% for child_link in link.links %}
+
+                  <div class="hargx-mobile-menu__submenu-item">
+
+                    {% if child_link.links != blank %}
+
+                      <button
+                        type="button"
+                        class="hargx-mobile-menu__submenu-link hargx-mobile-menu__toggle-submenu"
+                        aria-expanded="false"
+                      >
+                        <span>{{ child_link.title }}</span>
+
+                        <span
+                          class="hargx-mobile-menu__arrow"
+                          aria-hidden="true"
+                        >
+                          +
+                        </span>
+                      </button>
+
+                      <div class="hargx-mobile-menu__subsubmenu">
+
+                        {% for grandchild_link in child_link.links %}
+                          <a
+                            href="{{ grandchild_link.url }}"
+                            class="hargx-mobile-menu__subsubmenu-link"
+                          >
+                            {{ grandchild_link.title }}
+                          </a>
+                        {% endfor %}
+
+                      </div>
+
+                    {% else %}
+
+                      <a
+                        href="{{ child_link.url }}"
+                        class="hargx-mobile-menu__submenu-link"
+                      >
+                        {{ child_link.title }}
+                      </a>
+
+                    {% endif %}
+
+                  </div>
+
+                {% endfor %}
+
+              </div>
+
+            {% else %}
+
+              <a
+                href="{{ link.url }}"
+                class="hargx-mobile-menu__link"
+                {% if link.current %}
+                  aria-current="page"
+                {% endif %}
+              >
+                {{ link.title }}
+              </a>
+
+            {% endif %}
+
+          </div>
+
+        {% endfor %}
+
+      </nav>
+
+    </div>
+  </div>
+
 </header>
 
 {% stylesheet %}
@@ -161,7 +366,7 @@
 }
 
 /* ========================================
-   NAVIGATION
+   DESKTOP NAVIGATION
    ======================================== */
 
 .hargx-header__nav {
@@ -170,6 +375,12 @@
   align-items: center;
   justify-content: center;
   gap: 28px;
+}
+
+.hargx-header__nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .hargx-header__nav-link {
@@ -183,6 +394,8 @@
   font-size: 14px;
   line-height: 1.2;
   font-weight: 500;
+
+  padding-block: 28px;
 }
 
 .hargx-header__nav-link:hover {
@@ -190,8 +403,137 @@
 }
 
 .hargx-header__chevron {
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.hargx-header__nav-item:hover .hargx-header__chevron {
+  transform: rotate(180deg);
+}
+
+/* ========================================
+   DROPDOWN
+   ======================================== */
+
+.hargx-header__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+
+  min-width: 220px;
+
+  padding: 10px;
+
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 8px);
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+
+  z-index: 100;
+}
+
+.hargx-header__nav-item:hover > .hargx-header__dropdown,
+.hargx-header__nav-item:focus-within > .hargx-header__dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.hargx-header__dropdown-item {
+  position: relative;
+}
+
+.hargx-header__dropdown-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  padding: 11px 12px;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 14px;
+  line-height: 1.3;
+
+  border-radius: 4px;
+}
+
+.hargx-header__dropdown-link:hover {
+  background: var(--color-warm-background);
+  color: var(--color-primary);
+}
+
+.hargx-header__dropdown-arrow {
+  font-size: 12px;
+}
+
+/* ========================================
+   SUB DROPDOWN
+   ======================================== */
+
+.hargx-header__sub-dropdown {
+  position: absolute;
+  top: -10px;
+  left: calc(100% + 10px);
+
+  min-width: 210px;
+
+  padding: 10px;
+
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateX(8px);
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hargx-header__dropdown-item:hover > .hargx-header__sub-dropdown,
+.hargx-header__dropdown-item:focus-within > .hargx-header__sub-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.hargx-header__sub-dropdown-link {
+  display: block;
+
+  padding: 10px 12px;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 14px;
+
+  border-radius: 4px;
+}
+
+.hargx-header__sub-dropdown-link:hover {
+  background: var(--color-warm-background);
+  color: var(--color-primary);
 }
 
 /* ========================================
@@ -279,6 +621,242 @@
   width: 20px;
   height: 1.5px;
   background: currentColor;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* ========================================
+   MOBILE MENU
+   ======================================== */
+
+.hargx-mobile-menu {
+  position: fixed;
+  inset: 0;
+
+  visibility: hidden;
+  pointer-events: none;
+
+  z-index: 200;
+}
+
+.hargx-mobile-menu.is-open {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.hargx-mobile-menu__overlay {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.35);
+
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.hargx-mobile-menu.is-open .hargx-mobile-menu__overlay {
+  opacity: 1;
+}
+
+.hargx-mobile-menu__drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: min(88vw, 380px);
+  height: 100%;
+
+  overflow-y: auto;
+
+  background: var(--color-white);
+
+  transform: translateX(-100%);
+
+  transition: transform 0.3s ease;
+}
+
+.hargx-mobile-menu.is-open .hargx-mobile-menu__drawer {
+  transform: translateX(0);
+}
+
+/* ========================================
+   MOBILE MENU HEADER
+   ======================================== */
+
+.hargx-mobile-menu__header {
+  min-height: 64px;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hargx-mobile-menu__title {
+  font-family: var(--font-heading--family);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.hargx-mobile-menu__close {
+  width: 32px;
+  height: 32px;
+
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  position: relative;
+
+  cursor: pointer;
+}
+
+.hargx-mobile-menu__close span {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 20px;
+  height: 1.5px;
+
+  background: currentColor;
+}
+
+.hargx-mobile-menu__close span:first-child {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.hargx-mobile-menu__close span:last-child {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* ========================================
+   MOBILE NAVIGATION
+   ======================================== */
+
+.hargx-mobile-menu__nav {
+  padding: 10px 20px 30px;
+}
+
+.hargx-mobile-menu__item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hargx-mobile-menu__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  padding: 17px 0;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 16px;
+  font-weight: 500;
+
+  background: transparent;
+  border: 0;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.hargx-mobile-menu__link:hover {
+  color: var(--color-primary);
+}
+
+/* ========================================
+   MOBILE SUBMENU
+   ======================================== */
+
+.hargx-mobile-menu__submenu {
+  display: none;
+
+  padding: 0 0 10px 14px;
+}
+
+.hargx-mobile-menu__submenu.is-open {
+  display: block;
+}
+
+.hargx-mobile-menu__submenu-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  padding: 12px 0;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 14px;
+
+  background: transparent;
+  border: 0;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.hargx-mobile-menu__submenu-link--parent {
+  font-weight: 600;
+}
+
+.hargx-mobile-menu__submenu-link:hover {
+  color: var(--color-primary);
+}
+
+.hargx-mobile-menu__arrow {
+  font-size: 18px;
+  line-height: 1;
+
+  transition: transform 0.2s ease;
+}
+
+.hargx-mobile-menu__toggle-submenu.is-open .hargx-mobile-menu__arrow {
+  transform: rotate(45deg);
+}
+
+/* ========================================
+   MOBILE THIRD LEVEL
+   ======================================== */
+
+.hargx-mobile-menu__subsubmenu {
+  display: none;
+
+  padding-left: 14px;
+}
+
+.hargx-mobile-menu__subsubmenu.is-open {
+  display: block;
+}
+
+.hargx-mobile-menu__subsubmenu-link {
+  display: block;
+
+  padding: 9px 0;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 14px;
+}
+
+.hargx-mobile-menu__subsubmenu-link:hover {
+  color: var(--color-primary);
 }
 
 /* ========================================
@@ -388,6 +966,82 @@
 }
 
 {% endstylesheet %}
+
+{% javascript %}
+
+(function () {
+  'use strict';
+
+  const header = document.querySelector('.hargx-header');
+
+  if (!header) return;
+
+  const mobileToggle = header.querySelector('.hargx-header__mobile-toggle');
+  const mobileMenu = header.querySelector('.hargx-mobile-menu');
+  const mobileClose = header.querySelector('.hargx-mobile-menu__close');
+  const mobileOverlay = header.querySelector('.hargx-mobile-menu__overlay');
+
+  if (!mobileToggle || !mobileMenu) return;
+
+  const openMenu = function () {
+    mobileMenu.classList.add('is-open');
+
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    mobileToggle.setAttribute('aria-expanded', 'true');
+
+    document.documentElement.style.overflow = 'hidden';
+  };
+
+  const closeMenu = function () {
+    mobileMenu.classList.remove('is-open');
+
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    mobileToggle.setAttribute('aria-expanded', 'false');
+
+    document.documentElement.style.overflow = '';
+  };
+
+  mobileToggle.addEventListener('click', openMenu);
+
+  if (mobileClose) {
+    mobileClose.addEventListener('click', closeMenu);
+  }
+
+  if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', closeMenu);
+  }
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeMenu();
+    }
+  });
+
+  const submenuToggles = header.querySelectorAll(
+    '.hargx-mobile-menu__toggle-submenu'
+  );
+
+  submenuToggles.forEach(function (toggle) {
+
+    toggle.addEventListener('click', function () {
+
+      const submenu = toggle.nextElementSibling;
+
+      if (!submenu) return;
+
+      const isOpen = toggle.classList.contains('is-open');
+
+      toggle.classList.toggle('is-open', !isOpen);
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+
+      submenu.classList.toggle('is-open', !isOpen);
+    });
+
+  });
+
+})();
+
+{% endjavascript %}
 
 {% schema %}
 {
