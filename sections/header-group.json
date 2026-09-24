@@ -13,10 +13,16 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "header_layout": "mega-menu",
+        "logo_width": 150,
+        "menu": "main-menu",
+        "sticky_header": true,
+        "customer_account_menu": "customer-account-main-menu"
+      }
     }
   },
   "order": [
     "header"
-  ],
+  ]
 }
