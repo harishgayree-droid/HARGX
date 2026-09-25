@@ -44,7 +44,7 @@
       "settings": {
         "logo_width": 150,
         "description": "<p>Built for bold ideas and products that stand out.</p>",
-        "show_newsletter": false,
+        "show_newsletter": true,
         "newsletter_heading": "Stay in the loop",
         "newsletter_text": "<p>Get updates, new releases and more.</p>",
         "show_social": true,
