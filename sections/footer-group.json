@@ -13,9 +13,44 @@
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "menu_R883Mm": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "footer"
+          }
+        },
+        "menu_PGAJJY": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        }
+      },
+      "block_order": [
+        "menu_R883Mm",
+        "menu_PGAJJY"
+      ],
       "settings": {
-        "menu": "",
-        "show_payment_icons": true
+        "logo_width": 150,
+        "description": "<p>Built for bold ideas and products that stand out.</p>",
+        "show_newsletter": true,
+        "newsletter_heading": "Stay in the loop",
+        "newsletter_text": "<p>Get updates, new releases and more.</p>",
+        "show_social": true,
+        "instagram_url": "",
+        "facebook_url": "",
+        "tiktok_url": "",
+        "youtube_url": "",
+        "show_policy_links": true,
+        "show_payment_icons": true,
+        "copyright_text": "",
+        "background_color": "#000000",
+        "text_color": "#ffffff",
+        "muted_text_color": "#b5b5b5",
+        "border_color": "#2a2a2a"
       }
     }
   },
