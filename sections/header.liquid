@@ -773,13 +773,12 @@
    ======================================== */
 
 .hargx-header__mega-menu {
-  position: absolute;
+  position: fixed;
 
-  top: 100%;
-  left: 50%;
+  top: 76px;
+  left: 0;
 
   width: 100vw;
-  max-width: 100vw;
 
   background: var(--color-white);
 
@@ -792,7 +791,7 @@
   visibility: hidden;
   pointer-events: none;
 
-  transform: translate(-50%, 8px);
+  transform: translateY(8px);
 
   transition:
     opacity 0.2s ease,
@@ -808,7 +807,7 @@
   visibility: visible;
   pointer-events: auto;
 
-  transform: translate(-50%, 0);
+  transform: translateY(0);
 }
 
 .hargx-header__mega-inner {
@@ -1443,14 +1442,16 @@
 
   .hargx-header__inner {
     min-height: 64px;
-
     gap: 16px;
   }
 
   .hargx-header__mobile-toggle {
     display: flex;
-
     flex: 0 0 auto;
+  }
+
+  .hargx-header__mega-menu {
+    display: none;
   }
 
   .hargx-header__nav {
