@@ -773,14 +773,12 @@
    ======================================== */
 
 .hargx-header__mega-menu {
-  position: fixed;
-
-  left: 0;
-  right: 0;
+  position: absolute;
 
   top: 100%;
+  left: 50%;
 
-  width: 100%;
+  width: 100vw;
 
   background: var(--color-white);
 
@@ -793,7 +791,7 @@
   visibility: hidden;
   pointer-events: none;
 
-  transform: translateY(8px);
+  transform: translate(-50%, 8px);
 
   transition:
     opacity 0.2s ease,
@@ -809,7 +807,7 @@
   visibility: visible;
   pointer-events: auto;
 
-  transform: translateY(0);
+  transform: translate(-50%, 0);
 }
 
 .hargx-header__mega-inner {
