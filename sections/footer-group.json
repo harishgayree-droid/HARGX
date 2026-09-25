@@ -14,6 +14,13 @@
     "footer": {
       "type": "footer",
       "blocks": {
+        "menu_wUPfqH": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "customer-account-main-menu"
+          }
+        },
         "menu_R883Mm": {
           "type": "menu",
           "settings": {
@@ -30,6 +37,7 @@
         }
       },
       "block_order": [
+        "menu_wUPfqH",
         "menu_R883Mm",
         "menu_PGAJJY"
       ],
