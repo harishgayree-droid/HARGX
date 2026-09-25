@@ -185,3 +185,8 @@ select {
 .hargx-section {
   padding-block: var(--section-spacing);
 }
+
+html,
+body {
+  overflow-x: hidden;
+}
