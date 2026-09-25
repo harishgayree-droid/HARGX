@@ -14,7 +14,7 @@
     "header": {
       "type": "header",
       "settings": {
-        "header_layout": "mega-menu",
+        "header_layout": "classic",
         "logo_width": 150,
         "menu": "main-menu",
         "sticky_header": true,
