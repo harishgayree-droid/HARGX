@@ -1,56 +1,894 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
-  </div>
+<footer
+  class="hargx-footer"
+  style="
+    --footer-bg: {{ section.settings.background_color }};
+    --footer-text: {{ section.settings.text_color }};
+    --footer-muted: {{ section.settings.muted_text_color }};
+    --footer-border: {{ section.settings.border_color }};
+  "
+>
+  <div class="hargx-footer__container">
 
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
+    <!-- Footer Main -->
+    <div class="hargx-footer__main">
 
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
-    {% endif %}
+      <!-- Brand -->
+      <div class="hargx-footer__brand">
+
+        <a
+          href="{{ routes.root_url }}"
+          class="hargx-footer__logo"
+          aria-label="{{ shop.name }}"
+        >
+          {% if section.settings.logo != blank %}
+            {{
+              section.settings.logo
+              | image_url: width: section.settings.logo_width
+              | image_tag:
+                widths: '100,150,200,250,300',
+                loading: 'lazy',
+                alt: shop.name
+            }}
+          {% else %}
+            <span>{{ shop.name }}</span>
+          {% endif %}
+        </a>
+
+        {% if section.settings.description != blank %}
+          <div class="hargx-footer__description">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.show_social %}
+          <div class="hargx-footer__social">
+
+            {% if section.settings.instagram_url != blank %}
+              <a
+                href="{{ section.settings.instagram_url }}"
+                aria-label="Instagram"
+                target="_blank"
+                rel="noopener"
+              >
+                Instagram
+              </a>
+            {% endif %}
+
+            {% if section.settings.facebook_url != blank %}
+              <a
+                href="{{ section.settings.facebook_url }}"
+                aria-label="Facebook"
+                target="_blank"
+                rel="noopener"
+              >
+                Facebook
+              </a>
+            {% endif %}
+
+            {% if section.settings.tiktok_url != blank %}
+              <a
+                href="{{ section.settings.tiktok_url }}"
+                aria-label="TikTok"
+                target="_blank"
+                rel="noopener"
+              >
+                TikTok
+              </a>
+            {% endif %}
+
+            {% if section.settings.youtube_url != blank %}
+              <a
+                href="{{ section.settings.youtube_url }}"
+                aria-label="YouTube"
+                target="_blank"
+                rel="noopener"
+              >
+                YouTube
+              </a>
+            {% endif %}
+
+          </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Footer Menus -->
+      <div class="hargx-footer__menus">
+
+        {% for block in section.blocks %}
+
+          {% if block.type == 'menu' %}
+
+            <div
+              class="hargx-footer__menu"
+              {{ block.shopify_attributes }}
+            >
+
+              <button
+                type="button"
+                class="hargx-footer__menu-toggle"
+                aria-expanded="false"
+              >
+                <span>
+                  {{ block.settings.heading }}
+                </span>
+
+                <span
+                  class="hargx-footer__menu-icon"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </button>
+
+              <div class="hargx-footer__menu-content">
+
+                {% if block.settings.menu != blank %}
+
+                  <nav aria-label="{{ block.settings.heading }}">
+
+                    {% for link in block.settings.menu.links %}
+
+                      <a
+                        href="{{ link.url }}"
+                        {% if link.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{ link.title }}
+                      </a>
+
+                    {% endfor %}
+
+                  </nav>
+
+                {% endif %}
+
+              </div>
+
+            </div>
+
+          {% endif %}
+
+        {% endfor %}
+
+      </div>
+
+      <!-- Newsletter -->
+      {% if section.settings.show_newsletter %}
+
+        <div class="hargx-footer__newsletter">
+
+          {% if section.settings.newsletter_heading != blank %}
+            <h2>
+              {{ section.settings.newsletter_heading }}
+            </h2>
+          {% endif %}
+
+          {% if section.settings.newsletter_text != blank %}
+            <div class="hargx-footer__newsletter-text">
+              {{ section.settings.newsletter_text }}
+            </div>
+          {% endif %}
+
+          {% form 'customer', class: 'hargx-footer__newsletter-form' %}
+
+            <input
+              type="hidden"
+              name="contact[tags]"
+              value="newsletter"
+            >
+
+            <label
+              for="HargxNewsletter-{{ section.id }}"
+              class="visually-hidden"
+            >
+              Email address
+            </label>
+
+            <div class="hargx-footer__newsletter-input">
+              <input
+                id="HargxNewsletter-{{ section.id }}"
+                type="email"
+                name="contact[email]"
+                value="{{ form.email }}"
+                placeholder="Email address"
+                autocomplete="email"
+                required
+              >
+
+              <button
+                type="submit"
+                aria-label="Subscribe"
+              >
+                Subscribe
+              </button>
+            </div>
+
+            {% if form.errors %}
+              <div class="hargx-footer__form-message">
+                {{ form.errors | default_errors }}
+              </div>
+            {% endif %}
+
+            {% if form.posted_successfully? %}
+              <div class="hargx-footer__form-message">
+                Thanks for subscribing!
+              </div>
+            {% endif %}
+
+          {% endform %}
+
+        </div>
+
+      {% endif %}
+
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="hargx-footer__bottom">
+
+      <div class="hargx-footer__copyright">
+        {% if section.settings.copyright_text != blank %}
+          {{ section.settings.copyright_text }}
+        {% else %}
+          © {{ 'now' | date: '%Y' }} {{ shop.name }}
+        {% endif %}
+      </div>
+
+      {% if section.settings.show_policy_links %}
+
+        <div class="hargx-footer__policies">
+
+          {% if shop.privacy_policy != blank %}
+            <a href="{{ shop.privacy_policy.url }}">
+              {{ shop.privacy_policy.title }}
+            </a>
+          {% endif %}
+
+          {% if shop.terms_of_service != blank %}
+            <a href="{{ shop.terms_of_service.url }}">
+              {{ shop.terms_of_service.title }}
+            </a>
+          {% endif %}
+
+          {% if shop.refund_policy != blank %}
+            <a href="{{ shop.refund_policy.url }}">
+              {{ shop.refund_policy.title }}
+            </a>
+          {% endif %}
+
+          {% if shop.shipping_policy != blank %}
+            <a href="{{ shop.shipping_policy.url }}">
+              {{ shop.shipping_policy.title }}
+            </a>
+          {% endif %}
+
+        </div>
+
+      {% endif %}
+
+      {% if section.settings.show_payment_icons %}
+
+        <div class="hargx-footer__payment">
+
+          {% for type in shop.enabled_payment_types %}
+            {{ type | payment_type_svg_tag }}
+          {% endfor %}
+
+        </div>
+
+      {% endif %}
+
+    </div>
+
   </div>
 </footer>
 
 {% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
+
+/* ========================================
+   HARGX FOOTER
+   ======================================== */
+
+.hargx-footer {
+  width: 100%;
+
+  background: var(--footer-bg);
+  color: var(--footer-text);
+
+  border-top: 1px solid var(--footer-border);
+}
+
+.hargx-footer__container {
+  width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+
+  margin-inline: auto;
+}
+
+/* ========================================
+   FOOTER MAIN
+   ======================================== */
+
+.hargx-footer__main {
+  padding-block: 70px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(220px, 1.3fr)
+    minmax(420px, 2fr)
+    minmax(220px, 1fr);
+
+  gap: 50px;
+}
+
+/* ========================================
+   BRAND
+   ======================================== */
+
+.hargx-footer__brand {
+  min-width: 0;
+}
+
+.hargx-footer__logo {
+  display: inline-flex;
+  align-items: center;
+
+  color: var(--footer-text);
+  text-decoration: none;
+
+  font-family: var(--font-heading--family);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.hargx-footer__logo img {
+  display: block;
+
+  width: auto;
+  max-width: 100%;
+}
+
+.hargx-footer__description {
+  max-width: 320px;
+
+  margin-top: 18px;
+
+  color: var(--footer-muted);
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.hargx-footer__social {
+  margin-top: 24px;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 14px;
+}
+
+.hargx-footer__social a {
+  color: var(--footer-text);
+  text-decoration: none;
+
+  font-size: 13px;
+}
+
+.hargx-footer__social a:hover,
+.hargx-footer__social a:focus {
+  color: var(--color-primary);
+}
+
+/* ========================================
+   FOOTER MENUS
+   ======================================== */
+
+.hargx-footer__menus {
+  display: grid;
+
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(130px, 1fr)
+  );
+
+  gap: 30px;
+}
+
+.hargx-footer__menu-toggle {
+  width: 100%;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--footer-text);
+
+  font-family: var(--font-heading--family);
+  font-size: 14px;
+  font-weight: 700;
+
+  text-align: left;
+}
+
+.hargx-footer__menu-icon {
+  display: none;
+}
+
+.hargx-footer__menu-content {
+  margin-top: 16px;
+}
+
+.hargx-footer__menu-content nav {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.hargx-footer__menu-content a {
+  color: var(--footer-muted);
+  text-decoration: none;
+
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.hargx-footer__menu-content a:hover,
+.hargx-footer__menu-content a:focus {
+  color: var(--color-primary);
+}
+
+/* ========================================
+   NEWSLETTER
+   ======================================== */
+
+.hargx-footer__newsletter {
+  min-width: 0;
+}
+
+.hargx-footer__newsletter h2 {
+  margin: 0;
+
+  font-size: 18px;
+}
+
+.hargx-footer__newsletter-text {
+  margin-top: 12px;
+
+  color: var(--footer-muted);
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.hargx-footer__newsletter-form {
+  margin-top: 20px;
+}
+
+.hargx-footer__newsletter-input {
+  display: flex;
+
+  border: 1px solid var(--footer-border);
+  border-radius: var(--button-radius);
+
+  overflow: hidden;
+}
+
+.hargx-footer__newsletter-input input {
+  min-width: 0;
+  flex: 1;
+
+  padding: 13px 14px;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  color: var(--footer-text);
+
+  outline: none;
+}
+
+.hargx-footer__newsletter-input button {
+  flex: 0 0 auto;
+
+  padding:
+    var(--button-vertical-padding)
+    var(--button-horizontal-padding);
+
+  border: 0;
+  border-radius: 0;
+
+  background: var(--color-primary);
+  color: var(--color-white);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.hargx-footer__newsletter-input button:hover,
+.hargx-footer__newsletter-input button:focus {
+  opacity: 0.9;
+}
+
+.hargx-footer__form-message {
+  margin-top: 10px;
+
+  font-size: 13px;
+}
+
+/* ========================================
+   FOOTER BOTTOM
+   ======================================== */
+
+.hargx-footer__bottom {
+  min-height: 64px;
+
+  padding-block: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  border-top: 1px solid var(--footer-border);
+}
+
+.hargx-footer__copyright {
+  color: var(--footer-muted);
+
+  font-size: 12px;
+}
+
+.hargx-footer__policies {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 16px;
+}
+
+.hargx-footer__policies a {
+  color: var(--footer-muted);
+  text-decoration: none;
+
+  font-size: 12px;
+}
+
+.hargx-footer__policies a:hover,
+.hargx-footer__policies a:focus {
+  color: var(--color-primary);
+}
+
+.hargx-footer__payment {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 7px;
+}
+
+.hargx-footer__payment svg {
+  width: 38px;
+  height: auto;
+}
+
+/* ========================================
+   MOBILE
+   ======================================== */
+
+@media screen and (max-width: 989px) {
+
+  .hargx-footer__main {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 40px;
   }
-  footer a {
-    text-decoration: none;
-    color: var(--color-foreground);
+
+  .hargx-footer__brand {
+    grid-column: 1 / -1;
   }
-  footer .footer__links,
-  footer .footer__payment {
-    display: flex;
-    gap: 1rem;
+
+  .hargx-footer__newsletter {
+    grid-column: 1 / -1;
   }
+
+}
+
+@media screen and (max-width: 749px) {
+
+  .hargx-footer__main {
+    padding-block: 45px;
+
+    display: block;
+  }
+
+  .hargx-footer__brand {
+    margin-bottom: 35px;
+  }
+
+  .hargx-footer__menus {
+    display: block;
+  }
+
+  .hargx-footer__menu {
+    border-top: 1px solid var(--footer-border);
+  }
+
+  .hargx-footer__menu:last-child {
+    border-bottom: 1px solid var(--footer-border);
+  }
+
+  .hargx-footer__menu-toggle {
+    padding-block: 17px;
+
+    cursor: pointer;
+  }
+
+  .hargx-footer__menu-icon {
+    display: block;
+
+    font-size: 18px;
+    line-height: 1;
+
+    transition: transform 0.2s ease;
+  }
+
+  .hargx-footer__menu-toggle.is-open
+    .hargx-footer__menu-icon {
+    transform: rotate(45deg);
+  }
+
+  .hargx-footer__menu-content {
+    display: none;
+
+    margin-top: 0;
+
+    padding: 0 0 17px;
+  }
+
+  .hargx-footer__menu-content.is-open {
+    display: block;
+  }
+
+  .hargx-footer__newsletter {
+    margin-top: 35px;
+  }
+
+  .hargx-footer__bottom {
+    padding-block: 20px;
+
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hargx-footer__policies {
+    gap: 10px 16px;
+  }
+
+  .hargx-footer__payment {
+    margin-top: 4px;
+  }
+
+}
+
 {% endstylesheet %}
+
+{% javascript %}
+
+(function () {
+  'use strict';
+
+  const footer = document.querySelector('.hargx-footer');
+
+  if (!footer) return;
+
+  const toggles = footer.querySelectorAll(
+    '.hargx-footer__menu-toggle'
+  );
+
+  toggles.forEach(function (toggle) {
+
+    toggle.addEventListener('click', function () {
+
+      if (window.innerWidth > 749) return;
+
+      const content = toggle.nextElementSibling;
+
+      if (!content) return;
+
+      const isOpen =
+        toggle.classList.contains('is-open');
+
+      toggle.classList.toggle(
+        'is-open',
+        !isOpen
+      );
+
+      toggle.setAttribute(
+        'aria-expanded',
+        String(!isOpen)
+      );
+
+      content.classList.toggle(
+        'is-open',
+        !isOpen
+      );
+
+    });
+
+  });
+
+})();
+
+{% endjavascript %}
 
 {% schema %}
 {
-  "name": "t:general.footer",
+  "name": "HARGX Footer",
   "settings": [
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 60,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "default": 150
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Built for bold ideas and products that stand out.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Stay in the loop"
+    },
+    {
+      "type": "richtext",
+      "id": "newsletter_text",
+      "label": "Newsletter text",
+      "default": "<p>Get updates, new releases and more.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social links",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "url",
+      "id": "youtube_url",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policy_links",
+      "label": "Show policy links",
+      "default": true
     },
     {
       "type": "checkbox",
       "id": "show_payment_icons",
-      "label": "t:labels.show_payment_icons",
+      "label": "Show payment icons",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "muted_text_color",
+      "label": "Muted text color",
+      "default": "#B5B5B5"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#2A2A2A"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Footer menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Footer",
+      "blocks": [
+        {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop"
+          }
+        },
+        {
+          "type": "menu",
+          "settings": {
+            "heading": "Support"
+          }
+        },
+        {
+          "type": "menu",
+          "settings": {
+            "heading": "Company"
+          }
+        }
+      ]
     }
   ]
 }
