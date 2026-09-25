@@ -17,14 +17,14 @@
         "menu_wUPfqH": {
           "type": "menu",
           "settings": {
-            "heading": "Shop",
+            "heading": "Quick Link",
             "menu": "customer-account-main-menu"
           }
         },
         "menu_R883Mm": {
           "type": "menu",
           "settings": {
-            "heading": "Shop",
+            "heading": "Find",
             "menu": "footer"
           }
         },
