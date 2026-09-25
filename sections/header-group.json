@@ -17,7 +17,7 @@
         "header_layout": "mega-menu",
         "logo_width": 150,
         "menu": "main-menu",
-        "sticky_header": true,
+        "sticky_header": false,
         "customer_account_menu": "customer-account-main-menu"
       }
     }
