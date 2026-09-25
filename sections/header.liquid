@@ -525,9 +525,14 @@
   z-index: 50;
 }
 
-.hargx-header[data-sticky-header] {
+.shopify-section-group-header-group:has(.hargx-header[data-sticky-header]) {
   position: sticky;
   top: 0;
+  z-index: 50;
+}
+
+.hargx-header[data-sticky-header] {
+  position: relative;
 }
 
 .hargx-header__inner {
