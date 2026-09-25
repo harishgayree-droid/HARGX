@@ -20,10 +20,45 @@
         "grid_item_width": "collections--full",
         "grid_gap": 10
       }
+    },
+    "custom_section_4e4Vi8": {
+      "type": "custom-section",
+      "blocks": {
+        "group_mKi77h": {
+          "type": "group",
+          "name": "t:general.column",
+          "settings": {
+            "layout_direction": "group--vertical",
+            "alignment": "flex-start",
+            "padding": 0
+          },
+          "blocks": {
+            "text_fccWeH": {
+              "type": "text",
+              "name": "t:general.text",
+              "settings": {
+                "text": "Text",
+                "text_style": "text--title",
+                "alignment": "left"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_fccWeH"
+          ]
+        }
+      },
+      "block_order": [
+        "group_mKi77h"
+      ],
+      "name": "t:general.custom_section",
+      "settings": {}
     }
   },
   "order": [
     "main",
-    "collections_zY6xJx"
+    "collections_zY6xJx",
+    "custom_section_4e4Vi8"
   ]
 }
