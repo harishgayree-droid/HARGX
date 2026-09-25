@@ -185,3 +185,42 @@ select {
 .hargx-section {
   padding-block: var(--section-spacing);
 }
+
+/* ========================================
+   HARGX — Grid System
+   ======================================== */
+
+.hargx-grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.hargx-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.hargx-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hargx-grid--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media screen and (max-width: 989px) {
+  .hargx-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hargx-grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .hargx-grid--2,
+  .hargx-grid--3,
+  .hargx-grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
