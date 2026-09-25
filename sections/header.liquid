@@ -47,7 +47,13 @@
       {% for link in section.settings.menu.links %}
 
         <div
-          class="hargx-header__nav-item{% if link.links != blank %} has-dropdown{% endif %}"
+          class="
+            hargx-header__nav-item
+            {% if link.links != blank %}has-dropdown{% endif %}
+            {% if section.settings.header_layout == 'mega-menu' and link.links != blank %}
+              has-mega-menu
+            {% endif %}
+          "
         >
 
           <a
@@ -60,58 +66,128 @@
             {{ link.title }}
 
             {% if link.links != blank %}
-              <span class="hargx-header__chevron" aria-hidden="true">
+              <span
+                class="hargx-header__chevron"
+                aria-hidden="true"
+              >
                 ↓
               </span>
             {% endif %}
           </a>
 
           {% if link.links != blank %}
-            <div class="hargx-header__dropdown">
 
-              {% for child_link in link.links %}
+            {% if section.settings.header_layout == 'mega-menu' %}
 
-                <div class="hargx-header__dropdown-item">
+              <!-- MEGA MENU -->
+              <div class="hargx-header__mega-menu">
 
-                  <a
-                    href="{{ child_link.url }}"
-                    class="hargx-header__dropdown-link"
-                    {% if child_link.current %}
-                      aria-current="page"
-                    {% endif %}
-                  >
-                    {{ child_link.title }}
+                <div class="hargx-header__mega-inner">
 
-                    {% if child_link.links != blank %}
-                      <span class="hargx-header__dropdown-arrow">
-                        →
-                      </span>
-                    {% endif %}
-                  </a>
+                  {% for child_link in link.links %}
 
-                  {% if child_link.links != blank %}
-                    <div class="hargx-header__sub-dropdown">
+                    <div class="hargx-header__mega-column">
 
-                      {% for grandchild_link in child_link.links %}
-                        <a
-                          href="{{ grandchild_link.url }}"
-                          class="hargx-header__sub-dropdown-link"
-                          {% if grandchild_link.current %}
-                            aria-current="page"
-                          {% endif %}
-                        >
-                          {{ grandchild_link.title }}
-                        </a>
-                      {% endfor %}
+                      <a
+                        href="{{ child_link.url }}"
+                        class="hargx-header__mega-heading"
+                        {% if child_link.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{ child_link.title }}
+                      </a>
+
+                      {% if child_link.links != blank %}
+
+                        <div class="hargx-header__mega-links">
+
+                          {% for grandchild_link in child_link.links %}
+
+                            <a
+                              href="{{ grandchild_link.url }}"
+                              class="hargx-header__mega-link"
+                              {% if grandchild_link.current %}
+                                aria-current="page"
+                              {% endif %}
+                            >
+                              {{ grandchild_link.title }}
+                            </a>
+
+                          {% endfor %}
+
+                        </div>
+
+                      {% endif %}
 
                     </div>
-                  {% endif %}
+
+                  {% endfor %}
 
                 </div>
 
-              {% endfor %}
+              </div>
 
-            </div>
+            {% else %}
+
+              <!-- STANDARD DROPDOWN -->
+              <div class="hargx-header__dropdown">
+
+                {% for child_link in link.links %}
+
+                  <div class="hargx-header__dropdown-item">
+
+                    <a
+                      href="{{ child_link.url }}"
+                      class="hargx-header__dropdown-link"
+                      {% if child_link.current %}
+                        aria-current="page"
+                      {% endif %}
+                    >
+                      <span>
+                        {{ child_link.title }}
+                      </span>
+
+                      {% if child_link.links != blank %}
+                        <span
+                          class="hargx-header__dropdown-arrow"
+                          aria-hidden="true"
+                        >
+                          →
+                        </span>
+                      {% endif %}
+                    </a>
+
+                    {% if child_link.links != blank %}
+
+                      <div class="hargx-header__sub-dropdown">
+
+                        {% for grandchild_link in child_link.links %}
+
+                          <a
+                            href="{{ grandchild_link.url }}"
+                            class="hargx-header__sub-dropdown-link"
+                            {% if grandchild_link.current %}
+                              aria-current="page"
+                            {% endif %}
+                          >
+                            {{ grandchild_link.title }}
+                          </a>
+
+                        {% endfor %}
+
+                      </div>
+
+                    {% endif %}
+
+                  </div>
+
+                {% endfor %}
+
+              </div>
+
+            {% endif %}
+
           {% endif %}
 
         </div>
@@ -133,13 +209,76 @@
 
       <!-- Account -->
       {% if shop.customer_accounts_enabled %}
-        <a
-          href="{{ routes.account_url }}"
-          class="hargx-header__action"
-          aria-label="Account"
-        >
-          {{ 'icon-account.svg' | inline_asset_content }}
-        </a>
+
+        <div class="hargx-header__account">
+
+          <button
+            type="button"
+            class="hargx-header__action hargx-header__account-button"
+            aria-label="Account"
+            aria-expanded="false"
+            aria-haspopup="true"
+          >
+            {{ 'icon-account.svg' | inline_asset_content }}
+          </button>
+
+          <div class="hargx-header__account-menu">
+
+            <div class="hargx-header__account-menu-inner">
+
+              <a
+                href="{{ routes.account_url }}"
+                class="hargx-header__account-title"
+              >
+                {% if customer %}
+                  My Account
+                {% else %}
+                  Account
+                {% endif %}
+              </a>
+
+              {% if section.settings.customer_account_menu != blank %}
+
+                <nav
+                  class="hargx-header__account-links"
+                  aria-label="Customer account menu"
+                >
+
+                  {% for account_link in section.settings.customer_account_menu.links %}
+
+                    <a
+                      href="{{ account_link.url }}"
+                      class="hargx-header__account-link"
+                      {% if account_link.current %}
+                        aria-current="page"
+                      {% endif %}
+                    >
+                      {{ account_link.title }}
+                    </a>
+
+                  {% endfor %}
+
+                </nav>
+
+              {% endif %}
+
+              {% if customer %}
+
+                <a
+                  href="{{ routes.account_logout_url }}"
+                  class="hargx-header__account-link hargx-header__account-logout"
+                >
+                  Log out
+                </a>
+
+              {% endif %}
+
+            </div>
+
+          </div>
+
+        </div>
+
       {% endif %}
 
       <!-- Cart -->
@@ -213,7 +352,9 @@
                 class="hargx-mobile-menu__link hargx-mobile-menu__toggle-submenu"
                 aria-expanded="false"
               >
-                <span>{{ link.title }}</span>
+                <span>
+                  {{ link.title }}
+                </span>
 
                 <span
                   class="hargx-mobile-menu__arrow"
@@ -227,7 +368,10 @@
 
                 <a
                   href="{{ link.url }}"
-                  class="hargx-mobile-menu__submenu-link hargx-mobile-menu__submenu-link--parent"
+                  class="
+                    hargx-mobile-menu__submenu-link
+                    hargx-mobile-menu__submenu-link--parent
+                  "
                 >
                   View {{ link.title }}
                 </a>
@@ -240,10 +384,15 @@
 
                       <button
                         type="button"
-                        class="hargx-mobile-menu__submenu-link hargx-mobile-menu__toggle-submenu"
+                        class="
+                          hargx-mobile-menu__submenu-link
+                          hargx-mobile-menu__toggle-submenu
+                        "
                         aria-expanded="false"
                       >
-                        <span>{{ child_link.title }}</span>
+                        <span>
+                          {{ child_link.title }}
+                        </span>
 
                         <span
                           class="hargx-mobile-menu__arrow"
@@ -256,12 +405,14 @@
                       <div class="hargx-mobile-menu__subsubmenu">
 
                         {% for grandchild_link in child_link.links %}
+
                           <a
                             href="{{ grandchild_link.url }}"
                             class="hargx-mobile-menu__subsubmenu-link"
                           >
                             {{ grandchild_link.title }}
                           </a>
+
                         {% endfor %}
 
                       </div>
@@ -303,7 +454,54 @@
 
       </nav>
 
+      <!-- Mobile Account -->
+      {% if shop.customer_accounts_enabled %}
+
+        <div class="hargx-mobile-menu__account">
+
+          <div class="hargx-mobile-menu__account-title">
+            Account
+          </div>
+
+          <a
+            href="{{ routes.account_url }}"
+            class="hargx-mobile-menu__account-link"
+          >
+            My Account
+          </a>
+
+          {% if section.settings.customer_account_menu != blank %}
+
+            {% for account_link in section.settings.customer_account_menu.links %}
+
+              <a
+                href="{{ account_link.url }}"
+                class="hargx-mobile-menu__account-link"
+              >
+                {{ account_link.title }}
+              </a>
+
+            {% endfor %}
+
+          {% endif %}
+
+          {% if customer %}
+
+            <a
+              href="{{ routes.account_logout_url }}"
+              class="hargx-mobile-menu__account-link"
+            >
+              Log out
+            </a>
+
+          {% endif %}
+
+        </div>
+
+      {% endif %}
+
     </div>
+
   </div>
 
 </header>
@@ -315,10 +513,15 @@
    ======================================== */
 
 .hargx-header {
+  position: relative;
+
   width: 100%;
+
   background: var(--color-white);
   color: var(--color-black);
+
   border-bottom: 1px solid var(--color-border);
+
   z-index: 50;
 }
 
@@ -328,17 +531,20 @@
 }
 
 .hargx-header__inner {
+  position: relative;
+
   width: min(
     calc(var(--page-width) - var(--page-margin) * 2),
     calc(100% - var(--page-margin) * 2)
   );
 
   min-height: 76px;
+
   margin-inline: auto;
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+
   gap: 32px;
 }
 
@@ -348,6 +554,7 @@
 
 .hargx-header__logo {
   flex: 0 0 auto;
+
   display: flex;
   align-items: center;
 
@@ -357,10 +564,13 @@
   font-family: var(--font-heading--family);
   font-weight: 700;
   font-size: 22px;
+
+  z-index: 2;
 }
 
 .hargx-header__logo img {
   display: block;
+
   width: auto;
   max-width: 100%;
 }
@@ -371,14 +581,17 @@
 
 .hargx-header__nav {
   flex: 1;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 28px;
 }
 
 .hargx-header__nav-item {
   position: relative;
+
   display: flex;
   align-items: center;
 }
@@ -386,6 +599,7 @@
 .hargx-header__nav-link {
   display: inline-flex;
   align-items: center;
+
   gap: 5px;
 
   color: inherit;
@@ -398,26 +612,30 @@
   padding-block: 28px;
 }
 
-.hargx-header__nav-link:hover {
+.hargx-header__nav-link:hover,
+.hargx-header__nav-item:focus-within > .hargx-header__nav-link {
   color: var(--color-primary);
 }
 
 .hargx-header__chevron {
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1;
+
   transition: transform 0.2s ease;
 }
 
-.hargx-header__nav-item:hover .hargx-header__chevron {
+.hargx-header__nav-item:hover .hargx-header__chevron,
+.hargx-header__nav-item:focus-within .hargx-header__chevron {
   transform: rotate(180deg);
 }
 
 /* ========================================
-   DROPDOWN
+   STANDARD DROPDOWN
    ======================================== */
 
 .hargx-header__dropdown {
   position: absolute;
+
   top: 100%;
   left: 50%;
 
@@ -426,6 +644,7 @@
   padding: 10px;
 
   background: var(--color-white);
+
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
 
@@ -433,6 +652,8 @@
 
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
+
   transform: translate(-50%, 8px);
 
   transition:
@@ -447,6 +668,8 @@
 .hargx-header__nav-item:focus-within > .hargx-header__dropdown {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+
   transform: translate(-50%, 0);
 }
 
@@ -472,7 +695,8 @@
   border-radius: 4px;
 }
 
-.hargx-header__dropdown-link:hover {
+.hargx-header__dropdown-link:hover,
+.hargx-header__dropdown-link:focus {
   background: var(--color-warm-background);
   color: var(--color-primary);
 }
@@ -482,11 +706,12 @@
 }
 
 /* ========================================
-   SUB DROPDOWN
+   THIRD LEVEL DROPDOWN
    ======================================== */
 
 .hargx-header__sub-dropdown {
   position: absolute;
+
   top: -10px;
   left: calc(100% + 10px);
 
@@ -495,6 +720,7 @@
   padding: 10px;
 
   background: var(--color-white);
+
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
 
@@ -502,6 +728,7 @@
 
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 
   transform: translateX(8px);
 
@@ -509,12 +736,16 @@
     opacity 0.2s ease,
     visibility 0.2s ease,
     transform 0.2s ease;
+
+  z-index: 110;
 }
 
 .hargx-header__dropdown-item:hover > .hargx-header__sub-dropdown,
 .hargx-header__dropdown-item:focus-within > .hargx-header__sub-dropdown {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+
   transform: translateX(0);
 }
 
@@ -531,13 +762,123 @@
   border-radius: 4px;
 }
 
-.hargx-header__sub-dropdown-link:hover {
+.hargx-header__sub-dropdown-link:hover,
+.hargx-header__sub-dropdown-link:focus {
   background: var(--color-warm-background);
   color: var(--color-primary);
 }
 
 /* ========================================
-   ACTIONS
+   MEGA MENU
+   ======================================== */
+
+.hargx-header__mega-menu {
+  position: fixed;
+
+  left: 0;
+  right: 0;
+
+  top: 100%;
+
+  width: 100%;
+
+  background: var(--color-white);
+
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(8px);
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+
+  z-index: 100;
+}
+
+.hargx-header__nav-item:hover > .hargx-header__mega-menu,
+.hargx-header__nav-item:focus-within > .hargx-header__mega-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transform: translateY(0);
+}
+
+.hargx-header__mega-inner {
+  width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+
+  margin-inline: auto;
+
+  padding: 36px 0 40px;
+
+  display: grid;
+
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(170px, 1fr)
+  );
+
+  gap: 34px;
+}
+
+.hargx-header__mega-column {
+  min-width: 0;
+}
+
+.hargx-header__mega-heading {
+  display: block;
+
+  margin-bottom: 14px;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 14px;
+  line-height: 1.3;
+
+  font-weight: 700;
+}
+
+.hargx-header__mega-heading:hover,
+.hargx-header__mega-heading:focus {
+  color: var(--color-primary);
+}
+
+.hargx-header__mega-links {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.hargx-header__mega-link {
+  display: block;
+
+  color: var(--color-muted-text);
+  text-decoration: none;
+
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.hargx-header__mega-link:hover,
+.hargx-header__mega-link:focus {
+  color: var(--color-primary);
+}
+
+/* ========================================
+   HEADER ACTIONS
    ======================================== */
 
 .hargx-header__actions {
@@ -545,6 +886,7 @@
 
   display: flex;
   align-items: center;
+
   gap: 18px;
 }
 
@@ -557,6 +899,11 @@
 
   color: inherit;
   text-decoration: none;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
 }
 
 .hargx-header__action svg {
@@ -564,8 +911,111 @@
   height: 21px;
 }
 
-.hargx-header__action:hover {
+.hargx-header__action:hover,
+.hargx-header__action:focus {
   color: var(--color-primary);
+}
+
+/* ========================================
+   ACCOUNT
+   ======================================== */
+
+.hargx-header__account {
+  position: relative;
+}
+
+.hargx-header__account-menu {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 220px;
+
+  padding: 10px;
+
+  background: var(--color-white);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(8px);
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+
+  z-index: 120;
+}
+
+.hargx-header__account.is-open .hargx-header__account-menu,
+.hargx-header__account:focus-within .hargx-header__account-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transform: translateY(0);
+}
+
+.hargx-header__account-menu-inner {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.hargx-header__account-title {
+  display: block;
+
+  padding: 10px 12px;
+  margin-bottom: 4px;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hargx-header__account-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.hargx-header__account-link {
+  display: block;
+
+  padding: 9px 12px;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 14px;
+
+  border-radius: 4px;
+}
+
+.hargx-header__account-link:hover,
+.hargx-header__account-link:focus {
+  background: var(--color-warm-background);
+  color: var(--color-primary);
+}
+
+.hargx-header__account-logout {
+  margin-top: 4px;
+
+  border-top: 1px solid var(--color-border);
+
+  border-radius: 0;
 }
 
 /* ========================================
@@ -574,11 +1024,13 @@
 
 .hargx-header__cart-count {
   position: absolute;
+
   top: -9px;
   right: -10px;
 
   min-width: 17px;
   height: 17px;
+
   padding: 0 4px;
 
   display: flex;
@@ -604,6 +1056,7 @@
 
   width: 24px;
   height: 24px;
+
   padding: 0;
 
   border: 0;
@@ -611,6 +1064,7 @@
 
   flex-direction: column;
   justify-content: center;
+
   gap: 5px;
 
   cursor: pointer;
@@ -618,8 +1072,10 @@
 
 .hargx-header__mobile-toggle span {
   display: block;
+
   width: 20px;
   height: 1.5px;
+
   background: currentColor;
 
   transition:
@@ -633,6 +1089,7 @@
 
 .hargx-mobile-menu {
   position: fixed;
+
   inset: 0;
 
   visibility: hidden;
@@ -648,11 +1105,13 @@
 
 .hargx-mobile-menu__overlay {
   position: absolute;
+
   inset: 0;
 
   background: rgba(0, 0, 0, 0.35);
 
   opacity: 0;
+
   transition: opacity 0.25s ease;
 }
 
@@ -662,6 +1121,7 @@
 
 .hargx-mobile-menu__drawer {
   position: absolute;
+
   top: 0;
   left: 0;
 
@@ -687,6 +1147,7 @@
 
 .hargx-mobile-menu__header {
   min-height: 64px;
+
   padding: 0 20px;
 
   display: flex;
@@ -698,11 +1159,14 @@
 
 .hargx-mobile-menu__title {
   font-family: var(--font-heading--family);
+
   font-size: 18px;
   font-weight: 600;
 }
 
 .hargx-mobile-menu__close {
+  position: relative;
+
   width: 32px;
   height: 32px;
 
@@ -710,8 +1174,6 @@
 
   border: 0;
   background: transparent;
-
-  position: relative;
 
   cursor: pointer;
 }
@@ -771,7 +1233,8 @@
   cursor: pointer;
 }
 
-.hargx-mobile-menu__link:hover {
+.hargx-mobile-menu__link:hover,
+.hargx-mobile-menu__link:focus {
   color: var(--color-primary);
 }
 
@@ -815,7 +1278,8 @@
   font-weight: 600;
 }
 
-.hargx-mobile-menu__submenu-link:hover {
+.hargx-mobile-menu__submenu-link:hover,
+.hargx-mobile-menu__submenu-link:focus {
   color: var(--color-primary);
 }
 
@@ -855,7 +1319,48 @@
   font-size: 14px;
 }
 
-.hargx-mobile-menu__subsubmenu-link:hover {
+.hargx-mobile-menu__subsubmenu-link:hover,
+.hargx-mobile-menu__subsubmenu-link:focus {
+  color: var(--color-primary);
+}
+
+/* ========================================
+   MOBILE ACCOUNT
+   ======================================== */
+
+.hargx-mobile-menu__account {
+  margin: 0 20px 30px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid var(--color-border);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.hargx-mobile-menu__account-title {
+  margin-bottom: 8px;
+
+  font-family: var(--font-heading--family);
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.hargx-mobile-menu__account-link {
+  display: block;
+
+  padding: 10px 0;
+
+  color: var(--color-black);
+  text-decoration: none;
+
+  font-size: 14px;
+}
+
+.hargx-mobile-menu__account-link:hover,
+.hargx-mobile-menu__account-link:focus {
   color: var(--color-primary);
 }
 
@@ -876,7 +1381,7 @@
 }
 
 /* ========================================
-   CENTER LOGO LAYOUT
+   CENTER LOGO
    ======================================== */
 
 .hargx-header--center-logo .hargx-header__inner {
@@ -885,7 +1390,9 @@
 
 .hargx-header--center-logo .hargx-header__logo {
   position: absolute;
+
   left: 50%;
+
   transform: translateX(-50%);
 }
 
@@ -898,7 +1405,7 @@
 }
 
 /* ========================================
-   MINIMAL LAYOUT
+   MINIMAL
    ======================================== */
 
 .hargx-header--minimal .hargx-header__nav {
@@ -911,12 +1418,18 @@
 
 .hargx-header--minimal .hargx-header__logo {
   position: absolute;
+
   left: 50%;
+
   transform: translateX(-50%);
 }
 
+.hargx-header--minimal .hargx-header__mobile-toggle {
+  display: flex;
+}
+
 /* ========================================
-   MEGA MENU FOUNDATION
+   MEGA MENU
    ======================================== */
 
 .hargx-header--mega-menu .hargx-header__nav {
@@ -931,11 +1444,13 @@
 
   .hargx-header__inner {
     min-height: 64px;
+
     gap: 16px;
   }
 
   .hargx-header__mobile-toggle {
     display: flex;
+
     flex: 0 0 auto;
   }
 
@@ -945,12 +1460,15 @@
 
   .hargx-header__logo {
     position: absolute;
+
     left: 50%;
+
     transform: translateX(-50%);
   }
 
   .hargx-header__actions {
     margin-left: auto;
+
     gap: 14px;
   }
 
@@ -959,8 +1477,29 @@
     height: 20px;
   }
 
+  .hargx-header__account {
+    display: none;
+  }
+
   .hargx-header__action:nth-child(2) {
     display: none;
+  }
+
+}
+
+/* ========================================
+   LARGE DESKTOP
+   ======================================== */
+
+@media screen and (min-width: 1400px) {
+
+  .hargx-header__mega-inner {
+    padding-top: 42px;
+    padding-bottom: 46px;
+  }
+
+  .hargx-header__mega-inner {
+    gap: 44px;
   }
 
 }
@@ -976,68 +1515,217 @@
 
   if (!header) return;
 
-  const mobileToggle = header.querySelector('.hargx-header__mobile-toggle');
-  const mobileMenu = header.querySelector('.hargx-mobile-menu');
-  const mobileClose = header.querySelector('.hargx-mobile-menu__close');
-  const mobileOverlay = header.querySelector('.hargx-mobile-menu__overlay');
+  /* ========================================
+     MOBILE MENU
+     ======================================== */
 
-  if (!mobileToggle || !mobileMenu) return;
-
-  const openMenu = function () {
-    mobileMenu.classList.add('is-open');
-
-    mobileMenu.setAttribute('aria-hidden', 'false');
-    mobileToggle.setAttribute('aria-expanded', 'true');
-
-    document.documentElement.style.overflow = 'hidden';
-  };
-
-  const closeMenu = function () {
-    mobileMenu.classList.remove('is-open');
-
-    mobileMenu.setAttribute('aria-hidden', 'true');
-    mobileToggle.setAttribute('aria-expanded', 'false');
-
-    document.documentElement.style.overflow = '';
-  };
-
-  mobileToggle.addEventListener('click', openMenu);
-
-  if (mobileClose) {
-    mobileClose.addEventListener('click', closeMenu);
-  }
-
-  if (mobileOverlay) {
-    mobileOverlay.addEventListener('click', closeMenu);
-  }
-
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape') {
-      closeMenu();
-    }
-  });
-
-  const submenuToggles = header.querySelectorAll(
-    '.hargx-mobile-menu__toggle-submenu'
+  const mobileToggle = header.querySelector(
+    '.hargx-header__mobile-toggle'
   );
 
-  submenuToggles.forEach(function (toggle) {
+  const mobileMenu = header.querySelector(
+    '.hargx-mobile-menu'
+  );
 
-    toggle.addEventListener('click', function () {
+  const mobileClose = header.querySelector(
+    '.hargx-mobile-menu__close'
+  );
 
-      const submenu = toggle.nextElementSibling;
+  const mobileOverlay = header.querySelector(
+    '.hargx-mobile-menu__overlay'
+  );
 
-      if (!submenu) return;
+  if (mobileToggle && mobileMenu) {
 
-      const isOpen = toggle.classList.contains('is-open');
+    const openMenu = function () {
 
-      toggle.classList.toggle('is-open', !isOpen);
-      toggle.setAttribute('aria-expanded', String(!isOpen));
+      mobileMenu.classList.add('is-open');
 
-      submenu.classList.toggle('is-open', !isOpen);
+      mobileMenu.setAttribute(
+        'aria-hidden',
+        'false'
+      );
+
+      mobileToggle.setAttribute(
+        'aria-expanded',
+        'true'
+      );
+
+      document.documentElement.style.overflow = 'hidden';
+
+    };
+
+    const closeMenu = function () {
+
+      mobileMenu.classList.remove('is-open');
+
+      mobileMenu.setAttribute(
+        'aria-hidden',
+        'true'
+      );
+
+      mobileToggle.setAttribute(
+        'aria-expanded',
+        'false'
+      );
+
+      document.documentElement.style.overflow = '';
+
+    };
+
+    mobileToggle.addEventListener(
+      'click',
+      openMenu
+    );
+
+    if (mobileClose) {
+
+      mobileClose.addEventListener(
+        'click',
+        closeMenu
+      );
+
+    }
+
+    if (mobileOverlay) {
+
+      mobileOverlay.addEventListener(
+        'click',
+        closeMenu
+      );
+
+    }
+
+    const submenuToggles = header.querySelectorAll(
+      '.hargx-mobile-menu__toggle-submenu'
+    );
+
+    submenuToggles.forEach(function (toggle) {
+
+      toggle.addEventListener(
+        'click',
+        function () {
+
+          const submenu =
+            toggle.nextElementSibling;
+
+          if (!submenu) return;
+
+          const isOpen =
+            toggle.classList.contains('is-open');
+
+          toggle.classList.toggle(
+            'is-open',
+            !isOpen
+          );
+
+          toggle.setAttribute(
+            'aria-expanded',
+            String(!isOpen)
+          );
+
+          submenu.classList.toggle(
+            'is-open',
+            !isOpen
+          );
+
+        }
+      );
+
     });
 
-  });
+    document.addEventListener(
+      'keydown',
+      function (event) {
+
+        if (event.key === 'Escape') {
+
+          closeMenu();
+
+        }
+
+      }
+    );
+
+  }
+
+  /* ========================================
+     ACCOUNT DROPDOWN
+     ======================================== */
+
+  const account = header.querySelector(
+    '.hargx-header__account'
+  );
+
+  const accountButton = header.querySelector(
+    '.hargx-header__account-button'
+  );
+
+  if (account && accountButton) {
+
+    accountButton.addEventListener(
+      'click',
+      function (event) {
+
+        event.preventDefault();
+
+        const isOpen =
+          account.classList.contains('is-open');
+
+        account.classList.toggle(
+          'is-open',
+          !isOpen
+        );
+
+        accountButton.setAttribute(
+          'aria-expanded',
+          String(!isOpen)
+        );
+
+      }
+    );
+
+    document.addEventListener(
+      'click',
+      function (event) {
+
+        if (!account.contains(event.target)) {
+
+          account.classList.remove(
+            'is-open'
+          );
+
+          accountButton.setAttribute(
+            'aria-expanded',
+            'false'
+          );
+
+        }
+
+      }
+    );
+
+    document.addEventListener(
+      'keydown',
+      function (event) {
+
+        if (event.key === 'Escape') {
+
+          account.classList.remove(
+            'is-open'
+          );
+
+          accountButton.setAttribute(
+            'aria-expanded',
+            'false'
+          );
+
+        }
+
+      }
+    );
+
+  }
 
 })();
 
