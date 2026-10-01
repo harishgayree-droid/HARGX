@@ -10,7 +10,7 @@
 {
   "sections": {
     "main": {
-      "type": "hargx-collection-product-grid",
+      "type": "collection-product-grid",
       "settings": {}
     },
     "hargx_collection_hero_89wNPx": {
