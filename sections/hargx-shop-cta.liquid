@@ -1,0 +1,791 @@
+{% comment %}
+  HARGX Shop CTA
+  Conversion-focused image + content CTA section
+{% endcomment %}
+
+<section
+  id="HargxShopCta-{{ section.id }}"
+  class="hargx-shop-cta hargx-shop-cta--{{ section.settings.image_position }} hargx-shop-cta--{{ section.settings.content_style }}"
+  style="
+    --hargx-cta-bg: {{ section.settings.background_color }};
+    --hargx-cta-text: {{ section.settings.text_color }};
+    --hargx-cta-accent: {{ section.settings.accent_color }};
+    --hargx-cta-card: {{ section.settings.card_background }};
+    --hargx-cta-radius: {{ section.settings.card_radius }}px;
+    --hargx-cta-gap: {{ section.settings.column_gap }}px;
+    --hargx-cta-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-cta-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="hargx-shop-cta__container page-width">
+
+    <div class="hargx-shop-cta__grid">
+
+      <!-- Image -->
+
+      <div class="hargx-shop-cta__media">
+
+        {%- if section.settings.image != blank -%}
+
+          <div class="hargx-shop-cta__image-wrap">
+            {{
+              section.settings.image
+              | image_url: width: 1800
+              | image_tag:
+                loading: 'lazy',
+                widths: '550, 750, 1000, 1400, 1800',
+                sizes: '(max-width: 749px) 100vw, 50vw',
+                class: 'hargx-shop-cta__image',
+                alt: section.settings.image_alt
+            }}
+          </div>
+
+        {%- else -%}
+
+          <div class="hargx-shop-cta__placeholder">
+            {{ 'lifestyle-1' | placeholder_svg_tag }}
+          </div>
+
+        {%- endif -%}
+
+      </div>
+
+      <!-- Content -->
+
+      <div class="hargx-shop-cta__content">
+
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="hargx-shop-cta__eyebrow">
+            {{ section.settings.eyebrow }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="hargx-shop-cta__heading">
+            {{ section.settings.heading }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.description != blank -%}
+          <div class="hargx-shop-cta__description rte">
+            {{ section.settings.description }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_features -%}
+
+          <div class="hargx-shop-cta__features">
+
+            {%- for block in section.blocks -%}
+
+              <div
+                class="hargx-shop-cta__feature"
+                {{ block.shopify_attributes }}
+              >
+
+                <div class="hargx-shop-cta__feature-icon">
+
+                  {%- case block.settings.icon -%}
+
+                    {%- when 'check' -%}
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M5 12.5l4 4L19 7"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+
+                    {%- when 'truck' -%}
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M3 6h11v10H3zM14 10h4l3 3v3h-7z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linejoin="round"
+                        />
+                        <circle
+                          cx="7"
+                          cy="18"
+                          r="2"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                        />
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="2"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                        />
+                      </svg>
+
+                    {%- when 'shield' -%}
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M12 3l7 3v5c0 4.5-2.8 8.3-7 10-4.2-1.7-7-5.5-7-10V6l7-3z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M8.5 12l2.2 2.2 4.8-5"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+
+                    {%- when 'heart' -%}
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M20.8 8.7c0 5.1-8.8 10-8.8 10s-8.8-4.9-8.8-10A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.6z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+
+                    {%- when 'star' -%}
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M12 3.5l2.6 5.3 5.9.9-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.9L12 3.5z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+
+                    {%- else -%}
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          d="M5 12.5l4 4L19 7"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+
+                  {%- endcase -%}
+
+                </div>
+
+                <div class="hargx-shop-cta__feature-content">
+
+                  {%- if block.settings.title != blank -%}
+                    <div class="hargx-shop-cta__feature-title">
+                      {{ block.settings.title }}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if block.settings.text != blank -%}
+                    <div class="hargx-shop-cta__feature-text">
+                      {{ block.settings.text }}
+                    </div>
+                  {%- endif -%}
+
+                </div>
+
+              </div>
+
+            {%- endfor -%}
+
+          </div>
+
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank -%}
+
+          <div class="hargx-shop-cta__button-wrap">
+
+            <a
+              href="{{ section.settings.button_link | default: routes.all_products_collection_url }}"
+              class="hargx-shop-cta__button"
+            >
+              <span>{{ section.settings.button_label }}</span>
+
+              <svg
+                class="hargx-shop-cta__button-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M5 12h13M13 6l6 6-6 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+          </div>
+
+        {%- endif -%}
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<style>
+  #HargxShopCta-{{ section.id }} {
+    background: var(--hargx-cta-bg);
+    color: var(--hargx-cta-text);
+    padding-top: var(--hargx-cta-padding-top);
+    padding-bottom: var(--hargx-cta-padding-bottom);
+    overflow: hidden;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__container {
+    width: 100%;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--hargx-cta-gap);
+  }
+
+  /* Media */
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__media {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: var(--hargx-cta-radius);
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__image-wrap {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: #eeeeee;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__media:hover
+    .hargx-shop-cta__image {
+    transform: scale(1.04);
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #eeeeee;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__placeholder svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Content */
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__content {
+    max-width: 590px;
+    padding: 20px 0;
+  }
+
+  #HargxShopCta-{{ section.id }}.hargx-shop-cta--right
+    .hargx-shop-cta__grid {
+    direction: rtl;
+  }
+
+  #HargxShopCta-{{ section.id }}.hargx-shop-cta--right
+    .hargx-shop-cta__content {
+    direction: ltr;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__eyebrow {
+    margin-bottom: 13px;
+    color: var(--hargx-cta-accent);
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__heading {
+    max-width: 580px;
+    margin: 0;
+    color: var(--hargx-cta-text);
+    font-size: clamp(34px, 4.5vw, 58px);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__description {
+    max-width: 530px;
+    margin-top: 20px;
+    color: var(--hargx-cta-text);
+    opacity: 0.7;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__description p {
+    margin: 0;
+  }
+
+  /* Features */
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__features {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 22px;
+    margin-top: 30px;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border-radius: 50%;
+    background: rgba(254, 116, 66, 0.1);
+    color: var(--hargx-cta-accent);
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__feature-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__feature-content {
+    min-width: 0;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__feature-title {
+    color: var(--hargx-cta-text);
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 700;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__feature-text {
+    margin-top: 3px;
+    color: var(--hargx-cta-text);
+    opacity: 0.58;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* Button */
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__button-wrap {
+    margin-top: 34px;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    min-height: 54px;
+    padding: 0 25px;
+    border: 1px solid var(--hargx-cta-accent);
+    border-radius: 999px;
+    background: var(--hargx-cta-accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 700;
+    transition:
+      transform 0.3s ease,
+      background 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__button:hover {
+    transform: translateY(-3px);
+    background: #000000;
+    border-color: #000000;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__button-icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+  }
+
+  #HargxShopCta-{{ section.id }} .hargx-shop-cta__button:hover
+    .hargx-shop-cta__button-icon {
+    transform: translateX(4px);
+  }
+
+  /* Card style */
+
+  #HargxShopCta-{{ section.id }}.hargx-shop-cta--card
+    .hargx-shop-cta__grid {
+    padding: 50px;
+    border-radius: 28px;
+    background: var(--hargx-cta-card);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.07);
+  }
+
+  /* Mobile */
+
+  @media screen and (max-width: 989px) {
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__grid {
+      gap: 38px;
+    }
+
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__heading {
+      font-size: 42px;
+    }
+
+    #HargxShopCta-{{ section.id }}.hargx-shop-cta--card
+      .hargx-shop-cta__grid {
+      padding: 30px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #HargxShopCta-{{ section.id }} {
+      padding-top: calc(var(--hargx-cta-padding-top) * 0.75);
+      padding-bottom: calc(var(--hargx-cta-padding-bottom) * 0.75);
+    }
+
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    #HargxShopCta-{{ section.id }}.hargx-shop-cta--right
+      .hargx-shop-cta__grid {
+      direction: ltr;
+    }
+
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__content {
+      max-width: none;
+      padding: 0;
+    }
+
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__heading {
+      font-size: 34px;
+    }
+
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__description {
+      margin-top: 16px;
+      font-size: 15px;
+    }
+
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__features {
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-top: 24px;
+    }
+
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__button-wrap {
+      margin-top: 28px;
+    }
+
+    #HargxShopCta-{{ section.id }} .hargx-shop-cta__button {
+      width: 100%;
+    }
+
+    #HargxShopCta-{{ section.id }}.hargx-shop-cta--card
+      .hargx-shop-cta__grid {
+      padding: 22px;
+      border-radius: 20px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "HARGX Shop CTA",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Find your next favorite"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designed to fit your everyday."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Discover thoughtfully designed products made to bring more style, function and personality into your everyday.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop all products"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "HARGX collection"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show feature list",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "content_style",
+      "label": "Content style",
+      "options": [
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "card",
+          "label": "Card"
+        }
+      ],
+      "default": "standard"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Image radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#FE7442"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 88
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "check",
+              "label": "Check"
+            },
+            {
+              "value": "truck",
+              "label": "Shipping"
+            },
+            {
+              "value": "shield",
+              "label": "Shield"
+            },
+            {
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "value": "star",
+              "label": "Star"
+            }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Thoughtfully designed"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Description",
+          "default": "Made with quality and purpose."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Shop CTA",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "check",
+            "title": "Thoughtfully designed",
+            "text": "Made with quality and purpose."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "title": "Fast shipping",
+            "text": "Reliable delivery to your door."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shield",
+            "title": "Shop with confidence",
+            "text": "A seamless shopping experience."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "heart",
+            "title": "Made to be loved",
+            "text": "Products you'll want to keep."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
