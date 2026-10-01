@@ -4,11 +4,20 @@
   assign section_id = 'HargxFeaturedCollection-' | append: section.id
   assign collection = section.settings.collection
   assign products_to_show = section.settings.products_to_show
-  assign columns_desktop = section.settings.columns_desktop
-  assign columns_mobile = section.settings.columns_mobile
 
-  if collection != blank
-    assign collection_products = collection.products
+  assign has_desktop_slider = false
+  if section.settings.desktop_layout == 'slider'
+    assign has_desktop_slider = true
+  endif
+
+  assign has_mobile_slider = false
+  if section.settings.mobile_layout == 'slider'
+    assign has_mobile_slider = true
+  endif
+
+  assign has_slider = false
+  if has_desktop_slider or has_mobile_slider
+    assign has_slider = true
   endif
 -%}
 
@@ -16,14 +25,18 @@
   id="{{ section_id }}"
   class="
     hargx-featured-collection
+    hargx-featured-collection--desktop-{{ section.settings.desktop_layout }}
+    hargx-featured-collection--mobile-{{ section.settings.mobile_layout }}
+    hargx-featured-collection--desktop-columns-{{ section.settings.columns_desktop }}
+    hargx-featured-collection--desktop-slider-columns-{{ section.settings.slider_columns_desktop }}
+    hargx-featured-collection--mobile-columns-{{ section.settings.columns_mobile }}
+    hargx-featured-collection--mobile-slider-columns-{{ section.settings.slider_columns_mobile }}
     hargx-featured-collection--{{ section.settings.card_style }}
-    hargx-featured-collection--columns-{{ columns_desktop }}
-    hargx-featured-collection--mobile-{{ columns_mobile }}
-    {% if section.settings.enable_mobile_slider %}
-      hargx-featured-collection--mobile-slider
-    {% endif %}
   "
   data-section-id="{{ section.id }}"
+  {% if has_slider %}
+    data-hargx-featured-slider-section
+  {% endif %}
   style="
     --hargx-fc-background: {{ section.settings.background_color }};
     --hargx-fc-text: {{ section.settings.text_color }};
@@ -101,13 +114,9 @@
 
       <div class="hargx-featured-collection__empty">
         <div class="hargx-featured-collection__empty-inner">
-          <span class="hargx-featured-collection__empty-icon">
-            +
-          </span>
+          <span class="hargx-featured-collection__empty-icon">+</span>
 
-          <h3>
-            Select a collection
-          </h3>
+          <h3>Select a collection</h3>
 
           <p>
             Choose a collection from the Theme Editor to display products here.
@@ -119,9 +128,7 @@
 
       <div class="hargx-featured-collection__empty">
         <div class="hargx-featured-collection__empty-inner">
-          <h3>
-            No products found
-          </h3>
+          <h3>No products found</h3>
 
           <p>
             Add products to the selected collection to display them here.
@@ -132,10 +139,13 @@
     {%- else -%}
 
       <div
-        class="hargx-featured-collection__products"
-        {% if section.settings.enable_mobile_slider %}
-          data-hargx-product-slider
-        {% endif %}
+        class="
+          hargx-featured-collection__products
+          {% if has_slider %}
+            hargx-featured-collection__products--slider
+          {% endif %}
+        "
+        data-hargx-product-slider
       >
         {%- for product in collection.products limit: products_to_show -%}
 
@@ -150,7 +160,6 @@
                 class="hargx-product-card__media-link"
                 aria-label="{{ product.title | escape }}"
               >
-
                 {%- if product.featured_media != blank -%}
 
                   <div class="hargx-product-card__image-wrap">
@@ -194,29 +203,30 @@
                 {%- endif -%}
 
                 {%- if section.settings.show_badges -%}
-
                   <div class="hargx-product-card__badges">
 
                     {%- if product.available == false -%}
+
                       <span class="hargx-product-card__badge">
                         {{ 'products.product.sold_out' | t }}
                       </span>
 
                     {%- elsif product.compare_at_price > product.price -%}
+
                       <span class="hargx-product-card__badge hargx-product-card__badge--sale">
                         {{ section.settings.sale_badge_text }}
                       </span>
 
                     {%- elsif product.tags contains 'new' -%}
+
                       <span class="hargx-product-card__badge">
                         {{ section.settings.new_badge_text }}
                       </span>
+
                     {%- endif -%}
 
                   </div>
-
                 {%- endif -%}
-
               </a>
 
               {%- if section.settings.show_quick_add
@@ -299,7 +309,9 @@
 
             <div class="hargx-product-card__content">
 
-              {%- if section.settings.show_vendor and product.vendor != blank -%}
+              {%- if section.settings.show_vendor
+                and product.vendor != blank
+              -%}
                 <p class="hargx-product-card__vendor">
                   {{ product.vendor }}
                 </p>
@@ -313,7 +325,10 @@
 
               {%- if section.settings.show_rating -%}
                 <div class="hargx-product-card__rating">
-                  <span class="hargx-product-card__stars" aria-hidden="true">
+                  <span
+                    class="hargx-product-card__stars"
+                    aria-hidden="true"
+                  >
                     ★★★★★
                   </span>
 
@@ -327,6 +342,7 @@
                 <div class="hargx-product-card__price">
 
                   {%- if product.compare_at_price > product.price -%}
+
                     <span class="hargx-product-card__price--sale">
                       {{ product.price | money }}
                     </span>
@@ -352,11 +368,11 @@
         {%- endfor -%}
       </div>
 
-      {%- if section.settings.enable_mobile_slider
-        and collection.products_count > 1
-      -%}
-        <div class="hargx-featured-collection__mobile-controls">
-
+      {%- if has_desktop_slider -%}
+        <div
+          class="hargx-featured-collection__controls hargx-featured-collection__controls--desktop"
+          data-hargx-slider-controls="desktop"
+        >
           <button
             type="button"
             class="hargx-featured-collection__slider-button"
@@ -380,10 +396,7 @@
             </svg>
           </button>
 
-          <div
-            class="hargx-featured-collection__slider-progress"
-            aria-hidden="true"
-          >
+          <div class="hargx-featured-collection__slider-progress">
             <span data-hargx-slider-progress></span>
           </div>
 
@@ -409,7 +422,63 @@
               />
             </svg>
           </button>
+        </div>
+      {%- endif -%}
 
+      {%- if has_mobile_slider -%}
+        <div
+          class="hargx-featured-collection__controls hargx-featured-collection__controls--mobile"
+          data-hargx-slider-controls="mobile"
+        >
+          <button
+            type="button"
+            class="hargx-featured-collection__slider-button"
+            data-hargx-slider-prev
+            aria-label="Previous products"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M11 4L7 9L11 14"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+
+          <div class="hargx-featured-collection__slider-progress">
+            <span data-hargx-slider-progress></span>
+          </div>
+
+          <button
+            type="button"
+            class="hargx-featured-collection__slider-button"
+            data-hargx-slider-next
+            aria-label="Next products"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M7 4L11 9L7 14"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
         </div>
       {%- endif -%}
 
@@ -418,7 +487,7 @@
   </div>
 </section>
 
-{%- if section.settings.enable_mobile_slider -%}
+{%- if has_slider -%}
   <script>
     if (!window.HargxFeaturedCollectionSliderLoaded) {
       window.HargxFeaturedCollectionSliderLoaded = true;
@@ -515,12 +584,28 @@
 
     {
       "type": "header",
-      "content": "Product grid"
+      "content": "Desktop layout"
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        }
+      ],
+      "default": "grid"
     },
     {
       "type": "select",
       "id": "columns_desktop",
-      "label": "Desktop columns",
+      "label": "Grid columns",
       "options": [
         {
           "value": "2",
@@ -543,8 +628,53 @@
     },
     {
       "type": "select",
+      "id": "slider_columns_desktop",
+      "label": "Slider cards per view",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "default": "4"
+    },
+
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        }
+      ],
+      "default": "slider"
+    },
+    {
+      "type": "select",
       "id": "columns_mobile",
-      "label": "Mobile columns",
+      "label": "Grid columns",
       "options": [
         {
           "value": "1",
@@ -558,14 +688,25 @@
       "default": "2"
     },
     {
-      "type": "range",
-      "id": "column_gap",
-      "label": "Product gap",
-      "min": 8,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "default": 20
+      "type": "select",
+      "id": "slider_columns_mobile",
+      "label": "Slider cards per view",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+
+    {
+      "type": "header",
+      "content": "Product card"
     },
     {
       "type": "select",
@@ -585,6 +726,16 @@
     },
     {
       "type": "range",
+      "id": "column_gap",
+      "label": "Product gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
       "id": "card_radius",
       "label": "Image corner radius",
       "min": 0,
@@ -592,6 +743,12 @@
       "step": 2,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_image",
+      "label": "Show second image on hover",
+      "default": true
     },
 
     {
@@ -621,17 +778,6 @@
       "id": "rating_placeholder",
       "label": "Rating text",
       "default": "4.9"
-    },
-
-    {
-      "type": "header",
-      "content": "Product image"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_hover_image",
-      "label": "Show second image on hover",
-      "default": true
     },
 
     {
@@ -678,17 +824,6 @@
       "id": "choose_options_text",
       "label": "Choose options text",
       "default": "Choose options"
-    },
-
-    {
-      "type": "header",
-      "content": "Mobile"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_mobile_slider",
-      "label": "Enable mobile slider",
-      "default": true
     },
 
     {

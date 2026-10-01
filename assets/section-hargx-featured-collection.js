@@ -1,8 +1,22 @@
 (function () {
   'use strict';
 
-  function initFeaturedCollection(section) {
-    if (!section || section.dataset.hargxInitialized === 'true') {
+  const initializedSections = new WeakSet();
+
+  function getVisibleMode(section) {
+    return window.matchMedia('(min-width: 750px)').matches
+      ? 'desktop'
+      : 'mobile';
+  }
+
+  function isSliderMode(section, mode) {
+    return section.classList.contains(
+      `hargx-featured-collection--${mode}-slider`
+    );
+  }
+
+  function initSlider(section) {
+    if (!section || initializedSections.has(section)) {
       return;
     }
 
@@ -12,91 +26,163 @@
       return;
     }
 
-    section.dataset.hargxInitialized = 'true';
+    initializedSections.add(section);
 
-    const prevButton = section.querySelector('[data-hargx-slider-prev]');
-    const nextButton = section.querySelector('[data-hargx-slider-next]');
-    const progress = section.querySelector('[data-hargx-slider-progress]');
+    const getControls = () => {
+      const mode = getVisibleMode(section);
 
-    const getScrollAmount = () => {
+      if (!isSliderMode(section, mode)) {
+        return null;
+      }
+
+      return section.querySelector(
+        `[data-hargx-slider-controls="${mode}"]`
+      );
+    };
+
+    const getCardWidth = () => {
       const card = slider.querySelector('[data-product-card]');
 
       if (!card) {
         return slider.clientWidth;
       }
 
-      return card.getBoundingClientRect().width + 14;
+      const styles = window.getComputedStyle(slider);
+      const gap = parseFloat(styles.columnGap || styles.gap || 0);
+
+      return card.getBoundingClientRect().width + gap;
     };
 
     const updateControls = () => {
-      if (!prevButton && !nextButton && !progress) {
+      const controls = getControls();
+
+      if (!controls) {
         return;
       }
 
-      const maxScroll = slider.scrollWidth - slider.clientWidth;
+      const previousButton = controls.querySelector(
+        '[data-hargx-slider-prev]'
+      );
+
+      const nextButton = controls.querySelector(
+        '[data-hargx-slider-next]'
+      );
+
+      const progress = controls.querySelector(
+        '[data-hargx-slider-progress]'
+      );
+
+      const maxScroll = Math.max(
+        slider.scrollWidth - slider.clientWidth,
+        0
+      );
+
       const currentScroll = slider.scrollLeft;
 
-      if (prevButton) {
-        prevButton.disabled = currentScroll <= 2;
+      if (previousButton) {
+        previousButton.disabled = currentScroll <= 2;
       }
 
       if (nextButton) {
         nextButton.disabled = currentScroll >= maxScroll - 2;
       }
 
-      if (progress && maxScroll > 0) {
-        const visibleRatio = slider.clientWidth / slider.scrollWidth;
-        const positionRatio = currentScroll / maxScroll;
+      if (progress) {
+        if (maxScroll <= 0) {
+          progress.style.width = '100%';
+          progress.style.transform = 'translateX(0)';
+          return;
+        }
 
-        const width = Math.max(visibleRatio * 100, 20);
-        const left = positionRatio * (100 - width);
+        const visibleRatio =
+          slider.clientWidth / slider.scrollWidth;
+
+        const width = Math.max(
+          visibleRatio * 100,
+          15
+        );
+
+        const positionRatio =
+          currentScroll / maxScroll;
+
+        const availableMovement = 100 - width;
+        const left = positionRatio * availableMovement;
 
         progress.style.width = `${width}%`;
-        progress.style.transform = `translateX(${left}%)`;
+        progress.style.transform =
+          `translateX(${left}%)`;
       }
     };
 
-    if (prevButton) {
-      prevButton.addEventListener('click', () => {
-        slider.scrollBy({
-          left: -getScrollAmount(),
-          behavior: 'smooth'
-        });
-      });
-    }
+    section.addEventListener('click', function (event) {
+      const previousButton = event.target.closest(
+        '[data-hargx-slider-prev]'
+      );
 
-    if (nextButton) {
-      nextButton.addEventListener('click', () => {
+      const nextButton = event.target.closest(
+        '[data-hargx-slider-next]'
+      );
+
+      if (!previousButton && !nextButton) {
+        return;
+      }
+
+      const controls = getControls();
+
+      if (!controls) {
+        return;
+      }
+
+      if (previousButton) {
         slider.scrollBy({
-          left: getScrollAmount(),
+          left: -getCardWidth(),
           behavior: 'smooth'
         });
-      });
-    }
+      }
+
+      if (nextButton) {
+        slider.scrollBy({
+          left: getCardWidth(),
+          behavior: 'smooth'
+        });
+      }
+    });
 
     let ticking = false;
 
     slider.addEventListener(
       'scroll',
-      () => {
+      function () {
         if (ticking) {
           return;
         }
 
-        window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(function () {
           updateControls();
           ticking = false;
         });
 
         ticking = true;
       },
-      { passive: true }
+      {
+        passive: true
+      }
     );
+
+    let resizeTimeout;
 
     window.addEventListener(
       'resize',
-      updateControls,
-      { passive: true }
+      function () {
+        clearTimeout(resizeTimeout);
+
+        resizeTimeout = setTimeout(function () {
+          updateControls();
+        }, 100);
+      },
+      {
+        passive: true
+      }
     );
 
     updateControls();
@@ -104,23 +190,33 @@
 
   function initAll() {
     document
-      .querySelectorAll('.hargx-featured-collection')
-      .forEach(initFeaturedCollection);
+      .querySelectorAll('[data-hargx-featured-slider-section]')
+      .forEach(initSlider);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAll);
+    document.addEventListener(
+      'DOMContentLoaded',
+      initAll,
+      {
+        once: true
+      }
+    );
   } else {
     initAll();
   }
 
-  document.addEventListener('shopify:section:load', (event) => {
-    const section = event.target.querySelector(
-      '.hargx-featured-collection'
-    );
+  document.addEventListener(
+    'shopify:section:load',
+    function (event) {
+      const section =
+        event.target.querySelector(
+          '[data-hargx-featured-slider-section]'
+        );
 
-    if (section) {
-      initFeaturedCollection(section);
+      if (section) {
+        initSlider(section);
+      }
     }
-  });
+  );
 })();
