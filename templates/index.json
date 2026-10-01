@@ -468,6 +468,7 @@
         "description": "<p>Discover thoughtfully designed products made to bring more style, function and personality into your everyday.</p>",
         "button_label": "Shop all products",
         "button_link": "",
+        "image": "shopify://shop_images/cow-milk-2-litre.png",
         "image_alt": "HARGX collection",
         "image_position": "left",
         "show_features": true,
