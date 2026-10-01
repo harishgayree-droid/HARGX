@@ -12,9 +12,47 @@
     "main": {
       "type": "hello-world",
       "settings": {}
+    },
+    "hargx_hero_zQPrgP": {
+      "type": "hargx-hero",
+      "name": "HARGX Hero Banner",
+      "settings": {
+        "image_alt": "HARGX hero banner",
+        "image_loading": "eager",
+        "image_position": "center center",
+        "height": "large",
+        "eyebrow": "New collection",
+        "heading": "Designed for what comes next",
+        "description": "<p>Thoughtfully designed products made to fit beautifully into your everyday.</p>",
+        "content_width": 620,
+        "content_position": "middle-left",
+        "text_alignment": "left",
+        "heading_size": 72,
+        "heading_size_mobile": 42,
+        "enable_animation": true,
+        "button_label": "Shop now",
+        "button_link": "",
+        "secondary_button_label": "Explore",
+        "secondary_button_link": "",
+        "overlay_enabled": true,
+        "overlay_opacity": 25,
+        "text_color": "#FFFFFF",
+        "button_background": "#FE7442",
+        "button_text_color": "#FFFFFF",
+        "button_border_color": "#FFFFFF",
+        "background_color": "#FAF8F4",
+        "container_width": "page-width",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 24,
+        "show_scroll_indicator": false,
+        "scroll_text": "Scroll"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "hargx_hero_zQPrgP"
   ]
 }
