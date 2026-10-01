@@ -50,7 +50,7 @@
       "type": "hargx-featured-collection",
       "name": "HARGX Featured Collection",
       "settings": {
-        "collection": "all-dairy-products",
+        "collection": "buffalo-milk",
         "products_to_show": 8,
         "show_header": true,
         "eyebrow": "Featured",
