@@ -89,19 +89,10 @@
         "padding_top_mobile": 48,
         "padding_bottom_mobile": 48
       }
-    },
-    "hargx_split_feature_YfnxFY": {
-      "type": "hargx-split-feature",
-      "name": "HARGX Split Feature",
-      "settings": {
-        "heading": "Made for the way you live",
-        "text": "Thoughtfully designed products for everyday life."
-      }
     }
   },
   "order": [
     "hargx_hero_zQPrgP",
-    "hargx_featured_collection_3pigqz",
-    "hargx_split_feature_YfnxFY"
+    "hargx_featured_collection_3pigqz"
   ]
 }
