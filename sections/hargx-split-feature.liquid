@@ -3,26 +3,30 @@
 {%- liquid
   assign section_id = 'HargxSplitFeature-' | append: section.id
 
-  assign image_side = section.settings.image_side
-  assign mobile_order = section.settings.mobile_order
+  assign image_alt = section.settings.image.alt
+  if image_alt == blank
+    assign image_alt = section.settings.heading | strip_html
+  endif
 
-  assign image_position = section.settings.image_position
-  assign content_alignment = section.settings.content_alignment
+  assign image_width_class = section.settings.image_width
+  assign image_ratio_class = section.settings.image_ratio
+  assign image_position_class = section.settings.image_position
 -%}
 
 <section
   id="{{ section_id }}"
   class="
     hargx-split-feature
-    hargx-split-feature--image-{{ image_side }}
-    hargx-split-feature--mobile-{{ mobile_order }}
-    hargx-split-feature--content-{{ content_alignment }}
-    hargx-split-feature--image-width-{{ section.settings.image_width }}
+    hargx-split-feature--image-{{ section.settings.image_side }}
+    hargx-split-feature--mobile-{{ section.settings.mobile_order }}
+    hargx-split-feature--content-{{ section.settings.content_alignment }}
+    hargx-split-feature--width-{{ image_width_class }}
   "
   style="
     --hargx-split-bg: {{ section.settings.background_color }};
     --hargx-split-text: {{ section.settings.text_color }};
     --hargx-split-accent: {{ section.settings.accent_color }};
+    --hargx-split-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
     --hargx-split-radius: {{ section.settings.image_radius }}px;
     --hargx-split-padding-top: {{ section.settings.padding_top }}px;
     --hargx-split-padding-bottom: {{ section.settings.padding_bottom }}px;
@@ -34,7 +38,9 @@
 
     <div class="hargx-split-feature__grid">
 
-      <!-- IMAGE -->
+      {%- comment -%}
+        IMAGE
+      {%- endcomment -%}
 
       <div class="hargx-split-feature__media">
 
@@ -43,20 +49,20 @@
           <div
             class="
               hargx-split-feature__image-wrap
-              hargx-split-feature__image-wrap--{{ section.settings.image_ratio }}
+              hargx-split-feature__image-wrap--{{ image_ratio_class }}
+              hargx-split-feature__image-wrap--{{ image_position_class }}
             "
           >
-
             {{
               section.settings.image
-              | image_url: width: 1800
+              | image_url: width: 2000
               | image_tag:
                 class: 'hargx-split-feature__image',
-                widths: '480, 640, 750, 900, 1100, 1400, 1800',
+                widths: '480, 640, 750, 900, 1100, 1400, 1600, 1800, 2000',
                 sizes: '(min-width: 990px) 50vw, 100vw',
                 loading: 'lazy',
                 decoding: 'async',
-                alt: section.settings.image.alt | default: section.settings.heading
+                alt: image_alt
             }}
 
             {%- if section.settings.show_overlay -%}
@@ -71,29 +77,30 @@
                 {{ section.settings.badge }}
               </div>
             {%- endif -%}
-
           </div>
 
         {%- else -%}
 
           <div class="hargx-split-feature__placeholder">
-            {{ 'lifestyle-1' | placeholder_svg_tag }}
+            {{ 'lifestyle-2' | placeholder_svg_tag }}
           </div>
 
         {%- endif -%}
 
       </div>
 
-      <!-- CONTENT -->
+      {%- comment -%}
+        CONTENT
+      {%- endcomment -%}
 
       <div class="hargx-split-feature__content">
 
         <div class="hargx-split-feature__content-inner">
 
           {%- if section.settings.eyebrow != blank -%}
-            <p class="hargx-split-feature__eyebrow">
+            <div class="hargx-split-feature__eyebrow">
               {{ section.settings.eyebrow }}
-            </p>
+            </div>
           {%- endif -%}
 
           {%- if section.settings.heading != blank -%}
@@ -108,71 +115,71 @@
             </div>
           {%- endif -%}
 
-          {%- if section.settings.show_features -%}
-
+          {%- if section.settings.show_features and section.blocks.size > 0 -%}
             <div class="hargx-split-feature__features">
 
               {%- for block in section.blocks -%}
 
-                {%- if block.type == 'feature' -%}
+                <div
+                  class="hargx-split-feature__feature"
+                  {{ block.shopify_attributes }}
+                >
+                  <div class="hargx-split-feature__feature-icon">
 
-                  <div
-                    class="hargx-split-feature__feature"
-                    {{ block.shopify_attributes }}
-                  >
+                    {%- if block.settings.icon != blank -%}
 
-                    <div class="hargx-split-feature__feature-icon">
-                      {%- if block.settings.icon != blank -%}
-                        {{
-                          block.settings.icon
-                          | image_url: width: 80
-                          | image_tag:
-                            loading: 'lazy',
-                            decoding: 'async',
-                            alt: ''
-                        }}
-                      {%- else -%}
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M10 2L12.2 7.1L17.8 7.7L13.6 11.5L14.8 17L10 14.1L5.2 17L6.4 11.5L2.2 7.7L7.8 7.1L10 2Z"
-                            stroke="currentColor"
-                            stroke-width="1.2"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      {%- endif -%}
-                    </div>
+                      {{
+                        block.settings.icon
+                        | image_url: width: 80
+                        | image_tag:
+                          class: 'hargx-split-feature__feature-icon-image',
+                          loading: 'lazy',
+                          decoding: 'async',
+                          alt: ''
+                      }}
 
-                    <div class="hargx-split-feature__feature-content">
+                    {%- else -%}
 
-                      {%- if block.settings.heading != blank -%}
-                        <h3>
-                          {{ block.settings.heading }}
-                        </h3>
-                      {%- endif -%}
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M12 3L14.8 8.7L21 9.6L16.5 14L17.6 20.2L12 17.3L6.4 20.2L7.5 14L3 9.6L9.2 8.7L12 3Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
 
-                      {%- if block.settings.text != blank -%}
-                        <p>
-                          {{ block.settings.text }}
-                        </p>
-                      {%- endif -%}
-
-                    </div>
+                    {%- endif -%}
 
                   </div>
 
-                {%- endif -%}
+                  <div class="hargx-split-feature__feature-content">
+
+                    {%- if block.settings.heading != blank -%}
+                      <h3>
+                        {{ block.settings.heading }}
+                      </h3>
+                    {%- endif -%}
+
+                    {%- if block.settings.text != blank -%}
+                      <p>
+                        {{ block.settings.text }}
+                      </p>
+                    {%- endif -%}
+
+                  </div>
+                </div>
 
               {%- endfor -%}
 
             </div>
-
           {%- endif -%}
 
           {%- if section.settings.primary_button_label != blank
@@ -184,6 +191,7 @@
               {%- if section.settings.primary_button_label != blank
                 and section.settings.primary_button_link != blank
               -%}
+
                 <a
                   href="{{ section.settings.primary_button_link }}"
                   class="hargx-split-feature__button hargx-split-feature__button--primary"
@@ -208,17 +216,20 @@
                     />
                   </svg>
                 </a>
+
               {%- endif -%}
 
               {%- if section.settings.secondary_button_label != blank
                 and section.settings.secondary_button_link != blank
               -%}
+
                 <a
                   href="{{ section.settings.secondary_button_link }}"
                   class="hargx-split-feature__button hargx-split-feature__button--secondary"
                 >
                   {{ section.settings.secondary_button_label }}
                 </a>
+
               {%- endif -%}
 
             </div>
@@ -268,7 +279,7 @@
     {
       "type": "select",
       "id": "mobile_order",
-      "label": "Mobile order",
+      "label": "Mobile content order",
       "options": [
         {
           "value": "image-first",
@@ -370,6 +381,16 @@
       "default": false
     },
     {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "%",
+      "default": 15
+    },
+    {
       "type": "text",
       "id": "badge",
       "label": "Image badge",
@@ -437,7 +458,7 @@
     {
       "type": "text",
       "id": "primary_button_label",
-      "label": "Primary button",
+      "label": "Primary button label",
       "default": "Explore collection"
     },
     {
@@ -448,13 +469,13 @@
     {
       "type": "text",
       "id": "secondary_button_label",
-      "label": "Secondary link",
+      "label": "Secondary button label",
       "default": "Learn more"
     },
     {
       "type": "url",
       "id": "secondary_button_link",
-      "label": "Secondary link"
+      "label": "Secondary button link"
     },
 
     {
@@ -489,7 +510,7 @@
       "id": "padding_top",
       "label": "Desktop top padding",
       "min": 0,
-      "max": 140,
+      "max": 160,
       "step": 4,
       "unit": "px",
       "default": 80
@@ -499,7 +520,7 @@
       "id": "padding_bottom",
       "label": "Desktop bottom padding",
       "min": 0,
-      "max": 140,
+      "max": 160,
       "step": 4,
       "unit": "px",
       "default": 80
@@ -544,7 +565,7 @@
         {
           "type": "textarea",
           "id": "text",
-          "label": "Text",
+          "label": "Description",
           "default": "Made with attention to every detail."
         }
       ]
@@ -555,25 +576,13 @@
       "name": "HARGX Split Feature",
       "blocks": [
         {
-          "type": "feature",
-          "settings": {
-            "heading": "Thoughtfully designed",
-            "text": "Made with attention to every detail."
-          }
+          "type": "feature"
         },
         {
-          "type": "feature",
-          "settings": {
-            "heading": "Built to last",
-            "text": "Quality materials and considered construction."
-          }
+          "type": "feature"
         },
         {
-          "type": "feature",
-          "settings": {
-            "heading": "Made for you",
-            "text": "Simple, useful, and designed around real life."
-          }
+          "type": "feature"
         }
       ]
     }
