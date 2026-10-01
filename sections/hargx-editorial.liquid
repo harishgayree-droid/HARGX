@@ -1,0 +1,783 @@
+{% comment %}
+  HARGX - Editorial Image + Text
+  Premium editorial storytelling section.
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'HargxEditorial-' | append: section.id
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="
+    hargx-editorial
+    hargx-editorial--{{ section.settings.image_position }}
+    hargx-editorial--{{ section.settings.content_alignment }}
+    hargx-editorial--{{ section.settings.image_ratio }}
+  "
+>
+  <div class="hargx-editorial__container page-width">
+
+    <div class="hargx-editorial__grid">
+
+      <!-- Image -->
+
+      <div class="hargx-editorial__media">
+
+        <div class="hargx-editorial__image-wrap">
+
+          {%- if section.settings.image != blank -%}
+
+            {{
+              section.settings.image
+              | image_url: width: 1800
+              | image_tag:
+                loading: 'lazy',
+                widths: '550, 750, 1000, 1300, 1600, 1800',
+                sizes: '(min-width: 990px) 50vw, 100vw',
+                class: 'hargx-editorial__image',
+                alt: section.settings.image.alt | escape
+            }}
+
+          {%- else -%}
+
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'hargx-editorial__image hargx-editorial__placeholder' }}
+
+          {%- endif -%}
+
+          {%- if section.settings.show_image_badge and section.settings.badge_text != blank -%}
+            <div class="hargx-editorial__badge">
+              {{ section.settings.badge_text }}
+            </div>
+          {%- endif -%}
+
+        </div>
+
+      </div>
+
+      <!-- Content -->
+
+      <div class="hargx-editorial__content">
+
+        <div class="hargx-editorial__content-inner">
+
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="hargx-editorial__eyebrow">
+              {{ section.settings.eyebrow }}
+            </p>
+          {%- endif -%}
+
+          {%- if section.settings.heading != blank -%}
+            <h2 class="hargx-editorial__heading">
+              {{ section.settings.heading }}
+            </h2>
+          {%- endif -%}
+
+          {%- if section.settings.description != blank -%}
+            <div class="hargx-editorial__description">
+              {{ section.settings.description }}
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_features -%}
+
+            <div class="hargx-editorial__features">
+
+              {%- for block in section.blocks -%}
+
+                <div
+                  class="hargx-editorial__feature"
+                  {{ block.shopify_attributes }}
+                >
+
+                  <div class="hargx-editorial__feature-number">
+                    {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+                  </div>
+
+                  <div class="hargx-editorial__feature-content">
+
+                    {%- if block.settings.title != blank -%}
+                      <h3 class="hargx-editorial__feature-title">
+                        {{ block.settings.title }}
+                      </h3>
+                    {%- endif -%}
+
+                    {%- if block.settings.text != blank -%}
+                      <div class="hargx-editorial__feature-text">
+                        {{ block.settings.text }}
+                      </div>
+                    {%- endif -%}
+
+                  </div>
+
+                </div>
+
+              {%- endfor -%}
+
+            </div>
+
+          {%- endif -%}
+
+          {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+
+            <div class="hargx-editorial__button-wrap">
+
+              <a
+                href="{{ section.settings.button_link }}"
+                class="
+                  hargx-editorial__button
+                  hargx-editorial__button--{{ section.settings.button_style }}
+                "
+              >
+                <span>{{ section.settings.button_label }}</span>
+
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 9H15M15 9L10 4M15 9L10 14"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+
+              </a>
+
+            </div>
+
+          {%- endif -%}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    --hargx-editorial-bg: {{ section.settings.background_color }};
+    --hargx-editorial-text: {{ section.settings.text_color }};
+    --hargx-editorial-accent: #FE7442;
+    --hargx-editorial-border: rgba(0, 0, 0, 0.11);
+
+    background-color: var(--hargx-editorial-bg);
+    color: var(--hargx-editorial-text);
+  }
+
+  #{{ section_id }} .hargx-editorial__container {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  /* Grid */
+
+  #{{ section_id }} .hargx-editorial__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    align-items: center;
+    gap: {{ section.settings.column_gap }}px;
+  }
+
+  #{{ section_id }}.hargx-editorial--right .hargx-editorial__grid {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  }
+
+  #{{ section_id }}.hargx-editorial--right .hargx-editorial__media {
+    order: 2;
+  }
+
+  #{{ section_id }}.hargx-editorial--right .hargx-editorial__content {
+    order: 1;
+  }
+
+  /* Media */
+
+  #{{ section_id }} .hargx-editorial__media {
+    min-width: 0;
+  }
+
+  #{{ section_id }} .hargx-editorial__image-wrap {
+    position: relative;
+    overflow: hidden;
+    background: #EDE9E3;
+  }
+
+  #{{ section_id }}.hargx-editorial--square .hargx-editorial__image-wrap {
+    aspect-ratio: 1 / 1;
+  }
+
+  #{{ section_id }}.hargx-editorial--portrait .hargx-editorial__image-wrap {
+    aspect-ratio: 4 / 5;
+  }
+
+  #{{ section_id }}.hargx-editorial--landscape .hargx-editorial__image-wrap {
+    aspect-ratio: 4 / 3;
+  }
+
+  #{{ section_id }} .hargx-editorial__image,
+  #{{ section_id }} .hargx-editorial__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #{{ section_id }} .hargx-editorial__image-wrap:hover .hargx-editorial__image {
+    transform: scale(1.035);
+  }
+
+  /* Badge */
+
+  #{{ section_id }} .hargx-editorial__badge {
+    position: absolute;
+    right: 22px;
+    bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 94px;
+    min-height: 94px;
+    padding: 15px;
+    color: #FFFFFF;
+    background: var(--hargx-editorial-accent);
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* Content */
+
+  #{{ section_id }} .hargx-editorial__content {
+    min-width: 0;
+  }
+
+  #{{ section_id }} .hargx-editorial__content-inner {
+    max-width: {{ section.settings.content_width }}px;
+  }
+
+  #{{ section_id }}.hargx-editorial--left .hargx-editorial__content-inner {
+    margin-right: auto;
+  }
+
+  #{{ section_id }}.hargx-editorial--center .hargx-editorial__content-inner {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  #{{ section_id }}.hargx-editorial--right .hargx-editorial__content-inner {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  #{{ section_id }} .hargx-editorial__eyebrow {
+    margin: 0 0 13px;
+    color: var(--hargx-editorial-accent);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  #{{ section_id }} .hargx-editorial__heading {
+    margin: 0;
+    color: var(--hargx-editorial-text);
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+  }
+
+  #{{ section_id }} .hargx-editorial__description {
+    margin-top: 22px;
+    color: var(--hargx-editorial-text);
+    opacity: 0.68;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  #{{ section_id }} .hargx-editorial__description p {
+    margin: 0 0 12px;
+  }
+
+  #{{ section_id }} .hargx-editorial__description p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Features */
+
+  #{{ section_id }} .hargx-editorial__features {
+    margin-top: 34px;
+    border-top: 1px solid var(--hargx-editorial-border);
+  }
+
+  #{{ section_id }} .hargx-editorial__feature {
+    display: flex;
+    gap: 18px;
+    padding: 17px 0;
+    border-bottom: 1px solid var(--hargx-editorial-border);
+  }
+
+  #{{ section_id }} .hargx-editorial__feature-number {
+    flex: 0 0 auto;
+    padding-top: 2px;
+    color: var(--hargx-editorial-accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  #{{ section_id }} .hargx-editorial__feature-content {
+    min-width: 0;
+  }
+
+  #{{ section_id }} .hargx-editorial__feature-title {
+    margin: 0;
+    color: var(--hargx-editorial-text);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  #{{ section_id }} .hargx-editorial__feature-text {
+    margin-top: 4px;
+    color: var(--hargx-editorial-text);
+    opacity: 0.58;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  /* Button */
+
+  #{{ section_id }} .hargx-editorial__button-wrap {
+    margin-top: 32px;
+  }
+
+  #{{ section_id }}.hargx-editorial--center .hargx-editorial__button-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  #{{ section_id }}.hargx-editorial--right .hargx-editorial__button-wrap {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  #{{ section_id }} .hargx-editorial__button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 13px 22px;
+    overflow: hidden;
+    color: #FFFFFF;
+    background: #000000;
+    border: 1px solid #000000;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition:
+      color 0.3s ease,
+      background-color 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  #{{ section_id }} .hargx-editorial__button svg {
+    transition: transform 0.3s ease;
+  }
+
+  #{{ section_id }} .hargx-editorial__button:hover {
+    color: #FFFFFF;
+    background: var(--hargx-editorial-accent);
+    border-color: var(--hargx-editorial-accent);
+  }
+
+  #{{ section_id }} .hargx-editorial__button:hover svg {
+    transform: translateX(4px);
+  }
+
+  #{{ section_id }} .hargx-editorial__button--outline {
+    color: #000000;
+    background: transparent;
+    border-color: #000000;
+  }
+
+  #{{ section_id }} .hargx-editorial__button--outline:hover {
+    color: #FFFFFF;
+    background: #000000;
+    border-color: #000000;
+  }
+
+  @media screen and (max-width: 989px) {
+    #{{ section_id }} .hargx-editorial__grid,
+    #{{ section_id }}.hargx-editorial--right .hargx-editorial__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 42px;
+    }
+
+    #{{ section_id }} .hargx-editorial__content-inner {
+      max-width: 100%;
+    }
+
+    #{{ section_id }} .hargx-editorial__heading {
+      font-size: clamp(30px, 4vw, 42px);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #{{ section_id }} .hargx-editorial__container {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    }
+
+    #{{ section_id }} .hargx-editorial__grid,
+    #{{ section_id }}.hargx-editorial--right .hargx-editorial__grid {
+      display: flex;
+      flex-direction: column;
+      gap: 34px;
+    }
+
+    #{{ section_id }}.hargx-editorial--right .hargx-editorial__media,
+    #{{ section_id }}.hargx-editorial--right .hargx-editorial__content {
+      order: initial;
+    }
+
+    #{{ section_id }} .hargx-editorial__heading {
+      font-size: clamp(30px, 9vw, 40px);
+    }
+
+    #{{ section_id }} .hargx-editorial__description {
+      margin-top: 17px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    #{{ section_id }} .hargx-editorial__features {
+      margin-top: 26px;
+    }
+
+    #{{ section_id }} .hargx-editorial__feature {
+      gap: 13px;
+      padding: 14px 0;
+    }
+
+    #{{ section_id }} .hargx-editorial__badge {
+      right: 14px;
+      bottom: 14px;
+      min-width: 72px;
+      min-height: 72px;
+      padding: 10px;
+      font-size: 8px;
+    }
+
+    #{{ section_id }} .hargx-editorial__button-wrap,
+    #{{ section_id }}.hargx-editorial--center .hargx-editorial__button-wrap,
+    #{{ section_id }}.hargx-editorial--right .hargx-editorial__button-wrap {
+      display: block;
+      margin-top: 26px;
+    }
+
+    #{{ section_id }} .hargx-editorial__button {
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "HARGX Editorial",
+  "tag": "section",
+  "class": "section-hargx-editorial",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image_badge",
+      "label": "Show image badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Designed with purpose"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The HARGX difference"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designed to make every detail feel intentional."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>We believe great design lives in the details. Every collection is thoughtfully created to bring together form, function and a distinct point of view.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show feature list",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Discover more"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "outline",
+          "label": "Outline"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content max width",
+      "min": 400,
+      "max": 700,
+      "step": 20,
+      "unit": "px",
+      "default": 560
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Thoughtful design"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Every element is considered with purpose."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Editorial",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Thoughtful design",
+            "text": "Every element is considered with purpose."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Made to stand out",
+            "text": "Distinct details create a memorable experience."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Built for everyday",
+            "text": "Designed to fit naturally into your everyday life."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
