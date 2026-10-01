@@ -343,6 +343,77 @@
         "padding_bottom": 88
       }
     },
+    "hargx_logo_marquee_94aKjL": {
+      "type": "hargx-logo-marquee",
+      "blocks": {
+        "logo_EJ438h": {
+          "type": "logo",
+          "settings": {
+            "text_logo": "NOVA",
+            "alt_text": "Brand logo",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_JpaQLc": {
+          "type": "logo",
+          "settings": {
+            "text_logo": "FORM",
+            "alt_text": "Brand logo",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_cGdbk3": {
+          "type": "logo",
+          "settings": {
+            "text_logo": "MONO",
+            "alt_text": "Brand logo",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_eTwffG": {
+          "type": "logo",
+          "settings": {
+            "text_logo": "NORTH",
+            "alt_text": "Brand logo",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "logo_CD9MiM": {
+          "type": "logo",
+          "settings": {
+            "text_logo": "STUDIO",
+            "alt_text": "Brand logo",
+            "link": "",
+            "open_new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "logo_EJ438h",
+        "logo_JpaQLc",
+        "logo_cGdbk3",
+        "logo_eTwffG",
+        "logo_CD9MiM"
+      ],
+      "name": "HARGX Logo Marquee",
+      "settings": {
+        "eyebrow": "Trusted by great brands",
+        "heading": "Brands we work with",
+        "speed": 30,
+        "pause_on_hover": true,
+        "logo_height": 38,
+        "background_color": "#FFFFFF",
+        "text_color": "#000000",
+        "accent_color": "#FE7442",
+        "border_color": "#E8E4DE",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
     "hargx_newsletter_4WGDYB": {
       "type": "hargx-newsletter",
       "name": "HARGX Newsletter",
@@ -356,10 +427,10 @@
         "disclaimer": "By subscribing, you agree to receive emails from HARGX.",
         "layout_style": "standard",
         "card_radius": 14,
-        "background_color": "#FAF8F4",
-        "input_background": "#FFFFFF",
+        "background_color": "#faf8f4",
+        "input_background": "#ffffff",
         "text_color": "#000000",
-        "accent_color": "#FE7442",
+        "accent_color": "#fe7442",
         "padding_top": 88,
         "padding_bottom": 88
       }
@@ -372,6 +443,7 @@
     "hargx_benefits_tNKtGc",
     "hargx_editorial_rdkfAc",
     "hargx_testimonials_wjDjg7",
+    "hargx_logo_marquee_94aKjL",
     "hargx_newsletter_4WGDYB"
   ]
 }
