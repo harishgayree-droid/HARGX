@@ -1,0 +1,582 @@
+{{ 'section-hargx-split-feature.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign section_id = 'HargxSplitFeature-' | append: section.id
+
+  assign image_side = section.settings.image_side
+  assign mobile_order = section.settings.mobile_order
+
+  assign image_position = section.settings.image_position
+  assign content_alignment = section.settings.content_alignment
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="
+    hargx-split-feature
+    hargx-split-feature--image-{{ image_side }}
+    hargx-split-feature--mobile-{{ mobile_order }}
+    hargx-split-feature--content-{{ content_alignment }}
+    hargx-split-feature--image-width-{{ section.settings.image_width }}
+  "
+  style="
+    --hargx-split-bg: {{ section.settings.background_color }};
+    --hargx-split-text: {{ section.settings.text_color }};
+    --hargx-split-accent: {{ section.settings.accent_color }};
+    --hargx-split-radius: {{ section.settings.image_radius }}px;
+    --hargx-split-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-split-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --hargx-split-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --hargx-split-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="hargx-split-feature__container page-width">
+
+    <div class="hargx-split-feature__grid">
+
+      <!-- IMAGE -->
+
+      <div class="hargx-split-feature__media">
+
+        {%- if section.settings.image != blank -%}
+
+          <div
+            class="
+              hargx-split-feature__image-wrap
+              hargx-split-feature__image-wrap--{{ section.settings.image_ratio }}
+            "
+          >
+
+            {{
+              section.settings.image
+              | image_url: width: 1800
+              | image_tag:
+                class: 'hargx-split-feature__image',
+                widths: '480, 640, 750, 900, 1100, 1400, 1800',
+                sizes: '(min-width: 990px) 50vw, 100vw',
+                loading: 'lazy',
+                decoding: 'async',
+                alt: section.settings.image.alt | default: section.settings.heading
+            }}
+
+            {%- if section.settings.show_overlay -%}
+              <div
+                class="hargx-split-feature__overlay"
+                aria-hidden="true"
+              ></div>
+            {%- endif -%}
+
+            {%- if section.settings.badge != blank -%}
+              <div class="hargx-split-feature__badge">
+                {{ section.settings.badge }}
+              </div>
+            {%- endif -%}
+
+          </div>
+
+        {%- else -%}
+
+          <div class="hargx-split-feature__placeholder">
+            {{ 'lifestyle-1' | placeholder_svg_tag }}
+          </div>
+
+        {%- endif -%}
+
+      </div>
+
+      <!-- CONTENT -->
+
+      <div class="hargx-split-feature__content">
+
+        <div class="hargx-split-feature__content-inner">
+
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="hargx-split-feature__eyebrow">
+              {{ section.settings.eyebrow }}
+            </p>
+          {%- endif -%}
+
+          {%- if section.settings.heading != blank -%}
+            <h2 class="hargx-split-feature__heading">
+              {{ section.settings.heading }}
+            </h2>
+          {%- endif -%}
+
+          {%- if section.settings.description != blank -%}
+            <div class="hargx-split-feature__description rte">
+              {{ section.settings.description }}
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_features -%}
+
+            <div class="hargx-split-feature__features">
+
+              {%- for block in section.blocks -%}
+
+                {%- if block.type == 'feature' -%}
+
+                  <div
+                    class="hargx-split-feature__feature"
+                    {{ block.shopify_attributes }}
+                  >
+
+                    <div class="hargx-split-feature__feature-icon">
+                      {%- if block.settings.icon != blank -%}
+                        {{
+                          block.settings.icon
+                          | image_url: width: 80
+                          | image_tag:
+                            loading: 'lazy',
+                            decoding: 'async',
+                            alt: ''
+                        }}
+                      {%- else -%}
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M10 2L12.2 7.1L17.8 7.7L13.6 11.5L14.8 17L10 14.1L5.2 17L6.4 11.5L2.2 7.7L7.8 7.1L10 2Z"
+                            stroke="currentColor"
+                            stroke-width="1.2"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      {%- endif -%}
+                    </div>
+
+                    <div class="hargx-split-feature__feature-content">
+
+                      {%- if block.settings.heading != blank -%}
+                        <h3>
+                          {{ block.settings.heading }}
+                        </h3>
+                      {%- endif -%}
+
+                      {%- if block.settings.text != blank -%}
+                        <p>
+                          {{ block.settings.text }}
+                        </p>
+                      {%- endif -%}
+
+                    </div>
+
+                  </div>
+
+                {%- endif -%}
+
+              {%- endfor -%}
+
+            </div>
+
+          {%- endif -%}
+
+          {%- if section.settings.primary_button_label != blank
+            or section.settings.secondary_button_label != blank
+          -%}
+
+            <div class="hargx-split-feature__buttons">
+
+              {%- if section.settings.primary_button_label != blank
+                and section.settings.primary_button_link != blank
+              -%}
+                <a
+                  href="{{ section.settings.primary_button_link }}"
+                  class="hargx-split-feature__button hargx-split-feature__button--primary"
+                >
+                  <span>
+                    {{ section.settings.primary_button_label }}
+                  </span>
+
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M3 8H13M8.5 3.5L13 8L8.5 12.5"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </a>
+              {%- endif -%}
+
+              {%- if section.settings.secondary_button_label != blank
+                and section.settings.secondary_button_link != blank
+              -%}
+                <a
+                  href="{{ section.settings.secondary_button_link }}"
+                  class="hargx-split-feature__button hargx-split-feature__button--secondary"
+                >
+                  {{ section.settings.secondary_button_label }}
+                </a>
+              {%- endif -%}
+
+            </div>
+
+          {%- endif -%}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HARGX Split Feature",
+  "tag": "section",
+  "class": "hargx-split-feature-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_side",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_order",
+      "label": "Mobile order",
+      "options": [
+        {
+          "value": "image-first",
+          "label": "Image first"
+        },
+        {
+          "value": "content-first",
+          "label": "Content first"
+        }
+      ],
+      "default": "image-first"
+    },
+    {
+      "type": "select",
+      "id": "image_width",
+      "label": "Image width",
+      "options": [
+        {
+          "value": "40",
+          "label": "40%"
+        },
+        {
+          "value": "50",
+          "label": "50%"
+        },
+        {
+          "value": "60",
+          "label": "60%"
+        }
+      ],
+      "default": "50"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image focal position",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show image overlay",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Image badge",
+      "default": ""
+    },
+
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Designed differently"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Made for the way you live."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Thoughtfully designed products that combine function, simplicity, and a distinctive point of view.</p>"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content vertical alignment",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+
+    {
+      "type": "header",
+      "content": "Features"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show feature list",
+      "default": true
+    },
+
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_label",
+      "label": "Primary button",
+      "default": "Explore collection"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "label": "Secondary link",
+      "default": "Learn more"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary link"
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#FE7442"
+    },
+
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top padding",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom padding",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Thoughtfully designed"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Made with attention to every detail."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Split Feature",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "heading": "Thoughtfully designed",
+            "text": "Made with attention to every detail."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "heading": "Built to last",
+            "text": "Quality materials and considered construction."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "heading": "Made for you",
+            "text": "Simple, useful, and designed around real life."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
