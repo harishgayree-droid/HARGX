@@ -1,0 +1,768 @@
+{{ 'section-hargx-featured-collection.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign section_id = 'HargxFeaturedCollection-' | append: section.id
+  assign collection = section.settings.collection
+  assign products_to_show = section.settings.products_to_show
+  assign columns_desktop = section.settings.columns_desktop
+  assign columns_mobile = section.settings.columns_mobile
+
+  if collection != blank
+    assign collection_products = collection.products
+  endif
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="
+    hargx-featured-collection
+    hargx-featured-collection--{{ section.settings.card_style }}
+    hargx-featured-collection--columns-{{ columns_desktop }}
+    hargx-featured-collection--mobile-{{ columns_mobile }}
+    {% if section.settings.enable_mobile_slider %}
+      hargx-featured-collection--mobile-slider
+    {% endif %}
+  "
+  data-section-id="{{ section.id }}"
+  style="
+    --hargx-fc-background: {{ section.settings.background_color }};
+    --hargx-fc-text: {{ section.settings.text_color }};
+    --hargx-fc-accent: {{ section.settings.accent_color }};
+    --hargx-fc-card-radius: {{ section.settings.card_radius }}px;
+    --hargx-fc-gap: {{ section.settings.column_gap }}px;
+    --hargx-fc-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-fc-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --hargx-fc-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --hargx-fc-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="hargx-featured-collection__container page-width">
+
+    {%- if section.settings.show_header -%}
+      <div
+        class="
+          hargx-featured-collection__header
+          hargx-featured-collection__header--{{ section.settings.heading_alignment }}
+        "
+      >
+        <div class="hargx-featured-collection__heading-wrap">
+
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="hargx-featured-collection__eyebrow">
+              {{ section.settings.eyebrow }}
+            </p>
+          {%- endif -%}
+
+          {%- if section.settings.heading != blank -%}
+            <h2 class="hargx-featured-collection__heading">
+              {{ section.settings.heading }}
+            </h2>
+          {%- endif -%}
+
+          {%- if section.settings.description != blank -%}
+            <div class="hargx-featured-collection__description rte">
+              {{ section.settings.description }}
+            </div>
+          {%- endif -%}
+
+        </div>
+
+        {%- if section.settings.show_view_all
+          and collection != blank
+          and collection.products_count > products_to_show
+        -%}
+          <a
+            href="{{ collection.url }}"
+            class="hargx-featured-collection__view-all"
+          >
+            <span>{{ section.settings.view_all_text }}</span>
+
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M3 8H13M8.5 3.5L13 8L8.5 12.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if collection == blank -%}
+
+      <div class="hargx-featured-collection__empty">
+        <div class="hargx-featured-collection__empty-inner">
+          <span class="hargx-featured-collection__empty-icon">
+            +
+          </span>
+
+          <h3>
+            Select a collection
+          </h3>
+
+          <p>
+            Choose a collection from the Theme Editor to display products here.
+          </p>
+        </div>
+      </div>
+
+    {%- elsif collection.products_count == 0 -%}
+
+      <div class="hargx-featured-collection__empty">
+        <div class="hargx-featured-collection__empty-inner">
+          <h3>
+            No products found
+          </h3>
+
+          <p>
+            Add products to the selected collection to display them here.
+          </p>
+        </div>
+      </div>
+
+    {%- else -%}
+
+      <div
+        class="hargx-featured-collection__products"
+        {% if section.settings.enable_mobile_slider %}
+          data-hargx-product-slider
+        {% endif %}
+      >
+        {%- for product in collection.products limit: products_to_show -%}
+
+          <article
+            class="hargx-product-card"
+            data-product-card
+          >
+            <div class="hargx-product-card__media">
+
+              <a
+                href="{{ product.url }}"
+                class="hargx-product-card__media-link"
+                aria-label="{{ product.title | escape }}"
+              >
+
+                {%- if product.featured_media != blank -%}
+
+                  <div class="hargx-product-card__image-wrap">
+
+                    {{
+                      product.featured_media
+                      | image_url: width: 900
+                      | image_tag:
+                        class: 'hargx-product-card__image hargx-product-card__image--primary',
+                        widths: '320, 480, 640, 750, 900',
+                        sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 80vw',
+                        loading: 'lazy',
+                        decoding: 'async',
+                        alt: product.featured_media.alt | default: product.title
+                    }}
+
+                    {%- if section.settings.enable_hover_image
+                      and product.media.size > 1
+                    -%}
+                      {{
+                        product.media[1]
+                        | image_url: width: 900
+                        | image_tag:
+                          class: 'hargx-product-card__image hargx-product-card__image--hover',
+                          widths: '320, 480, 640, 750, 900',
+                          sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 80vw',
+                          loading: 'lazy',
+                          decoding: 'async',
+                          alt: product.media[1].alt | default: product.title
+                      }}
+                    {%- endif -%}
+
+                  </div>
+
+                {%- else -%}
+
+                  <div class="hargx-product-card__placeholder">
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  </div>
+
+                {%- endif -%}
+
+                {%- if section.settings.show_badges -%}
+
+                  <div class="hargx-product-card__badges">
+
+                    {%- if product.available == false -%}
+                      <span class="hargx-product-card__badge">
+                        {{ 'products.product.sold_out' | t }}
+                      </span>
+
+                    {%- elsif product.compare_at_price > product.price -%}
+                      <span class="hargx-product-card__badge hargx-product-card__badge--sale">
+                        {{ section.settings.sale_badge_text }}
+                      </span>
+
+                    {%- elsif product.tags contains 'new' -%}
+                      <span class="hargx-product-card__badge">
+                        {{ section.settings.new_badge_text }}
+                      </span>
+                    {%- endif -%}
+
+                  </div>
+
+                {%- endif -%}
+
+              </a>
+
+              {%- if section.settings.show_quick_add
+                and product.available
+              -%}
+
+                {%- if product.has_only_default_variant -%}
+
+                  <form
+                    method="post"
+                    action="{{ routes.cart_add_url }}"
+                    class="hargx-product-card__quick-add-form"
+                    enctype="multipart/form-data"
+                  >
+                    <input
+                      type="hidden"
+                      name="id"
+                      value="{{ product.selected_or_first_available_variant.id }}"
+                    >
+
+                    <button
+                      type="submit"
+                      class="hargx-product-card__quick-add"
+                      aria-label="Add {{ product.title | escape }} to cart"
+                    >
+                      <span>
+                        {{ section.settings.quick_add_text }}
+                      </span>
+
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M3 8H13M8.5 3.5L13 8L8.5 12.5"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </form>
+
+                {%- else -%}
+
+                  <a
+                    href="{{ product.url }}"
+                    class="hargx-product-card__quick-add"
+                  >
+                    <span>
+                      {{ section.settings.choose_options_text }}
+                    </span>
+
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M3 8H13M8.5 3.5L13 8L8.5 12.5"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </a>
+
+                {%- endif -%}
+
+              {%- endif -%}
+
+            </div>
+
+            <div class="hargx-product-card__content">
+
+              {%- if section.settings.show_vendor and product.vendor != blank -%}
+                <p class="hargx-product-card__vendor">
+                  {{ product.vendor }}
+                </p>
+              {%- endif -%}
+
+              <h3 class="hargx-product-card__title">
+                <a href="{{ product.url }}">
+                  {{ product.title | escape }}
+                </a>
+              </h3>
+
+              {%- if section.settings.show_rating -%}
+                <div class="hargx-product-card__rating">
+                  <span class="hargx-product-card__stars" aria-hidden="true">
+                    ★★★★★
+                  </span>
+
+                  <span class="hargx-product-card__rating-text">
+                    {{ section.settings.rating_placeholder }}
+                  </span>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.show_price -%}
+                <div class="hargx-product-card__price">
+
+                  {%- if product.compare_at_price > product.price -%}
+                    <span class="hargx-product-card__price--sale">
+                      {{ product.price | money }}
+                    </span>
+
+                    <s class="hargx-product-card__price--compare">
+                      {{ product.compare_at_price | money }}
+                    </s>
+
+                  {%- else -%}
+
+                    <span>
+                      {{ product.price | money }}
+                    </span>
+
+                  {%- endif -%}
+
+                </div>
+              {%- endif -%}
+
+            </div>
+          </article>
+
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.enable_mobile_slider
+        and collection.products_count > 1
+      -%}
+        <div class="hargx-featured-collection__mobile-controls">
+
+          <button
+            type="button"
+            class="hargx-featured-collection__slider-button"
+            data-hargx-slider-prev
+            aria-label="Previous products"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M11 4L7 9L11 14"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+
+          <div
+            class="hargx-featured-collection__slider-progress"
+            aria-hidden="true"
+          >
+            <span data-hargx-slider-progress></span>
+          </div>
+
+          <button
+            type="button"
+            class="hargx-featured-collection__slider-button"
+            data-hargx-slider-next
+            aria-label="Next products"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M7 4L11 9L7 14"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+
+        </div>
+      {%- endif -%}
+
+    {%- endif -%}
+
+  </div>
+</section>
+
+{%- if section.settings.enable_mobile_slider -%}
+  <script>
+    if (!window.HargxFeaturedCollectionSliderLoaded) {
+      window.HargxFeaturedCollectionSliderLoaded = true;
+
+      const script = document.createElement('script');
+      script.src = '{{ 'section-hargx-featured-collection.js' | asset_url }}';
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "HARGX Featured Collection",
+  "tag": "section",
+  "class": "hargx-featured-collection-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 16,
+      "step": 1,
+      "default": 8
+    },
+
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show section heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Featured"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop our favorites"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Explore our most-loved products, selected for you.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View all text",
+      "default": "View all"
+    },
+
+    {
+      "type": "header",
+      "content": "Product grid"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobile columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Product gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Card style",
+      "options": [
+        {
+          "value": "minimal",
+          "label": "Minimal"
+        },
+        {
+          "value": "boxed",
+          "label": "Boxed"
+        }
+      ],
+      "default": "minimal"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Image corner radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+
+    {
+      "type": "header",
+      "content": "Product information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating placeholder",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "rating_placeholder",
+      "label": "Rating text",
+      "default": "4.9"
+    },
+
+    {
+      "type": "header",
+      "content": "Product image"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_image",
+      "label": "Show second image on hover",
+      "default": true
+    },
+
+    {
+      "type": "header",
+      "content": "Badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Show product badges",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sale_badge_text",
+      "label": "Sale badge",
+      "default": "Sale"
+    },
+    {
+      "type": "text",
+      "id": "new_badge_text",
+      "label": "New badge",
+      "default": "New"
+    },
+
+    {
+      "type": "header",
+      "content": "Quick add"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_add",
+      "label": "Show quick add",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "quick_add_text",
+      "label": "Quick add text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "choose_options_text",
+      "label": "Choose options text",
+      "default": "Choose options"
+    },
+
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mobile_slider",
+      "label": "Enable mobile slider",
+      "default": true
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#FE7442"
+    },
+
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top padding",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom padding",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Featured Collection"
+    }
+  ]
+}
+{% endschema %}
