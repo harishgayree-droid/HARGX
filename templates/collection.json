@@ -39,24 +39,48 @@
         "show_product_count": true,
         "show_sort": true,
         "sort_label": "Sort by",
-        "background_color": "#FFFFFF",
+        "background_color": "#ffffff",
         "text_color": "#000000",
-        "accent_color": "#FE7442",
-        "border_color": "#E8E5DF",
+        "accent_color": "#fe7442",
+        "border_color": "#e8e5df",
         "button_radius": 10,
         "padding_top": 18,
         "padding_bottom": 18
       }
     },
-    "main": {
-      "type": "collection",
-      "disabled": true,
-      "settings": {}
+    "hargx_collection_product_grid_rg6Dpw": {
+      "type": "hargx-collection-product-grid",
+      "name": "HARGX Collection Grid",
+      "settings": {
+        "products_per_page": 16,
+        "columns_desktop": "4",
+        "grid_gap": 24,
+        "card_radius": 16,
+        "enable_image_hover": true,
+        "show_badges": true,
+        "sale_label": "Sale",
+        "sold_out_label": "Sold out",
+        "show_discount_percentage": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "rating_text": "(24)",
+        "enable_quick_add": true,
+        "quick_add_label": "Quick add",
+        "choose_options_label": "Choose options",
+        "empty_heading": "Nothing here yet",
+        "empty_text": "This collection doesn't have any products yet. Explore the rest of our store to find something you love.",
+        "empty_button_label": "Shop all products",
+        "background_color": "#FFFFFF",
+        "text_color": "#000000",
+        "accent_color": "#FE7442",
+        "padding_top": 48,
+        "padding_bottom": 72
+      }
     }
   },
   "order": [
     "hargx_collection_hero_89wNPx",
     "hargx_collection_toolbar_LnK9at",
-    "main"
+    "hargx_collection_product_grid_rg6Dpw"
   ]
 }
