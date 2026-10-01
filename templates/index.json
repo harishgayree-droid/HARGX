@@ -32,11 +32,11 @@
         "secondary_button_link": "",
         "overlay_enabled": true,
         "overlay_opacity": 25,
-        "text_color": "#FFFFFF",
-        "button_background": "#FE7442",
-        "button_text_color": "#FFFFFF",
-        "button_border_color": "#FFFFFF",
-        "background_color": "#FAF8F4",
+        "text_color": "#ffffff",
+        "button_background": "#fe7442",
+        "button_text_color": "#ffffff",
+        "button_border_color": "#ffffff",
+        "background_color": "#faf8f4",
         "container_width": "page-width",
         "padding_top": 40,
         "padding_bottom": 40,
@@ -45,9 +45,49 @@
         "show_scroll_indicator": false,
         "scroll_text": "Scroll"
       }
+    },
+    "hargx_featured_collection_3pigqz": {
+      "type": "hargx-featured-collection",
+      "name": "HARGX Featured Collection",
+      "settings": {
+        "collection": "all-dairy-products",
+        "products_to_show": 8,
+        "show_header": true,
+        "eyebrow": "Featured",
+        "heading": "Shop our favorites",
+        "description": "<p>Explore our most-loved products, selected for you.</p>",
+        "heading_alignment": "left",
+        "show_view_all": true,
+        "view_all_text": "View all",
+        "columns_desktop": "4",
+        "columns_mobile": "2",
+        "column_gap": 20,
+        "card_style": "minimal",
+        "card_radius": 0,
+        "show_vendor": true,
+        "show_price": true,
+        "show_rating": true,
+        "rating_placeholder": "4.9",
+        "enable_hover_image": true,
+        "show_badges": true,
+        "sale_badge_text": "Sale",
+        "new_badge_text": "New",
+        "show_quick_add": true,
+        "quick_add_text": "Add to cart",
+        "choose_options_text": "Choose options",
+        "enable_mobile_slider": true,
+        "background_color": "#FAF8F4",
+        "text_color": "#000000",
+        "accent_color": "#FE7442",
+        "padding_top": 72,
+        "padding_bottom": 72,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48
+      }
     }
   },
   "order": [
-    "hargx_hero_zQPrgP"
+    "hargx_hero_zQPrgP",
+    "hargx_featured_collection_3pigqz"
   ]
 }
