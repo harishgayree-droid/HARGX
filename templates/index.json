@@ -96,9 +96,10 @@
         "category_kFU4Nw": {
           "type": "category",
           "settings": {
-            "title": "New Arrivals",
+            "image": "shopify://shop_images/buffalo-milk-2-litre.png",
+            "title": "Buffalo Milk",
             "description": "Discover the latest additions.",
-            "link": "",
+            "link": "shopify://collections/buffalo-milk",
             "show_link": true,
             "link_text": "Shop now",
             "content_position": "bottom"
@@ -469,10 +470,10 @@
         "content_style": "standard",
         "column_gap": 72,
         "card_radius": 20,
-        "background_color": "#FFFFFF",
-        "card_background": "#FAF8F4",
+        "background_color": "#ffffff",
+        "card_background": "#faf8f4",
         "text_color": "#000000",
-        "accent_color": "#FE7442",
+        "accent_color": "#fe7442",
         "padding_top": 88,
         "padding_bottom": 88
       }
