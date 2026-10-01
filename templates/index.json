@@ -9,10 +9,6 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
-    },
     "hargx_hero_zQPrgP": {
       "type": "hargx-hero",
       "name": "HARGX Hero Banner",
@@ -52,7 +48,6 @@
     }
   },
   "order": [
-    "main",
     "hargx_hero_zQPrgP"
   ]
 }
