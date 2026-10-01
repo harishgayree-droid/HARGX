@@ -335,8 +335,29 @@
         "card_style": "bordered",
         "card_gap": 20,
         "card_radius": 18,
+        "background_color": "#faf8f4",
+        "card_background": "#ffffff",
+        "text_color": "#000000",
+        "accent_color": "#fe7442",
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    },
+    "hargx_newsletter_4WGDYB": {
+      "type": "hargx-newsletter",
+      "name": "HARGX Newsletter",
+      "settings": {
+        "eyebrow": "Stay in the loop",
+        "heading": "Get the latest from HARGX.",
+        "description": "<p>Sign up for product launches, new arrivals and updates — straight to your inbox.</p>",
+        "email_placeholder": "Enter your email address",
+        "button_label": "Subscribe",
+        "success_message": "Thanks for subscribing!",
+        "disclaimer": "By subscribing, you agree to receive emails from HARGX.",
+        "layout_style": "standard",
+        "card_radius": 14,
         "background_color": "#FAF8F4",
-        "card_background": "#FFFFFF",
+        "input_background": "#FFFFFF",
         "text_color": "#000000",
         "accent_color": "#FE7442",
         "padding_top": 88,
@@ -350,6 +371,7 @@
     "shop_by_category_A7PpqL",
     "hargx_benefits_tNKtGc",
     "hargx_editorial_rdkfAc",
-    "hargx_testimonials_wjDjg7"
+    "hargx_testimonials_wjDjg7",
+    "hargx_newsletter_4WGDYB"
   ]
 }
