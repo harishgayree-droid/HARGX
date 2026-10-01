@@ -268,8 +268,9 @@
       ],
       "name": "HARGX Editorial",
       "settings": {
+        "image": "shopify://shop_images/fresh-buffalo-milk.png",
         "image_position": "left",
-        "image_ratio": "4 / 5",
+        "image_ratio": "1 / 1",
         "show_badge": true,
         "badge_text": "Designed with purpose",
         "eyebrow": "The HARGX difference",
