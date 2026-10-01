@@ -1,1021 +1,1851 @@
-{% comment %}
-  HARGX Collection Product Grid
+{%- liquid
+  assign products_per_page = section.settings.products_per_page
+  assign desktop_columns = section.settings.desktop_columns
+  assign mobile_columns = section.settings.mobile_columns
+-%}
 
-  Features:
-  - Responsive product grid
-  - 2/3/4 column desktop
-  - 2 column mobile
-  - Product image hover
-  - Sale / Sold Out badges
-  - Product title
-  - Vendor option
-  - Price + compare-at price
-  - Optional rating
-  - Quick Add
-  - Pagination
-  - Empty collection state
-{% endcomment %}
+{%- paginate collection.products by products_per_page -%}
 
 <section
-  class="hargx-collection-grid"
   id="HargxCollectionGrid-{{ section.id }}"
-  style="
-    --hargx-grid-bg: {{ section.settings.background_color }};
-    --hargx-grid-text: {{ section.settings.text_color }};
-    --hargx-grid-accent: {{ section.settings.accent_color }};
-    --hargx-grid-columns: {{ section.settings.columns_desktop }};
-    --hargx-grid-gap: {{ section.settings.grid_gap }}px;
-    --hargx-grid-radius: {{ section.settings.card_radius }}px;
-    --hargx-grid-top: {{ section.settings.padding_top }}px;
-    --hargx-grid-bottom: {{ section.settings.padding_bottom }}px;
-  "
+  class="hargx-collection-grid-section"
+  data-section-id="{{ section.id }}"
 >
-  <div class="hargx-collection-grid__container page-width">
+  <div class="hargx-collection-grid-section__inner">
 
-    {% paginate collection.products by section.settings.products_per_page %}
+    {%- comment -%}
+      ==========================================
+      TOOLBAR
+      ==========================================
+    {%- endcomment -%}
 
-      {% if collection.products.size > 0 %}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'toolbar' -%}
 
         <div
-          class="hargx-product-grid"
-          data-hargx-product-grid
+          class="hargx-collection-toolbar"
+          {{ block.shopify_attributes }}
+          style="
+            --toolbar-bg: {{ block.settings.background }};
+            --toolbar-text: {{ block.settings.text_color }};
+            --toolbar-accent: {{ block.settings.accent_color }};
+            --toolbar-border: {{ block.settings.border_color }};
+            --toolbar-radius: {{ block.settings.button_radius }}px;
+          "
+        >
+          <div class="hargx-collection-toolbar__inner">
+
+            <div class="hargx-collection-toolbar__left">
+
+              {%- if block.settings.show_product_count -%}
+                <div class="hargx-collection-toolbar__count">
+                  {{ collection.products_count }}
+                  {{ collection.products_count | pluralize: 'product', 'products' }}
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.show_filter_button -%}
+                <button
+                  type="button"
+                  class="hargx-collection-toolbar__filter-button"
+                  data-hargx-filter-open
+                  aria-controls="HargxFilterDrawer-{{ section.id }}"
+                  aria-expanded="false"
+                >
+                  <span class="hargx-collection-toolbar__filter-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M4 6h16M7 12h10M10 18h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+
+                  <span>{{ block.settings.filter_label }}</span>
+
+                  {%- assign active_filter_count = 0 -%}
+
+                  {%- for filter in collection.filters -%}
+                    {%- assign active_filter_count = active_filter_count | plus: filter.active_values.size -%}
+
+                    {%- if filter.type == 'price_range' -%}
+                      {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
+                        {%- assign active_filter_count = active_filter_count | plus: 1 -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  <span
+                    class="hargx-collection-toolbar__filter-count"
+                    data-hargx-filter-count
+                    {% if active_filter_count == 0 %}hidden{% endif %}
+                  >
+                    {{ active_filter_count }}
+                  </span>
+                </button>
+              {%- endif -%}
+
+            </div>
+
+            {%- if block.settings.show_sorting -%}
+              <div class="hargx-collection-toolbar__sorting">
+
+                <label for="HargxSort-{{ section.id }}">
+                  {{ block.settings.sort_label }}
+                </label>
+
+                <select
+                  id="HargxSort-{{ section.id }}"
+                  name="sort_by"
+                  data-hargx-sort
+                >
+                  {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
+
+                  {%- for option in collection.sort_options -%}
+                    <option
+                      value="{{ option.value }}"
+                      {% if option.value == current_sort %}selected{% endif %}
+                    >
+                      {{ option.name }}
+                    </option>
+                  {%- endfor -%}
+                </select>
+
+                <span class="hargx-collection-toolbar__sort-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+
+              </div>
+            {%- endif -%}
+
+          </div>
+        </div>
+
+      {%- endif -%}
+    {%- endfor -%}
+
+
+    {%- comment -%}
+      ==========================================
+      FILTER DRAWER - MOBILE
+      ==========================================
+    {%- endcomment -%}
+
+    <div
+      id="HargxFilterDrawer-{{ section.id }}"
+      class="hargx-filter-drawer"
+      data-hargx-filter-drawer
+      hidden
+    >
+      <div class="hargx-filter-drawer__overlay" data-hargx-filter-close></div>
+
+      <div
+        class="hargx-filter-drawer__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="HargxFilterDrawerTitle-{{ section.id }}"
+      >
+
+        <div class="hargx-filter-drawer__header">
+          <h2 id="HargxFilterDrawerTitle-{{ section.id }}">
+            Filters
+          </h2>
+
+          <button
+            type="button"
+            class="hargx-filter-drawer__close"
+            data-hargx-filter-close
+            aria-label="Close filters"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <form
+          class="hargx-filter-form"
+          data-hargx-filter-form
         >
 
-          {% for product in collection.products %}
+          {%- for filter in collection.filters -%}
 
-            {% liquid
-              assign product_image = product.featured_image
-              assign secondary_image = product.images[1]
-              assign is_on_sale = false
+            <details
+              class="hargx-filter-group"
+              {% if filter.active_values.size > 0 %}open{% endif %}
+            >
+              <summary>
+                <span>
+                  {{ filter.label }}
+                </span>
 
-              if product.compare_at_price > product.price
-                assign is_on_sale = true
-              endif
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </summary>
 
-              assign discount_percentage = 0
+              <div class="hargx-filter-group__content">
 
-              if product.compare_at_price > product.price
-                assign discount_amount = product.compare_at_price | minus: product.price
-                assign discount_percentage = discount_amount | times: 100.0 | divided_by: product.compare_at_price | round
-              endif
-            %}
+                {%- case filter.type -%}
 
-            <article
-              class="hargx-product-card"
-              data-product-card
+                  {%- when 'boolean' -%}
+
+                    <label class="hargx-filter-option">
+                      <input
+                        type="checkbox"
+                        name="{{ filter.param_name }}"
+                        value="{{ filter.true_value.value }}"
+                        {% if filter.true_value.active %}checked{% endif %}
+                      >
+
+                      <span class="hargx-filter-option__box"></span>
+
+                      <span class="hargx-filter-option__label">
+                        {{ filter.true_value.label }}
+                      </span>
+
+                      <span class="hargx-filter-option__count">
+                        {{ filter.true_value.count }}
+                      </span>
+                    </label>
+
+                  {%- when 'list' -%}
+
+                    {%- for value in filter.values -%}
+
+                      <label class="hargx-filter-option">
+                        <input
+                          type="checkbox"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value }}"
+                          {% if value.active %}checked{% endif %}
+                          {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                        >
+
+                        <span class="hargx-filter-option__box"></span>
+
+                        <span class="hargx-filter-option__label">
+                          {{ value.label }}
+                        </span>
+
+                        <span class="hargx-filter-option__count">
+                          {{ value.count }}
+                        </span>
+                      </label>
+
+                    {%- endfor -%}
+
+                  {%- when 'price_range' -%}
+
+                    <div class="hargx-price-range">
+
+                      <div class="hargx-price-range__fields">
+
+                        <div class="hargx-price-range__field">
+                          <label for="HargxPriceMin-{{ section.id }}-{{ forloop.index }}">
+                            Min
+                          </label>
+
+                          <div class="hargx-price-range__input">
+                            <span>{{ cart.currency.symbol }}</span>
+
+                            <input
+                              id="HargxPriceMin-{{ section.id }}-{{ forloop.index }}"
+                              type="number"
+                              name="{{ filter.min_value.param_name }}"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                              placeholder="0"
+                            >
+                          </div>
+                        </div>
+
+                        <div class="hargx-price-range__field">
+                          <label for="HargxPriceMax-{{ section.id }}-{{ forloop.index }}">
+                            Max
+                          </label>
+
+                          <div class="hargx-price-range__input">
+                            <span>{{ cart.currency.symbol }}</span>
+
+                            <input
+                              id="HargxPriceMax-{{ section.id }}-{{ forloop.index }}"
+                              type="number"
+                              name="{{ filter.max_value.param_name }}"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                              placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            >
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                {%- endcase -%}
+
+              </div>
+            </details>
+
+          {%- endfor -%}
+
+          <div class="hargx-filter-drawer__actions">
+
+            <button
+              type="button"
+              class="hargx-filter-button hargx-filter-button--secondary"
+              data-hargx-filter-clear
+            >
+              Clear all
+            </button>
+
+            <button
+              type="submit"
+              class="hargx-filter-button hargx-filter-button--primary"
+            >
+              Apply filters
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+
+    {%- comment -%}
+      ==========================================
+      PRODUCTS + DESKTOP SIDEBAR
+      ==========================================
+    {%- endcomment -%}
+
+    <div class="hargx-collection-products-layout">
+
+      {%- for block in section.blocks -%}
+
+        {%- if block.type == 'filters' -%}
+
+          <aside
+            class="hargx-collection-filters"
+            {{ block.shopify_attributes }}
+          >
+
+            <div class="hargx-collection-filters__header">
+
+              <div>
+                <span class="hargx-collection-filters__eyebrow">
+                  {{ block.settings.eyebrow }}
+                </span>
+
+                <h2>
+                  {{ block.settings.heading }}
+                </h2>
+              </div>
+
+              <span
+                class="hargx-collection-filters__active-count"
+                data-hargx-filter-count-desktop
+                {% if active_filter_count == 0 %}hidden{% endif %}
+              >
+                {{ active_filter_count }}
+              </span>
+
+            </div>
+
+            <form
+              class="hargx-filter-form hargx-filter-form--desktop"
+              data-hargx-filter-form
             >
 
-              <!-- Product Media -->
+              {%- for filter in collection.filters -%}
 
-              <div class="hargx-product-card__media">
-
-                <a
-                  href="{{ product.url }}"
-                  class="hargx-product-card__media-link"
-                  aria-label="{{ product.title | escape }}"
+                <details
+                  class="hargx-filter-group"
+                  {% if filter.active_values.size > 0 %}open{% endif %}
                 >
+                  <summary>
+                    <span>
+                      {{ filter.label }}
+                    </span>
 
-                  <div class="hargx-product-card__image-wrapper">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </summary>
 
-                    {% if product_image != blank %}
+                  <div class="hargx-filter-group__content">
 
-                      {{
-                        product_image
-                        | image_url: width: 1000
-                        | image_tag:
-                          loading: 'lazy',
-                          widths: '320, 480, 640, 800, 1000',
-                          sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw',
-                          class: 'hargx-product-card__image hargx-product-card__image--primary',
-                          alt: product_image.alt | default: product.title | escape
-                      }}
+                    {%- case filter.type -%}
 
-                      {% if section.settings.enable_image_hover and secondary_image != blank %}
+                      {%- when 'boolean' -%}
 
-                        {{
-                          secondary_image
-                          | image_url: width: 1000
-                          | image_tag:
-                            loading: 'lazy',
-                            widths: '320, 480, 640, 800, 1000',
-                            sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw',
-                            class: 'hargx-product-card__image hargx-product-card__image--secondary',
-                            alt: secondary_image.alt | default: product.title | escape
-                        }}
+                        <label class="hargx-filter-option">
+                          <input
+                            type="checkbox"
+                            name="{{ filter.param_name }}"
+                            value="{{ filter.true_value.value }}"
+                            {% if filter.true_value.active %}checked{% endif %}
+                          >
 
-                      {% endif %}
+                          <span class="hargx-filter-option__box"></span>
 
-                    {% else %}
+                          <span class="hargx-filter-option__label">
+                            {{ filter.true_value.label }}
+                          </span>
 
-                      {{ 'product-1' | placeholder_svg_tag: 'hargx-product-card__placeholder' }}
+                          <span class="hargx-filter-option__count">
+                            {{ filter.true_value.count }}
+                          </span>
+                        </label>
 
-                    {% endif %}
+                      {%- when 'list' -%}
+
+                        {%- for value in filter.values -%}
+
+                          <label class="hargx-filter-option">
+                            <input
+                              type="checkbox"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              {% if value.active %}checked{% endif %}
+                              {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                            >
+
+                            <span class="hargx-filter-option__box"></span>
+
+                            <span class="hargx-filter-option__label">
+                              {{ value.label }}
+                            </span>
+
+                            <span class="hargx-filter-option__count">
+                              {{ value.count }}
+                            </span>
+                          </label>
+
+                        {%- endfor -%}
+
+                      {%- when 'price_range' -%}
+
+                        <div class="hargx-price-range">
+
+                          <div class="hargx-price-range__fields">
+
+                            <div class="hargx-price-range__field">
+                              <label>
+                                Min
+                              </label>
+
+                              <div class="hargx-price-range__input">
+                                <span>{{ cart.currency.symbol }}</span>
+
+                                <input
+                                  type="number"
+                                  name="{{ filter.min_value.param_name }}"
+                                  min="0"
+                                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                  value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                                  placeholder="0"
+                                >
+                              </div>
+                            </div>
+
+                            <div class="hargx-price-range__field">
+                              <label>
+                                Max
+                              </label>
+
+                              <div class="hargx-price-range__input">
+                                <span>{{ cart.currency.symbol }}</span>
+
+                                <input
+                                  type="number"
+                                  name="{{ filter.max_value.param_name }}"
+                                  min="0"
+                                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                  value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                                  placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                >
+                              </div>
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                    {%- endcase -%}
 
                   </div>
+                </details>
 
-                </a>
+              {%- endfor -%}
 
-                <!-- Badges -->
+              <div class="hargx-collection-filters__actions">
 
-                {% if section.settings.show_badges %}
+                <button
+                  type="button"
+                  class="hargx-filter-button hargx-filter-button--secondary"
+                  data-hargx-filter-clear
+                >
+                  Clear all
+                </button>
 
-                  <div class="hargx-product-card__badges">
-
-                    {% if product.available == false %}
-
-                      <span class="hargx-product-card__badge hargx-product-card__badge--sold">
-                        {{ section.settings.sold_out_label }}
-                      </span>
-
-                    {% elsif is_on_sale %}
-
-                      <span class="hargx-product-card__badge hargx-product-card__badge--sale">
-                        {{ section.settings.sale_label }}
-
-                        {% if section.settings.show_discount_percentage and discount_percentage > 0 %}
-                          {{ discount_percentage }}%
-                        {% endif %}
-                      </span>
-
-                    {% endif %}
-
-                  </div>
-
-                {% endif %}
-
-                <!-- Quick Add -->
-
-                {% if section.settings.enable_quick_add and product.available %}
-
-                  {% if product.has_only_default_variant %}
-
-                    <button
-                      type="button"
-                      class="hargx-product-card__quick-add"
-                      data-hargx-quick-add
-                      data-product-id="{{ product.id }}"
-                      data-variant-id="{{ product.first_available_variant.id }}"
-                      aria-label="Add {{ product.title | escape }} to cart"
-                    >
-                      <span class="hargx-product-card__quick-add-icon">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M12 5V19M5 12H19"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                            stroke-linecap="round"
-                          />
-                        </svg>
-                      </span>
-
-                      <span class="hargx-product-card__quick-add-text">
-                        {{ section.settings.quick_add_label }}
-                      </span>
-                    </button>
-
-                  {% else %}
-
-                    <a
-                      href="{{ product.url }}"
-                      class="hargx-product-card__quick-add"
-                    >
-                      <span class="hargx-product-card__quick-add-icon">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M12 5V19M5 12H19"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                            stroke-linecap="round"
-                          />
-                        </svg>
-                      </span>
-
-                      <span class="hargx-product-card__quick-add-text">
-                        {{ section.settings.choose_options_label }}
-                      </span>
-                    </a>
-
-                  {% endif %}
-
-                {% endif %}
+                <button
+                  type="submit"
+                  class="hargx-filter-button hargx-filter-button--primary"
+                >
+                  {{ block.settings.apply_label }}
+                </button>
 
               </div>
 
-              <!-- Product Information -->
+            </form>
 
-              <div class="hargx-product-card__content">
+          </aside>
 
-                {% if section.settings.show_vendor and product.vendor != blank %}
+        {%- endif -%}
 
-                  <div class="hargx-product-card__vendor">
-                    {{ product.vendor | escape }}
-                  </div>
+      {%- endfor -%}
 
-                {% endif %}
 
-                <h2 class="hargx-product-card__title">
+      <div class="hargx-collection-products">
 
-                  <a href="{{ product.url }}">
-                    {{ product.title | escape }}
+        <div
+          class="hargx-collection-products__grid"
+          style="
+            --desktop-columns: {{ desktop_columns }};
+            --mobile-columns: {{ mobile_columns }};
+            --grid-gap: {{ section.settings.grid_gap }}px;
+            --card-radius: {{ section.settings.card_radius }}px;
+          "
+        >
+
+          {%- if collection.products.size > 0 -%}
+
+            {%- for product in collection.products -%}
+
+              <article class="hargx-product-card">
+
+                <div class="hargx-product-card__media">
+
+                  <a
+                    href="{{ product.url }}"
+                    class="hargx-product-card__image-link"
+                    aria-label="{{ product.title | escape }}"
+                  >
+
+                    {%- if product.featured_image != blank -%}
+
+                      {{
+                        product.featured_image
+                        | image_url: width: 900
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '360, 540, 720, 900',
+                          sizes: '(min-width: 990px) 25vw, 50vw',
+                          class: 'hargx-product-card__image hargx-product-card__image--primary',
+                          alt: product.featured_image.alt | escape
+                      }}
+
+                    {%- else -%}
+
+                      {{ 'product-1' | placeholder_svg_tag: 'hargx-product-card__image hargx-product-card__image--placeholder' }}
+
+                    {%- endif -%}
+
+
+                    {%- if section.settings.show_second_image and product.images.size > 1 -%}
+
+                      {{
+                        product.images[1]
+                        | image_url: width: 900
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '360, 540, 720, 900',
+                          sizes: '(min-width: 990px) 25vw, 50vw',
+                          class: 'hargx-product-card__image hargx-product-card__image--secondary',
+                          alt: product.images[1].alt | escape
+                      }}
+
+                    {%- endif -%}
+
                   </a>
 
-                </h2>
 
-                {% if section.settings.show_rating %}
+                  {%- if section.settings.show_badges -%}
 
-                  <div class="hargx-product-card__rating">
+                    <div class="hargx-product-card__badges">
 
-                    <span
-                      class="hargx-product-card__stars"
-                      aria-label="5 out of 5 stars"
-                    >
-                      ★★★★★
-                    </span>
+                      {%- if product.available == false -%}
 
-                    {% if section.settings.rating_text != blank %}
-                      <span class="hargx-product-card__rating-text">
-                        {{ section.settings.rating_text }}
-                      </span>
-                    {% endif %}
+                        <span class="hargx-product-card__badge hargx-product-card__badge--sold">
+                          Sold out
+                        </span>
 
-                  </div>
+                      {%- elsif product.compare_at_price > product.price -%}
 
-                {% endif %}
+                        <span class="hargx-product-card__badge">
+                          Sale
+                        </span>
 
-                <div class="hargx-product-card__price">
+                      {%- endif -%}
 
-                  {% if product.price_varies %}
+                    </div>
 
-                    <span class="hargx-product-card__price-current">
-                      From {{ product.price_min | money }}
-                    </span>
+                  {%- endif -%}
 
-                  {% else %}
 
-                    <span class="hargx-product-card__price-current">
-                      {{ product.price | money }}
-                    </span>
+                  {%- if section.settings.enable_quick_add and product.available -%}
 
-                  {% endif %}
+                    <div class="hargx-product-card__quick-add">
 
-                  {% if is_on_sale %}
+                      {%- if product.has_only_default_variant -%}
 
-                    <span class="hargx-product-card__price-compare">
-                      {{ product.compare_at_price | money }}
-                    </span>
+                        <button
+                          type="button"
+                          class="hargx-product-card__quick-add-button"
+                          data-hargx-quick-add
+                          data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+                        >
+                          <span>Add to cart</span>
 
-                  {% endif %}
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+
+                      {%- else -%}
+
+                        <a
+                          href="{{ product.url }}"
+                          class="hargx-product-card__quick-add-button"
+                        >
+                          <span>Choose options</span>
+
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </a>
+
+                      {%- endif -%}
+
+                    </div>
+
+                  {%- endif -%}
 
                 </div>
 
+
+                <div class="hargx-product-card__content">
+
+                  {%- if section.settings.show_vendor and product.vendor != blank -%}
+                    <div class="hargx-product-card__vendor">
+                      {{ product.vendor }}
+                    </div>
+                  {%- endif -%}
+
+                  <h3 class="hargx-product-card__title">
+                    <a href="{{ product.url }}">
+                      {{ product.title }}
+                    </a>
+                  </h3>
+
+
+                  {%- if section.settings.show_rating -%}
+
+                    <div class="hargx-product-card__rating">
+                      <span aria-hidden="true">★★★★★</span>
+
+                      {%- if section.settings.rating_text != blank -%}
+                        <span>{{ section.settings.rating_text }}</span>
+                      {%- endif -%}
+                    </div>
+
+                  {%- endif -%}
+
+
+                  <div class="hargx-product-card__price">
+
+                    {%- if product.compare_at_price > product.price -%}
+
+                      <span class="hargx-product-card__price-current">
+                        {{ product.price | money }}
+                      </span>
+
+                      <s class="hargx-product-card__price-compare">
+                        {{ product.compare_at_price | money }}
+                      </s>
+
+                    {%- else -%}
+
+                      <span class="hargx-product-card__price-current">
+                        {{ product.price | money }}
+                      </span>
+
+                    {%- endif -%}
+
+                  </div>
+
+                </div>
+
+              </article>
+
+            {%- endfor -%}
+
+          {%- else -%}
+
+            <div class="hargx-collection-empty">
+
+              <div class="hargx-collection-empty__icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+                  <path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
               </div>
 
-            </article>
+              <h2>No products found</h2>
 
-          {% endfor %}
+              <p>
+                Try adjusting your filters or browse our full collection.
+              </p>
+
+              <a
+                href="{{ routes.all_products_collection_url }}"
+                class="hargx-collection-empty__button"
+              >
+                Browse all products
+              </a>
+
+            </div>
+
+          {%- endif -%}
 
         </div>
 
-        <!-- Pagination -->
 
-        {% if paginate.pages > 1 %}
+        {%- if paginate.pages > 1 -%}
 
           <nav
             class="hargx-pagination"
             aria-label="Pagination"
           >
 
-            {% if paginate.previous %}
+            {%- if paginate.previous -%}
 
               <a
                 href="{{ paginate.previous.url }}"
-                class="hargx-pagination__arrow"
+                class="hargx-pagination__link"
                 aria-label="Previous page"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M15 18L9 12L15 6"
-                    stroke="currentColor"
-                    stroke-width="1.7"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </a>
 
-            {% endif %}
+            {%- endif -%}
 
-            <div class="hargx-pagination__pages">
 
-              {% for part in paginate.parts %}
+            {%- for part in paginate.parts -%}
 
-                {% if part.is_link %}
+              {%- if part.is_link -%}
 
-                  <a
-                    href="{{ part.url }}"
-                    class="hargx-pagination__page"
-                  >
-                    {{ part.title }}
-                  </a>
+                <a
+                  href="{{ part.url }}"
+                  class="hargx-pagination__link"
+                >
+                  {{ part.title }}
+                </a>
 
-                {% else %}
+              {%- else -%}
 
-                  <span
-                    class="hargx-pagination__page{% if part.title == paginate.current_page %} is-current{% endif %}"
-                  >
-                    {{ part.title }}
-                  </span>
+                <span
+                  class="hargx-pagination__link hargx-pagination__link--current"
+                  aria-current="page"
+                >
+                  {{ part.title }}
+                </span>
 
-                {% endif %}
+              {%- endif -%}
 
-              {% endfor %}
+            {%- endfor -%}
 
-            </div>
 
-            {% if paginate.next %}
+            {%- if paginate.next -%}
 
               <a
                 href="{{ paginate.next.url }}"
-                class="hargx-pagination__arrow"
+                class="hargx-pagination__link"
                 aria-label="Next page"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M9 18L15 12L9 6"
-                    stroke="currentColor"
-                    stroke-width="1.7"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </a>
 
-            {% endif %}
+            {%- endif -%}
 
           </nav>
 
-        {% endif %}
+        {%- endif -%}
 
-      {% else %}
+      </div>
 
-        <!-- Empty Collection -->
-
-        <div class="hargx-collection-empty">
-
-          <div class="hargx-collection-empty__icon">
-
-            <svg
-              width="42"
-              height="42"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M5 8H19L18 20H6L5 8Z"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M9 8C9 5.8 10.1 4 12 4C13.9 4 15 5.8 15 8"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-            </svg>
-
-          </div>
-
-          <h2 class="hargx-collection-empty__title">
-            {{ section.settings.empty_heading }}
-          </h2>
-
-          <p class="hargx-collection-empty__text">
-            {{ section.settings.empty_text }}
-          </p>
-
-          <a
-            href="{{ routes.all_products_collection_url }}"
-            class="hargx-collection-empty__button"
-          >
-            {{ section.settings.empty_button_label }}
-          </a>
-
-        </div>
-
-      {% endif %}
-
-    {% endpaginate %}
+    </div>
 
   </div>
 </section>
 
-<script>
-  (function () {
-    const section = document.getElementById(
-      'HargxCollectionGrid-{{ section.id }}'
-    );
+{%- endpaginate -%}
 
-    if (!section) return;
-
-    const quickAddButtons = section.querySelectorAll(
-      '[data-hargx-quick-add]'
-    );
-
-    quickAddButtons.forEach(function (button) {
-      button.addEventListener('click', function () {
-        const variantId = button.dataset.variantId;
-
-        if (!variantId) return;
-
-        if (button.classList.contains('is-loading')) return;
-
-        button.classList.add('is-loading');
-        button.disabled = true;
-
-        const originalText =
-          button.querySelector('.hargx-product-card__quick-add-text');
-
-        const originalLabel = originalText
-          ? originalText.textContent
-          : '';
-
-        if (originalText) {
-          originalText.textContent = 'Adding...';
-        }
-
-        fetch(window.Shopify.routes.root + 'cart/add.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-          },
-          body: JSON.stringify({
-            items: [
-              {
-                id: Number(variantId),
-                quantity: 1
-              }
-            ]
-          })
-        })
-          .then(function (response) {
-            if (!response.ok) {
-              return response.json().then(function (error) {
-                throw error;
-              });
-            }
-
-            return response.json();
-          })
-          .then(function () {
-            if (originalText) {
-              originalText.textContent = 'Added';
-            }
-
-            document.dispatchEvent(
-              new CustomEvent('hargx:cart:updated')
-            );
-
-            if (typeof window.refreshCart === 'function') {
-              window.refreshCart();
-            }
-
-            setTimeout(function () {
-              if (originalText) {
-                originalText.textContent = originalLabel;
-              }
-
-              button.classList.remove('is-loading');
-              button.disabled = false;
-            }, 1200);
-          })
-          .catch(function (error) {
-            console.error('HARGX Quick Add:', error);
-
-            if (originalText) {
-              originalText.textContent = 'Try again';
-            }
-
-            setTimeout(function () {
-              if (originalText) {
-                originalText.textContent = originalLabel;
-              }
-
-              button.classList.remove('is-loading');
-              button.disabled = false;
-            }, 1500);
-          });
-      });
-    });
-  })();
-</script>
 
 <style>
-  .hargx-collection-grid {
-    background: var(--hargx-grid-bg);
-    color: var(--hargx-grid-text);
-    padding-top: var(--hargx-grid-top);
-    padding-bottom: var(--hargx-grid-bottom);
+  #HargxCollectionGrid-{{ section.id }} {
+    --hargx-bg: {{ section.settings.background }};
+    --hargx-text: {{ section.settings.text_color }};
+    --hargx-accent: {{ section.settings.accent_color }};
+    --hargx-border: {{ section.settings.border_color }};
+    --hargx-card-bg: {{ section.settings.card_background }};
+    --hargx-button-radius: {{ section.settings.button_radius }}px;
+    background: var(--hargx-bg);
+    color: var(--hargx-text);
   }
 
-  .hargx-product-grid {
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-grid-section__inner {
+    width: min(100% - 40px, {{ section.settings.max_width }}px);
+    margin: 0 auto;
+  }
+
+  /* =========================
+     TOOLBAR
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar {
+    border-top: 1px solid var(--toolbar-border);
+    border-bottom: 1px solid var(--toolbar-border);
+    background: var(--toolbar-bg);
+    color: var(--toolbar-text);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__inner {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__count {
+    font-size: 13px;
+    letter-spacing: .02em;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__filter-button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font: inherit;
+    padding: 8px 0;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__filter-icon,
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__filter-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__filter-count {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--toolbar-accent);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__sorting {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__sorting label {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__sorting select {
+    appearance: none;
+    border: 1px solid var(--toolbar-border);
+    background: var(--toolbar-bg);
+    color: var(--toolbar-text);
+    border-radius: var(--toolbar-radius);
+    min-height: 42px;
+    padding: 0 38px 0 13px;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__sort-icon {
+    position: absolute;
+    right: 12px;
+    pointer-events: none;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__sort-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+
+  /* =========================
+     PRODUCT LAYOUT
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-products-layout {
     display: grid;
-    grid-template-columns: repeat(
-      var(--hargx-grid-columns),
-      minmax(0, 1fr)
-    );
-    gap: var(--hargx-grid-gap);
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: {{ section.settings.sidebar_gap }}px;
+    padding-top: {{ section.settings.section_top_spacing }}px;
+    padding-bottom: {{ section.settings.section_bottom_spacing }}px;
   }
 
-  /* Product Card */
-
-  .hargx-product-card {
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-products {
     min-width: 0;
   }
 
-  .hargx-product-card__media {
-    position: relative;
+
+  /* =========================
+     DESKTOP FILTERS
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-filters {
+    min-width: 0;
+    align-self: start;
+    position: sticky;
+    top: 100px;
   }
 
-  .hargx-product-card__media-link {
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-filters__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--hargx-border);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-filters__eyebrow {
     display: block;
-    color: inherit;
-    text-decoration: none;
+    margin-bottom: 5px;
+    color: var(--hargx-accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
   }
 
-  .hargx-product-card__image-wrapper {
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-filters__header h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-filters__active-count {
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hargx-accent);
+    color: #fff;
+    font-size: 11px;
+  }
+
+
+  /* =========================
+     FILTER GROUPS
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-group {
+    border-bottom: 1px solid var(--hargx-border);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-group summary {
+    list-style: none;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-group summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-group summary svg {
+    width: 17px;
+    height: 17px;
+    transition: transform .25s ease;
+    flex-shrink: 0;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-group[open] summary svg {
+    transform: rotate(180deg);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-group__content {
+    padding: 0 0 18px;
+  }
+
+
+  /* =========================
+     FILTER OPTIONS
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-option {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 9px;
+    min-height: 34px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-option__box {
+    width: 17px;
+    height: 17px;
+    border: 1px solid #bdb8b0;
+    border-radius: 4px;
+    position: relative;
+    transition: all .2s ease;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-option input:checked + .hargx-filter-option__box {
+    background: var(--hargx-accent);
+    border-color: var(--hargx-accent);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-option input:checked + .hargx-filter-option__box::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 4px;
+    left: 4px;
+    top: 4px;
+    border-left: 1.5px solid #fff;
+    border-bottom: 1.5px solid #fff;
+    transform: rotate(-45deg);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-option input:disabled + .hargx-filter-option__box {
+    opacity: .4;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-option__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-option__count {
+    color: #77736d;
+    font-size: 11px;
+  }
+
+
+  /* =========================
+     PRICE
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-price-range__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-price-range__field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: #77736d;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-price-range__input {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--hargx-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-price-range__input span {
+    padding-left: 9px;
+    font-size: 12px;
+    color: #77736d;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-price-range__input input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    padding: 0 7px;
+    font: inherit;
+    font-size: 12px;
+    color: var(--hargx-text);
+  }
+
+
+  /* =========================
+     FILTER ACTIONS
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-filters__actions,
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-top: 18px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-button {
+    min-height: 44px;
+    border-radius: var(--hargx-button-radius);
+    padding: 0 14px;
+    border: 1px solid var(--hargx-accent);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .2s ease, background .2s ease, color .2s ease;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-button:hover {
+    transform: translateY(-1px);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-button--primary {
+    background: var(--hargx-accent);
+    color: #fff;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-button--secondary {
+    background: transparent;
+    color: var(--hargx-text);
+  }
+
+
+  /* =========================
+     PRODUCT GRID
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-products__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--desktop-columns), minmax(0, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card {
+    min-width: 0;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__media {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 1 / 1;
-    border-radius: var(--hargx-grid-radius);
-    background: #f4f2ee;
+    border-radius: var(--card-radius);
+    background: #f2f0ec;
+    aspect-ratio: 1 / 1.15;
   }
 
-  .hargx-product-card__image {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__image {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition:
-      opacity 0.45s ease,
-      transform 0.65s cubic-bezier(0.2, 0.65, 0.25, 1);
+    transition: opacity .4s ease, transform .55s ease;
   }
 
-  .hargx-product-card__image--secondary {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__image--secondary {
     position: absolute;
     inset: 0;
     opacity: 0;
   }
 
-  .hargx-product-card:hover
-    .hargx-product-card__image--primary {
+  {% if section.settings.show_second_image %}
+    @media (min-width: 990px) {
+      #HargxCollectionGrid-{{ section.id }} .hargx-product-card:hover .hargx-product-card__image--primary {
+        opacity: 0;
+      }
+
+      #HargxCollectionGrid-{{ section.id }} .hargx-product-card:hover .hargx-product-card__image--secondary {
+        opacity: 1;
+      }
+    }
+  {% endif %}
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card:hover .hargx-product-card__image {
     transform: scale(1.025);
   }
 
-  .hargx-product-card:hover
-    .hargx-product-card__image--secondary {
-    opacity: 1;
-    transform: scale(1.025);
-  }
-
-  .hargx-product-card__placeholder {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  /* Badges */
-
-  .hargx-product-card__badges {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__badges {
     position: absolute;
     top: 12px;
     left: 12px;
     z-index: 2;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
   }
 
-  .hargx-product-card__badge {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__badge {
     display: inline-flex;
-    align-items: center;
-    min-height: 28px;
-    padding: 5px 9px;
-    border-radius: 5px;
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: var(--hargx-accent);
+    color: #fff;
     font-size: 10px;
     font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.04em;
     text-transform: uppercase;
+    letter-spacing: .06em;
   }
 
-  .hargx-product-card__badge--sale {
-    background: var(--hargx-grid-accent);
-    color: #fff;
-  }
-
-  .hargx-product-card__badge--sold {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__badge--sold {
     background: #000;
-    color: #fff;
   }
 
-  /* Quick Add */
-
-  .hargx-product-card__quick-add {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__quick-add {
     position: absolute;
+    left: 12px;
     right: 12px;
     bottom: 12px;
     z-index: 3;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    min-height: 40px;
-    padding: 9px 13px;
-    border: 0;
-    border-radius: 7px;
-    background: #fff;
-    color: #000;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    font: inherit;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
     opacity: 0;
     transform: translateY(8px);
-    transition:
-      opacity 0.25s ease,
-      transform 0.25s ease,
-      background 0.25s ease,
-      color 0.25s ease;
+    transition: opacity .25s ease, transform .25s ease;
   }
 
-  .hargx-product-card:hover .hargx-product-card__quick-add,
-  .hargx-product-card__quick-add:focus-visible {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card:hover .hargx-product-card__quick-add {
     opacity: 1;
     transform: translateY(0);
   }
 
-  .hargx-product-card__quick-add:hover {
-    background: var(--hargx-grid-accent);
-    color: #fff;
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__quick-add-button {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 0;
+    border-radius: var(--hargx-button-radius);
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
   }
 
-  .hargx-product-card__quick-add.is-loading {
-    cursor: wait;
-    opacity: 0.7;
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__quick-add-button svg {
+    width: 17px;
+    height: 17px;
   }
 
-  .hargx-product-card__quick-add-icon {
-    display: inline-flex;
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__content {
+    padding-top: 14px;
   }
 
-  /* Content */
-
-  .hargx-product-card__content {
-    padding-top: 15px;
-  }
-
-  .hargx-product-card__vendor {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__vendor {
     margin-bottom: 5px;
-    color: rgba(0, 0, 0, 0.48);
+    color: #77736d;
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    line-height: 1.3;
+    letter-spacing: .1em;
     text-transform: uppercase;
   }
 
-  .hargx-product-card__title {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__title {
     margin: 0;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
     line-height: 1.35;
   }
 
-  .hargx-product-card__title a {
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__title a {
     color: inherit;
     text-decoration: none;
-    transition: color 0.2s ease;
   }
 
-  .hargx-product-card__title a:hover {
-    color: var(--hargx-grid-accent);
-  }
-
-  /* Rating */
-
-  .hargx-product-card__rating {
-    display: flex;
-    align-items: center;
-    gap: 7px;
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__rating {
     margin-top: 7px;
-  }
-
-  .hargx-product-card__stars {
-    color: var(--hargx-grid-accent);
-    font-size: 11px;
-    letter-spacing: 1px;
-    line-height: 1;
-  }
-
-  .hargx-product-card__rating-text {
-    color: rgba(0, 0, 0, 0.48);
-    font-size: 11px;
-  }
-
-  /* Price */
-
-  .hargx-product-card__price {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__price {
+    margin-top: 7px;
+    display: flex;
+    align-items: center;
     gap: 8px;
-    margin-top: 8px;
-  }
-
-  .hargx-product-card__price-current {
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .hargx-product-card__price-compare {
-    color: rgba(0, 0, 0, 0.42);
     font-size: 13px;
-    text-decoration: line-through;
   }
 
-  /* Pagination */
-
-  .hargx-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 60px;
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__price-current {
+    font-weight: 700;
   }
 
-  .hargx-pagination__pages {
-    display: flex;
-    align-items: center;
-    gap: 7px;
+  #HargxCollectionGrid-{{ section.id }} .hargx-product-card__price-compare {
+    color: #888;
   }
 
-  .hargx-pagination__page,
-  .hargx-pagination__arrow {
+
+  /* =========================
+     EMPTY STATE
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 70px 20px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-empty__icon svg {
+    width: 42px;
+    height: 42px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-empty h2 {
+    margin: 18px 0 8px;
+    font-size: 24px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-empty p {
+    margin: 0 auto 22px;
+    max-width: 480px;
+    color: #77736d;
+    font-size: 14px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-collection-empty__button {
     display: inline-flex;
     align-items: center;
+    min-height: 46px;
+    padding: 0 20px;
+    border-radius: var(--hargx-button-radius);
+    background: var(--hargx-accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+
+  /* =========================
+     PAGINATION
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-pagination {
+    display: flex;
+    align-items: center;
     justify-content: center;
+    gap: 6px;
+    margin-top: 50px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-pagination__link {
     min-width: 40px;
     height: 40px;
     padding: 0 10px;
-    border: 1px solid #e5e2dc;
-    border-radius: 50%;
-    color: #000;
-    font-size: 12px;
-    text-decoration: none;
-    transition:
-      background 0.25s ease,
-      color 0.25s ease,
-      border-color 0.25s ease;
-  }
-
-  .hargx-pagination__page:hover,
-  .hargx-pagination__arrow:hover,
-  .hargx-pagination__page.is-current {
-    border-color: #000;
-    background: #000;
-    color: #fff;
-  }
-
-  /* Empty */
-
-  .hargx-collection-empty {
-    max-width: 620px;
-    margin: 30px auto;
-    padding: 80px 30px;
-    text-align: center;
-  }
-
-  .hargx-collection-empty__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 72px;
-    height: 72px;
-    margin: 0 auto 24px;
-    border-radius: 50%;
-    background: #f4f2ee;
-    color: var(--hargx-grid-accent);
-  }
-
-  .hargx-collection-empty__title {
-    margin: 0;
-    font-size: 32px;
-    line-height: 1.1;
-  }
-
-  .hargx-collection-empty__text {
-    max-width: 480px;
-    margin: 15px auto 28px;
-    color: rgba(0, 0, 0, 0.58);
-    font-size: 15px;
-    line-height: 1.6;
-  }
-
-  .hargx-collection-empty__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 48px;
-    padding: 12px 24px;
-    border-radius: 8px;
-    background: #000;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
+    border: 1px solid var(--hargx-border);
+    border-radius: var(--hargx-button-radius);
+    color: inherit;
     text-decoration: none;
-    transition:
-      background 0.25s ease,
-      transform 0.25s ease;
+    font-size: 12px;
   }
 
-  .hargx-collection-empty__button:hover {
-    background: var(--hargx-grid-accent);
-    transform: translateY(-2px);
+  #HargxCollectionGrid-{{ section.id }} .hargx-pagination__link--current {
+    background: var(--hargx-accent);
+    border-color: var(--hargx-accent);
+    color: #fff;
   }
 
-  /* Tablet */
+  #HargxCollectionGrid-{{ section.id }} .hargx-pagination__link svg {
+    width: 16px;
+    height: 16px;
+  }
+
+
+  /* =========================
+     MOBILE DRAWER
+     ========================= */
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer[hidden] {
+    display: none;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.38);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer__panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(430px, 92vw);
+    height: 100%;
+    overflow-y: auto;
+    background: var(--hargx-bg);
+    color: var(--hargx-text);
+    padding: 20px;
+    transform: translateX(100%);
+    transition: transform .3s ease;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer.is-open .hargx-filter-drawer__panel {
+    transform: translateX(0);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--hargx-border);
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer__header h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer__close {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--hargx-border);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  #HargxCollectionGrid-{{ section.id }} .hargx-filter-drawer__close svg {
+    width: 18px;
+    height: 18px;
+  }
+
+
+  /* =========================
+     RESPONSIVE
+     ========================= */
 
   @media screen and (max-width: 989px) {
-    .hargx-product-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-grid-section__inner {
+      width: min(100% - 28px, {{ section.settings.max_width }}px);
     }
 
-    .hargx-product-card__quick-add {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  /* Mobile */
-
-  @media screen and (max-width: 749px) {
-    .hargx-collection-grid {
-      padding-top: 32px;
-      padding-bottom: 48px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-products-layout {
+      display: block;
+      padding-top: {{ section.settings.mobile_top_spacing }}px;
+      padding-bottom: {{ section.settings.mobile_bottom_spacing }}px;
     }
 
-    .hargx-product-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 28px 12px;
-    }
-
-    .hargx-product-card__image-wrapper {
-      border-radius: max(10px, calc(var(--hargx-grid-radius) * 0.7));
-    }
-
-    .hargx-product-card__badges {
-      top: 8px;
-      left: 8px;
-    }
-
-    .hargx-product-card__badge {
-      min-height: 24px;
-      padding: 4px 7px;
-      font-size: 8px;
-    }
-
-    .hargx-product-card__quick-add {
-      right: 8px;
-      bottom: 8px;
-      width: 38px;
-      min-height: 38px;
-      padding: 0;
-      border-radius: 50%;
-    }
-
-    .hargx-product-card__quick-add-text {
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-filters {
       display: none;
     }
 
-    .hargx-product-card__content {
-      padding-top: 11px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__inner {
+      min-height: 58px;
     }
 
-    .hargx-product-card__vendor {
-      font-size: 8px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__sorting label {
+      display: none;
     }
 
-    .hargx-product-card__title {
-      font-size: 13px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-product-card__quick-add {
+      opacity: 1;
+      transform: none;
     }
 
-    .hargx-product-card__rating {
-      margin-top: 5px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-products__grid {
+      grid-template-columns: repeat(var(--mobile-columns), minmax(0, 1fr));
     }
 
-    .hargx-product-card__stars {
-      font-size: 9px;
+  }
+
+  @media screen and (max-width: 549px) {
+
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-grid-section__inner {
+      width: calc(100% - 24px);
     }
 
-    .hargx-product-card__rating-text {
-      font-size: 9px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__inner {
+      gap: 10px;
     }
 
-    .hargx-product-card__price {
-      margin-top: 6px;
-      gap: 5px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__left {
+      gap: 10px;
     }
 
-    .hargx-product-card__price-current {
-      font-size: 12px;
-    }
-
-    .hargx-product-card__price-compare {
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__count {
       font-size: 11px;
     }
 
-    .hargx-pagination {
-      margin-top: 45px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-collection-toolbar__sorting select {
+      min-height: 38px;
+      font-size: 11px;
     }
 
-    .hargx-pagination__page,
-    .hargx-pagination__arrow {
-      min-width: 36px;
-      height: 36px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-product-card__media {
+      border-radius: max(10px, calc(var(--card-radius) * .75));
     }
 
-    .hargx-pagination__pages {
-      gap: 4px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-product-card__content {
+      padding-top: 10px;
     }
 
-    .hargx-collection-empty {
-      padding: 55px 20px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-product-card__title {
+      font-size: 12px;
     }
 
-    .hargx-collection-empty__title {
-      font-size: 26px;
+    #HargxCollectionGrid-{{ section.id }} .hargx-product-card__price {
+      font-size: 12px;
     }
+
+    #HargxCollectionGrid-{{ section.id }} .hargx-pagination {
+      margin-top: 35px;
+    }
+
   }
 
+
   @media (prefers-reduced-motion: reduce) {
-    .hargx-product-card__image,
-    .hargx-product-card__quick-add,
-    .hargx-product-card__title a,
-    .hargx-pagination__page,
-    .hargx-pagination__arrow {
-      transition: none;
+
+    #HargxCollectionGrid-{{ section.id }} *,
+    #HargxCollectionGrid-{{ section.id }} *::before,
+    #HargxCollectionGrid-{{ section.id }} *::after {
+      transition-duration: .01ms !important;
+      animation-duration: .01ms !important;
     }
+
   }
 </style>
 
+
+<script>
+  (() => {
+    const section = document.getElementById('HargxCollectionGrid-{{ section.id }}');
+
+    if (!section) return;
+
+    /*
+     * ==========================================
+     * SORTING
+     * ==========================================
+     */
+
+    const sortSelect = section.querySelector('[data-hargx-sort]');
+
+    if (sortSelect) {
+      sortSelect.addEventListener('change', () => {
+        const url = new URL(window.location.href);
+
+        url.searchParams.set('sort_by', sortSelect.value);
+        url.searchParams.delete('page');
+
+        window.location.href = url.toString();
+      });
+    }
+
+
+    /*
+     * ==========================================
+     * FILTER DRAWER
+     * ==========================================
+     */
+
+    const drawer = section.querySelector('[data-hargx-filter-drawer]');
+    const openButton = section.querySelector('[data-hargx-filter-open]');
+    const closeButtons = section.querySelectorAll('[data-hargx-filter-close]');
+
+    const openDrawer = () => {
+      if (!drawer) return;
+
+      drawer.hidden = false;
+
+      requestAnimationFrame(() => {
+        drawer.classList.add('is-open');
+      });
+
+      if (openButton) {
+        openButton.setAttribute('aria-expanded', 'true');
+      }
+
+      document.documentElement.classList.add('hargx-filter-open');
+      document.body.classList.add('hargx-filter-open');
+    };
+
+    const closeDrawer = () => {
+      if (!drawer) return;
+
+      drawer.classList.remove('is-open');
+
+      if (openButton) {
+        openButton.setAttribute('aria-expanded', 'false');
+      }
+
+      document.documentElement.classList.remove('hargx-filter-open');
+      document.body.classList.remove('hargx-filter-open');
+
+      setTimeout(() => {
+        if (!drawer.classList.contains('is-open')) {
+          drawer.hidden = true;
+        }
+      }, 300);
+    };
+
+    if (openButton) {
+      openButton.addEventListener('click', openDrawer);
+    }
+
+    closeButtons.forEach((button) => {
+      button.addEventListener('click', closeDrawer);
+    });
+
+
+    /*
+     * ==========================================
+     * FILTER SUBMIT
+     * ==========================================
+     */
+
+    const filterForms = section.querySelectorAll('[data-hargx-filter-form]');
+
+    filterForms.forEach((form) => {
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const params = new URLSearchParams();
+
+        form.querySelectorAll('input').forEach((input) => {
+
+          if (!input.name || input.disabled) return;
+
+          if ((input.type === 'checkbox' || input.type === 'radio') && !input.checked) {
+            return;
+          }
+
+          if (input.value === '') return;
+
+          params.append(input.name, input.value);
+
+        });
+
+
+        /*
+         * Preserve current sorting.
+         */
+        const currentUrl = new URL(window.location.href);
+        const currentSort = currentUrl.searchParams.get('sort_by');
+
+        if (currentSort) {
+          params.set('sort_by', currentSort);
+        }
+
+
+        const queryString = params.toString();
+
+        window.location.href =
+          window.location.pathname +
+          (queryString ? '?' + queryString : '');
+      });
+
+    });
+
+
+    /*
+     * ==========================================
+     * CLEAR FILTERS
+     * ==========================================
+     */
+
+    section.querySelectorAll('[data-hargx-filter-clear]').forEach((button) => {
+
+      button.addEventListener('click', () => {
+
+        const currentUrl = new URL(window.location.href);
+        const sort = currentUrl.searchParams.get('sort_by');
+
+        const url = new URL(window.location.pathname, window.location.origin);
+
+        if (sort) {
+          url.searchParams.set('sort_by', sort);
+        }
+
+        window.location.href = url.toString();
+
+      });
+
+    });
+
+
+    /*
+     * ==========================================
+     * QUICK ADD
+     * ==========================================
+     */
+
+    section.querySelectorAll('[data-hargx-quick-add]').forEach((button) => {
+
+      button.addEventListener('click', async () => {
+
+        const variantId = button.dataset.variantId;
+
+        if (!variantId) return;
+
+        const originalHTML = button.innerHTML;
+
+        button.disabled = true;
+        button.classList.add('is-loading');
+        button.innerHTML = '<span>Adding...</span>';
+
+        try {
+
+          const response = await fetch(
+            window.Shopify.routes.root + 'cart/add.js',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify({
+                items: [
+                  {
+                    id: Number(variantId),
+                    quantity: 1
+                  }
+                ]
+              })
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error('Unable to add product.');
+          }
+
+          await response.json();
+
+          document.dispatchEvent(
+            new CustomEvent('hargx:cart:updated')
+          );
+
+          if (typeof window.refreshCart === 'function') {
+            window.refreshCart();
+          }
+
+          button.innerHTML = '<span>Added</span>';
+
+          setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.disabled = false;
+            button.classList.remove('is-loading');
+          }, 1400);
+
+        } catch (error) {
+
+          console.error(error);
+
+          button.innerHTML = '<span>Try again</span>';
+
+          setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.disabled = false;
+            button.classList.remove('is-loading');
+          }, 1600);
+
+        }
+
+      });
+
+    });
+
+  })();
+</script>
+
+
 {% schema %}
 {
-  "name": "HARGX Collection Grid",
+  "name": "HARGX Collection Products",
   "tag": "section",
   "class": "section",
   "settings": [
     {
+      "type": "header",
+      "content": "Product grid"
+    },
+    {
       "type": "range",
       "id": "products_per_page",
       "label": "Products per page",
-      "min": 8,
+      "min": 4,
       "max": 32,
       "step": 4,
       "default": 16
     },
     {
       "type": "select",
-      "id": "columns_desktop",
+      "id": "desktop_columns",
       "label": "Desktop columns",
       "options": [
         {
@@ -1034,11 +1864,27 @@
       "default": "4"
     },
     {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Mobile columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "2"
+    },
+    {
       "type": "range",
       "id": "grid_gap",
       "label": "Grid gap",
       "min": 8,
-      "max": 50,
+      "max": 40,
       "step": 2,
       "unit": "px",
       "default": 24
@@ -1046,7 +1892,7 @@
     {
       "type": "range",
       "id": "card_radius",
-      "label": "Card image radius",
+      "label": "Card radius",
       "min": 0,
       "max": 30,
       "step": 2,
@@ -1055,8 +1901,8 @@
     },
     {
       "type": "checkbox",
-      "id": "enable_image_hover",
-      "label": "Enable second image hover",
+      "id": "show_second_image",
+      "label": "Show second image on hover",
       "default": true
     },
     {
@@ -1064,24 +1910,6 @@
       "id": "show_badges",
       "label": "Show product badges",
       "default": true
-    },
-    {
-      "type": "text",
-      "id": "sale_label",
-      "label": "Sale label",
-      "default": "Sale"
-    },
-    {
-      "type": "text",
-      "id": "sold_out_label",
-      "label": "Sold out label",
-      "default": "Sold out"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_discount_percentage",
-      "label": "Show discount percentage",
-      "default": false
     },
     {
       "type": "checkbox",
@@ -1099,7 +1927,7 @@
       "type": "text",
       "id": "rating_text",
       "label": "Rating text",
-      "default": "(24)"
+      "default": "4.9"
     },
     {
       "type": "checkbox",
@@ -1108,39 +1936,83 @@
       "default": true
     },
     {
-      "type": "text",
-      "id": "quick_add_label",
-      "label": "Quick add label",
-      "default": "Quick add"
+      "type": "header",
+      "content": "Layout"
     },
     {
-      "type": "text",
-      "id": "choose_options_label",
-      "label": "Choose options label",
-      "default": "Choose options"
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 1000,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "default": 1400
     },
     {
-      "type": "text",
-      "id": "empty_heading",
-      "label": "Empty collection heading",
-      "default": "Nothing here yet"
+      "type": "range",
+      "id": "sidebar_gap",
+      "label": "Sidebar gap",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
     },
     {
-      "type": "textarea",
-      "id": "empty_text",
-      "label": "Empty collection text",
-      "default": "This collection doesn't have any products yet. Explore the rest of our store to find something you love."
+      "type": "range",
+      "id": "section_top_spacing",
+      "label": "Desktop top spacing",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
     },
     {
-      "type": "text",
-      "id": "empty_button_label",
-      "label": "Empty collection button",
-      "default": "Shop all products"
+      "type": "range",
+      "id": "section_bottom_spacing",
+      "label": "Desktop bottom spacing",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "mobile_top_spacing",
+      "label": "Mobile top spacing",
+      "min": 15,
+      "max": 70,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "mobile_bottom_spacing",
+      "label": "Mobile bottom spacing",
+      "min": 20,
+      "max": 90,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Colors"
     },
     {
       "type": "color",
-      "id": "background_color",
+      "id": "background",
       "label": "Background",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
       "default": "#FFFFFF"
     },
     {
@@ -1156,29 +2028,131 @@
       "default": "#FE7442"
     },
     {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 20,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 48
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#E8E5DF"
     },
     {
       "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 20,
-      "max": 120,
-      "step": 4,
+      "id": "button_radius",
+      "label": "Button radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
       "unit": "px",
-      "default": 72
+      "default": 10
+    }
+  ],
+  "blocks": [
+    {
+      "type": "toolbar",
+      "name": "Collection Toolbar",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_product_count",
+          "label": "Show product count",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_filter_button",
+          "label": "Show filter button",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "filter_label",
+          "label": "Filter label",
+          "default": "Filter"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_sorting",
+          "label": "Show sorting",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "sort_label",
+          "label": "Sort label",
+          "default": "Sort by"
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "Background",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "accent_color",
+          "label": "Accent",
+          "default": "#FE7442"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border",
+          "default": "#E8E5DF"
+        },
+        {
+          "type": "range",
+          "id": "button_radius",
+          "label": "Button radius",
+          "min": 0,
+          "max": 30,
+          "step": 2,
+          "unit": "px",
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type": "filters",
+      "name": "Collection Filters",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "default": "Refine"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Filters"
+        },
+        {
+          "type": "text",
+          "id": "apply_label",
+          "label": "Apply button label",
+          "default": "Apply filters"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "HARGX Collection Grid"
+      "name": "HARGX Collection Products",
+      "blocks": [
+        {
+          "type": "toolbar"
+        },
+        {
+          "type": "filters"
+        }
+      ]
     }
   ]
 }
