@@ -13,6 +13,8 @@
       "type": "hargx-hero",
       "name": "HARGX Hero Banner",
       "settings": {
+        "image": "shopify://shop_images/Jewellery_banner_01.png",
+        "mobile_image": "shopify://shop_images/Jewellery_banner_sharpened_copy.png",
         "image_alt": "HARGX hero banner",
         "image_loading": "eager",
         "image_position": "center center",
