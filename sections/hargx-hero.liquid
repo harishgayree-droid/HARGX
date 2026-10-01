@@ -1,0 +1,1116 @@
+{% comment %}
+  HARGX — Custom Hero Banner
+  Fully responsive + customizable hero section.
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'HargxHero-' | append: section.id
+  assign desktop_image = section.settings.image
+  assign mobile_image = section.settings.mobile_image | default: desktop_image
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="hargx-hero hargx-hero--{{ section.settings.height }} hargx-hero--content-{{ section.settings.content_position }}"
+  data-hargx-hero
+  style="
+    --hargx-hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --hargx-hero-content-width: {{ section.settings.content_width }}px;
+    --hargx-hero-heading-size: {{ section.settings.heading_size }}px;
+    --hargx-hero-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+    --hargx-hero-text-color: {{ section.settings.text_color }};
+    --hargx-hero-button-bg: {{ section.settings.button_background }};
+    --hargx-hero-button-text: {{ section.settings.button_text_color }};
+    --hargx-hero-button-border: {{ section.settings.button_border_color }};
+    --hargx-hero-section-bg: {{ section.settings.background_color }};
+    --hargx-hero-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-hero-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --hargx-hero-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --hargx-hero-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="hargx-hero__media">
+    {%- if desktop_image != blank -%}
+
+      <picture>
+        {%- if mobile_image != blank -%}
+          <source
+            media="(max-width: 749px)"
+            srcset="
+              {{ mobile_image | image_url: width: 750 }} 750w,
+              {{ mobile_image | image_url: width: 1100 }} 1100w
+            "
+          >
+        {%- endif -%}
+
+        {{
+          desktop_image
+          | image_url: width: 2400
+          | image_tag:
+            class: 'hargx-hero__image',
+            widths: '750, 1100, 1500, 1800, 2000, 2400',
+            sizes: '100vw',
+            loading: section.settings.image_loading,
+            alt: section.settings.image_alt
+        }}
+      </picture>
+
+    {%- else -%}
+
+      <div class="hargx-hero__placeholder">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'hargx-hero__placeholder-svg' }}
+      </div>
+
+    {%- endif -%}
+
+    {%- if section.settings.overlay_enabled -%}
+      <div class="hargx-hero__overlay"></div>
+    {%- endif -%}
+  </div>
+
+  <div class="hargx-hero__inner hargx-hero__inner--{{ section.settings.container_width }}">
+    <div
+      class="
+        hargx-hero__content
+        hargx-hero__content--{{ section.settings.text_alignment }}
+        {% if section.settings.enable_animation %}
+          hargx-hero__content--animate
+        {% endif %}
+      "
+    >
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="hargx-hero__eyebrow">
+          {{ section.settings.eyebrow }}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h1 class="hargx-hero__heading">
+          {{ section.settings.heading }}
+        </h1>
+      {%- endif -%}
+
+      {%- if section.settings.description != blank -%}
+        <div class="hargx-hero__description rte">
+          {{ section.settings.description }}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank
+        or section.settings.secondary_button_label != blank
+      -%}
+        <div class="hargx-hero__buttons">
+
+          {%- if section.settings.button_label != blank -%}
+            <a
+              {% if section.settings.button_link != blank %}
+                href="{{ section.settings.button_link }}"
+              {% else %}
+                role="link"
+                aria-disabled="true"
+              {% endif %}
+              class="hargx-hero__button hargx-hero__button--primary"
+            >
+              <span>{{ section.settings.button_label }}</span>
+              <svg
+                class="hargx-hero__button-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 8H13M8.5 3.5L13 8L8.5 12.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+          {%- endif -%}
+
+          {%- if section.settings.secondary_button_label != blank -%}
+            <a
+              {% if section.settings.secondary_button_link != blank %}
+                href="{{ section.settings.secondary_button_link }}"
+              {% else %}
+                role="link"
+                aria-disabled="true"
+              {% endif %}
+              class="hargx-hero__button hargx-hero__button--secondary"
+            >
+              <span>{{ section.settings.secondary_button_label }}</span>
+            </a>
+          {%- endif -%}
+
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.show_scroll_indicator -%}
+    <button
+      type="button"
+      class="hargx-hero__scroll"
+      data-hargx-hero-scroll
+      aria-label="Scroll to next section"
+    >
+      <span class="hargx-hero__scroll-line"></span>
+      <span class="hargx-hero__scroll-text">
+        {{ section.settings.scroll_text }}
+      </span>
+    </button>
+  {%- endif -%}
+</section>
+
+<style>
+  #{{ section_id }} {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    overflow: hidden;
+    background: var(--hargx-hero-section-bg);
+    color: var(--hargx-hero-text-color);
+  }
+
+  #{{ section_id }} .hargx-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+  }
+
+  #{{ section_id }} .hargx-hero__media picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  #{{ section_id }} .hargx-hero__image,
+  #{{ section_id }} .hargx-hero__placeholder,
+  #{{ section_id }} .hargx-hero__placeholder-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  #{{ section_id }} .hargx-hero__image {
+    object-fit: cover;
+    object-position: {{ section.settings.image_position }};
+  }
+
+  #{{ section_id }} .hargx-hero__placeholder {
+    background: #f3f3f3;
+  }
+
+  #{{ section_id }} .hargx-hero__placeholder-svg {
+    opacity: 0.35;
+  }
+
+  #{{ section_id }} .hargx-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    opacity: var(--hargx-hero-overlay);
+    pointer-events: none;
+  }
+
+  #{{ section_id }} .hargx-hero__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    min-height: inherit;
+    width: 100%;
+    margin: 0 auto;
+    padding-top: var(--hargx-hero-padding-top);
+    padding-bottom: var(--hargx-hero-padding-bottom);
+    box-sizing: border-box;
+  }
+
+  #{{ section_id }} .hargx-hero__inner--page-width {
+    max-width: 1440px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  #{{ section_id }} .hargx-hero__inner--narrow {
+    max-width: 1200px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  #{{ section_id }} .hargx-hero__inner--full-width {
+    max-width: none;
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+
+  /*
+    Hero Heights
+  */
+
+  #{{ section_id }}.hargx-hero--small {
+    min-height: 520px;
+  }
+
+  #{{ section_id }}.hargx-hero--medium {
+    min-height: 650px;
+  }
+
+  #{{ section_id }}.hargx-hero--large {
+    min-height: 780px;
+  }
+
+  #{{ section_id }}.hargx-hero--full-screen {
+    min-height: calc(100vh - var(--hargx-header-height, 0px));
+  }
+
+  #{{ section_id }}.hargx-hero--adapt {
+    min-height: 0;
+    aspect-ratio: 16 / 7;
+  }
+
+  /*
+    Content Position
+  */
+
+  #{{ section_id }} .hargx-hero__inner {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  #{{ section_id }}.hargx-hero--content-top-left .hargx-hero__inner {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  #{{ section_id }}.hargx-hero--content-top-center .hargx-hero__inner {
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  #{{ section_id }}.hargx-hero--content-top-right .hargx-hero__inner {
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+
+  #{{ section_id }}.hargx-hero--content-middle-left .hargx-hero__inner {
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  #{{ section_id }}.hargx-hero--content-middle-center .hargx-hero__inner {
+    align-items: center;
+    justify-content: center;
+  }
+
+  #{{ section_id }}.hargx-hero--content-middle-right .hargx-hero__inner {
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  #{{ section_id }}.hargx-hero--content-bottom-left .hargx-hero__inner {
+    align-items: flex-end;
+    justify-content: flex-start;
+  }
+
+  #{{ section_id }}.hargx-hero--content-bottom-center .hargx-hero__inner {
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  #{{ section_id }}.hargx-hero--content-bottom-right .hargx-hero__inner {
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+
+  /*
+    Content
+  */
+
+  #{{ section_id }} .hargx-hero__content {
+    width: 100%;
+    max-width: var(--hargx-hero-content-width);
+    padding: 20px 0;
+  }
+
+  #{{ section_id }} .hargx-hero__content--left {
+    text-align: left;
+  }
+
+  #{{ section_id }} .hargx-hero__content--center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #{{ section_id }} .hargx-hero__content--right {
+    text-align: right;
+    margin-left: auto;
+  }
+
+  #{{ section_id }} .hargx-hero__eyebrow {
+    display: inline-block;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  #{{ section_id }} .hargx-hero__heading {
+    max-width: 100%;
+    margin: 0;
+    font-size: var(--hargx-hero-heading-size);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: inherit;
+  }
+
+  #{{ section_id }} .hargx-hero__description {
+    max-width: 620px;
+    margin-top: 24px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: inherit;
+  }
+
+  #{{ section_id }} .hargx-hero__description p {
+    margin: 0;
+  }
+
+  #{{ section_id }} .hargx-hero__content--center .hargx-hero__description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #{{ section_id }} .hargx-hero__content--right .hargx-hero__description {
+    margin-left: auto;
+  }
+
+  /*
+    Buttons
+  */
+
+  #{{ section_id }} .hargx-hero__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  #{{ section_id }} .hargx-hero__content--center .hargx-hero__buttons {
+    justify-content: center;
+  }
+
+  #{{ section_id }} .hargx-hero__content--right .hargx-hero__buttons {
+    justify-content: flex-end;
+  }
+
+  #{{ section_id }} .hargx-hero__button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 26px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+      color 0.3s ease,
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  #{{ section_id }} .hargx-hero__button span,
+  #{{ section_id }} .hargx-hero__button-icon {
+    position: relative;
+    z-index: 2;
+  }
+
+  #{{ section_id }} .hargx-hero__button-icon {
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+  }
+
+  #{{ section_id }} .hargx-hero__button--primary {
+    color: var(--hargx-hero-button-text);
+    background: var(--hargx-hero-button-bg);
+    border-color: var(--hargx-hero-button-bg);
+  }
+
+  #{{ section_id }} .hargx-hero__button--primary::before {
+    position: absolute;
+    content: "";
+    inset: 0;
+    background: #000;
+    transform: translateY(101%);
+    transition: transform 0.35s ease;
+  }
+
+  #{{ section_id }} .hargx-hero__button--primary:hover::before {
+    transform: translateY(0);
+  }
+
+  #{{ section_id }} .hargx-hero__button--primary:hover {
+    color: #fff;
+    border-color: #000;
+    transform: translateY(-2px);
+  }
+
+  #{{ section_id }} .hargx-hero__button--primary:hover .hargx-hero__button-icon {
+    transform: translateX(4px);
+  }
+
+  #{{ section_id }} .hargx-hero__button--secondary {
+    color: var(--hargx-hero-text-color);
+    background: transparent;
+    border-color: var(--hargx-hero-button-border);
+  }
+
+  #{{ section_id }} .hargx-hero__button--secondary:hover {
+    color: #000;
+    background: #fff;
+    border-color: #fff;
+    transform: translateY(-2px);
+  }
+
+  /*
+    Scroll Indicator
+  */
+
+  #{{ section_id }} .hargx-hero__scroll {
+    position: absolute;
+    z-index: 3;
+    right: 40px;
+    bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  #{{ section_id }} .hargx-hero__scroll-line {
+    position: relative;
+    display: block;
+    width: 42px;
+    height: 1px;
+    overflow: hidden;
+    background: currentColor;
+    opacity: 0.7;
+  }
+
+  #{{ section_id }} .hargx-hero__scroll-line::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: currentColor;
+    animation: hargxHeroScroll 2s ease-in-out infinite;
+  }
+
+  #{{ section_id }} .hargx-hero__scroll-text {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  @keyframes hargxHeroScroll {
+    0% {
+      transform: translateX(0);
+    }
+
+    50%,
+    100% {
+      transform: translateX(200%);
+    }
+  }
+
+  /*
+    Entrance Animation
+  */
+
+  #{{ section_id }} .hargx-hero__content--animate {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: hargxHeroContent 0.8s ease forwards;
+    animation-delay: 0.15s;
+  }
+
+  @keyframes hargxHeroContent {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /*
+    Accessibility
+  */
+
+  #{{ section_id }} .hargx-hero__button:focus-visible,
+  #{{ section_id }} .hargx-hero__scroll:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  /*
+    Mobile
+  */
+
+  @media screen and (max-width: 749px) {
+    #{{ section_id }} .hargx-hero__inner {
+      padding-top: var(--hargx-hero-padding-top-mobile);
+      padding-bottom: var(--hargx-hero-padding-bottom-mobile);
+    }
+
+    #{{ section_id }} .hargx-hero__inner--page-width,
+    #{{ section_id }} .hargx-hero__inner--narrow {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    #{{ section_id }} .hargx-hero__inner--full-width {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    #{{ section_id }}.hargx-hero--small {
+      min-height: 500px;
+    }
+
+    #{{ section_id }}.hargx-hero--medium {
+      min-height: 580px;
+    }
+
+    #{{ section_id }}.hargx-hero--large {
+      min-height: 680px;
+    }
+
+    #{{ section_id }}.hargx-hero--full-screen {
+      min-height: calc(100svh - var(--hargx-header-height, 0px));
+    }
+
+    #{{ section_id }}.hargx-hero--adapt {
+      aspect-ratio: 4 / 5;
+    }
+
+    #{{ section_id }} .hargx-hero__heading {
+      font-size: var(--hargx-hero-heading-size-mobile);
+      line-height: 1;
+    }
+
+    #{{ section_id }} .hargx-hero__eyebrow {
+      margin-bottom: 12px;
+      font-size: 11px;
+    }
+
+    #{{ section_id }} .hargx-hero__description {
+      margin-top: 18px;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    #{{ section_id }} .hargx-hero__buttons {
+      margin-top: 24px;
+    }
+
+    #{{ section_id }} .hargx-hero__button {
+      min-height: 50px;
+      padding: 0 21px;
+    }
+
+    #{{ section_id }} .hargx-hero__scroll {
+      right: 20px;
+      bottom: 20px;
+    }
+
+    #{{ section_id }} .hargx-hero__scroll-text {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    #{{ section_id }} .hargx-hero__buttons {
+      width: 100%;
+    }
+
+    #{{ section_id }} .hargx-hero__button {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #{{ section_id }} .hargx-hero__content--animate {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+
+    #{{ section_id }} .hargx-hero__scroll-line::after {
+      animation: none;
+    }
+
+    #{{ section_id }} .hargx-hero__button,
+    #{{ section_id }} .hargx-hero__button-icon,
+    #{{ section_id }} .hargx-hero__button--primary::before {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const hero = document.getElementById('{{ section_id }}');
+
+    if (!hero) return;
+
+    const scrollButton = hero.querySelector('[data-hargx-hero-scroll]');
+
+    if (scrollButton) {
+      scrollButton.addEventListener('click', function () {
+        const nextSection = hero.nextElementSibling;
+
+        if (nextSection) {
+          nextSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "HARGX Hero Banner",
+  "tag": "section",
+  "class": "hargx-hero-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image",
+      "info": "Optional. If empty, the desktop image will be used."
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "HARGX hero banner"
+    },
+    {
+      "type": "select",
+      "id": "image_loading",
+      "label": "Image loading",
+      "options": [
+        {
+          "value": "eager",
+          "label": "Eager"
+        },
+        {
+          "value": "lazy",
+          "label": "Lazy"
+        }
+      ],
+      "default": "eager"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "center center",
+          "label": "Center"
+        },
+        {
+          "value": "left center",
+          "label": "Left"
+        },
+        {
+          "value": "right center",
+          "label": "Right"
+        },
+        {
+          "value": "center top",
+          "label": "Top"
+        },
+        {
+          "value": "center bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left top",
+          "label": "Top left"
+        },
+        {
+          "value": "right top",
+          "label": "Top right"
+        },
+        {
+          "value": "left bottom",
+          "label": "Bottom left"
+        },
+        {
+          "value": "right bottom",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "header",
+      "content": "Hero height"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "full-screen",
+          "label": "Full screen"
+        }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "New collection"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designed for what comes next"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Thoughtfully designed products made to fit beautifully into your everyday.</p>"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "min": 300,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 620
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top left"
+        },
+        {
+          "value": "top-center",
+          "label": "Top center"
+        },
+        {
+          "value": "top-right",
+          "label": "Top right"
+        },
+        {
+          "value": "middle-left",
+          "label": "Middle left"
+        },
+        {
+          "value": "middle-center",
+          "label": "Middle center"
+        },
+        {
+          "value": "middle-right",
+          "label": "Middle right"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "middle-left"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 36,
+      "max": 110,
+      "step": 2,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Mobile heading size",
+      "min": 28,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 42
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animation",
+      "label": "Enable entrance animation",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "label": "Button label",
+      "default": "Explore"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "overlay_enabled",
+      "label": "Enable image overlay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Primary button background",
+      "default": "#FE7442"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Primary button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Secondary button border",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "container_width",
+      "label": "Content container",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Page width"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "full-width",
+          "label": "Full width"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Scroll indicator"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show scroll indicator",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "scroll_text",
+      "label": "Scroll text",
+      "default": "Scroll"
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Hero Banner"
+    }
+  ]
+}
+{% endschema %}
