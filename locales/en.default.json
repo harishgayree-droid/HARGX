@@ -30,6 +30,11 @@
   "collections": {
     "title": "Collections"
   },
+  "products": {
+    "product": {
+      "sold_out": "Sold out"
+    }
+  },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
     "card": "Gift card",
