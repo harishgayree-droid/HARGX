@@ -89,10 +89,86 @@
         "padding_top_mobile": 48,
         "padding_bottom_mobile": 48
       }
+    },
+    "shop_by_category_A7PpqL": {
+      "type": "shop-by-category",
+      "blocks": {
+        "category_kFU4Nw": {
+          "type": "category",
+          "settings": {
+            "title": "New Arrivals",
+            "description": "Discover the latest additions.",
+            "link": "",
+            "show_link": true,
+            "link_text": "Shop now",
+            "content_position": "bottom"
+          }
+        },
+        "category_nrYhaM": {
+          "type": "category",
+          "settings": {
+            "title": "New Arrivals",
+            "description": "Discover the latest additions.",
+            "link": "",
+            "show_link": true,
+            "link_text": "Shop now",
+            "content_position": "bottom"
+          }
+        },
+        "category_HQyUgd": {
+          "type": "category",
+          "settings": {
+            "title": "New Arrivals",
+            "description": "Discover the latest additions.",
+            "link": "",
+            "show_link": true,
+            "link_text": "Shop now",
+            "content_position": "bottom"
+          }
+        },
+        "category_3UiQT6": {
+          "type": "category",
+          "settings": {
+            "title": "New Arrivals",
+            "description": "Discover the latest additions.",
+            "link": "",
+            "show_link": true,
+            "link_text": "Shop now",
+            "content_position": "bottom"
+          }
+        }
+      },
+      "block_order": [
+        "category_kFU4Nw",
+        "category_nrYhaM",
+        "category_HQyUgd",
+        "category_3UiQT6"
+      ],
+      "name": "HARGX Shop by Category",
+      "settings": {
+        "eyebrow": "Explore",
+        "heading": "Shop by category",
+        "description": "<p>Explore our collections and find something made for you.</p>",
+        "text_alignment": "center",
+        "columns_desktop": "4",
+        "columns_mobile": "2",
+        "image_ratio": "4 / 5",
+        "gap": 18,
+        "gap_mobile": 12,
+        "card_style": "default",
+        "card_radius": 12,
+        "background_color": "#FAF8F4",
+        "text_color": "#000000",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 52,
+        "padding_bottom_mobile": 52
+      }
     }
   },
   "order": [
     "hargx_hero_zQPrgP",
-    "hargx_featured_collection_3pigqz"
+    "hargx_featured_collection_3pigqz",
+    "shop_by_category_A7PpqL"
   ]
 }
