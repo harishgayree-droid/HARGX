@@ -224,12 +224,62 @@
         "columns_desktop": "4",
         "columns_mobile": "2",
         "layout_style": "default",
-        "background_color": "#FAF8F4",
+        "background_color": "#faf8f4",
         "text_color": "#000000",
         "padding_top": 72,
         "padding_bottom": 72,
         "padding_top_mobile": 48,
         "padding_bottom_mobile": 48
+      }
+    },
+    "hargx_editorial_rdkfAc": {
+      "type": "hargx-editorial",
+      "blocks": {
+        "feature_VT7URw": {
+          "type": "feature",
+          "settings": {
+            "title": "Thoughtful design",
+            "text": "Every detail is considered with purpose."
+          }
+        },
+        "feature_PpcDBa": {
+          "type": "feature",
+          "settings": {
+            "title": "Thoughtful design",
+            "text": "Every detail is considered with purpose."
+          }
+        },
+        "feature_NLDemb": {
+          "type": "feature",
+          "settings": {
+            "title": "Thoughtful design",
+            "text": "Every detail is considered with purpose."
+          }
+        }
+      },
+      "block_order": [
+        "feature_VT7URw",
+        "feature_PpcDBa",
+        "feature_NLDemb"
+      ],
+      "name": "HARGX Editorial",
+      "settings": {
+        "image_position": "left",
+        "image_ratio": "4 / 5",
+        "show_badge": true,
+        "badge_text": "Designed with purpose",
+        "eyebrow": "The HARGX difference",
+        "heading": "Designed to make every detail feel intentional.",
+        "description": "<p>Thoughtful design, distinctive details and a better everyday experience.</p>",
+        "button_label": "Discover more",
+        "button_link": "",
+        "background_color": "#FAF8F4",
+        "text_color": "#000000",
+        "column_gap": 72,
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_mobile": 52,
+        "padding_bottom_mobile": 52
       }
     }
   },
@@ -237,6 +287,7 @@
     "hargx_hero_zQPrgP",
     "hargx_featured_collection_3pigqz",
     "shop_by_category_A7PpqL",
-    "hargx_benefits_tNKtGc"
+    "hargx_benefits_tNKtGc",
+    "hargx_editorial_rdkfAc"
   ]
 }
