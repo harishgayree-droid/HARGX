@@ -273,13 +273,74 @@
         "description": "<p>Thoughtful design, distinctive details and a better everyday experience.</p>",
         "button_label": "Discover more",
         "button_link": "",
-        "background_color": "#FAF8F4",
+        "background_color": "#faf8f4",
         "text_color": "#000000",
         "column_gap": 72,
         "padding_top": 88,
         "padding_bottom": 88,
         "padding_top_mobile": 52,
         "padding_bottom_mobile": 52
+      }
+    },
+    "hargx_testimonials_wjDjg7": {
+      "type": "hargx-testimonials",
+      "blocks": {
+        "testimonial_V4q3Jm": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "verified": true,
+            "verified_text": "Verified customer",
+            "quote": "<p>Absolutely love it. The quality is amazing and the whole experience was seamless.</p>",
+            "product_name": "Loved their HARGX purchase",
+            "customer_name": "Alex Morgan",
+            "customer_detail": "Verified buyer"
+          }
+        },
+        "testimonial_YKPhGi": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "verified": true,
+            "verified_text": "Verified customer",
+            "quote": "<p>Absolutely love it. The quality is amazing and the whole experience was seamless.</p>",
+            "product_name": "Loved their HARGX purchase",
+            "customer_name": "Alex Morgan",
+            "customer_detail": "Verified buyer"
+          }
+        },
+        "testimonial_GMrNTY": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "verified": true,
+            "verified_text": "Verified customer",
+            "quote": "<p>Absolutely love it. The quality is amazing and the whole experience was seamless.</p>",
+            "product_name": "Loved their HARGX purchase",
+            "customer_name": "Alex Morgan",
+            "customer_detail": "Verified buyer"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_V4q3Jm",
+        "testimonial_YKPhGi",
+        "testimonial_GMrNTY"
+      ],
+      "name": "HARGX Testimonials",
+      "settings": {
+        "eyebrow": "Loved by customers",
+        "heading": "Real people. Real experiences.",
+        "description": "<p>See why customers choose HARGX for products they love.</p>",
+        "card_style": "bordered",
+        "card_gap": 20,
+        "card_radius": 18,
+        "background_color": "#FAF8F4",
+        "card_background": "#FFFFFF",
+        "text_color": "#000000",
+        "accent_color": "#FE7442",
+        "padding_top": 88,
+        "padding_bottom": 88
       }
     }
   },
@@ -288,6 +349,7 @@
     "hargx_featured_collection_3pigqz",
     "shop_by_category_A7PpqL",
     "hargx_benefits_tNKtGc",
-    "hargx_editorial_rdkfAc"
+    "hargx_editorial_rdkfAc",
+    "hargx_testimonials_wjDjg7"
   ]
 }
