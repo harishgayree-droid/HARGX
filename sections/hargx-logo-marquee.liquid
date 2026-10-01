@@ -1,0 +1,533 @@
+{% comment %}
+  HARGX Logo Marquee
+  Scrolling brand / trust logo section
+{% endcomment %}
+
+<section
+  id="HargxLogoMarquee-{{ section.id }}"
+  class="hargx-logo-marquee"
+  style="
+    --hargx-marquee-bg: {{ section.settings.background_color }};
+    --hargx-marquee-text: {{ section.settings.text_color }};
+    --hargx-marquee-accent: {{ section.settings.accent_color }};
+    --hargx-marquee-border: {{ section.settings.border_color }};
+    --hargx-marquee-speed: {{ section.settings.speed }}s;
+    --hargx-marquee-logo-height: {{ section.settings.logo_height }}px;
+    --hargx-marquee-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-marquee-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="hargx-logo-marquee__container page-width">
+
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
+      <div class="hargx-logo-marquee__header">
+
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="hargx-logo-marquee__eyebrow">
+            {{ section.settings.eyebrow }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="hargx-logo-marquee__heading">
+            {{ section.settings.heading }}
+          </h2>
+        {%- endif -%}
+
+      </div>
+    {%- endif -%}
+
+    <div
+      class="hargx-logo-marquee__viewport"
+      {% if section.settings.pause_on_hover %}
+        data-pause-on-hover
+      {% endif %}
+    >
+      <div class="hargx-logo-marquee__track">
+
+        <div class="hargx-logo-marquee__group">
+
+          {%- for block in section.blocks -%}
+            <div
+              class="hargx-logo-marquee__item"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.link != blank -%}
+                <a
+                  href="{{ block.settings.link }}"
+                  class="hargx-logo-marquee__link"
+                  {% if block.settings.open_new_tab %}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  {% endif %}
+                >
+              {%- else -%}
+                <div class="hargx-logo-marquee__link">
+              {%- endif -%}
+
+                {%- if block.settings.logo != blank -%}
+                  {{
+                    block.settings.logo
+                    | image_url: width: 360
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '120, 180, 240, 360',
+                      sizes: '180px',
+                      class: 'hargx-logo-marquee__logo',
+                      alt: block.settings.alt_text
+                  }}
+                {%- else -%}
+                  <span class="hargx-logo-marquee__text-logo">
+                    {{ block.settings.text_logo }}
+                  </span>
+                {%- endif -%}
+
+              {%- if block.settings.link != blank -%}
+                </a>
+              {%- else -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+        </div>
+
+        {%- if section.blocks.size > 0 -%}
+          <div
+            class="hargx-logo-marquee__group"
+            aria-hidden="true"
+          >
+            {%- for block in section.blocks -%}
+              <div class="hargx-logo-marquee__item">
+                <div class="hargx-logo-marquee__link">
+
+                  {%- if block.settings.logo != blank -%}
+                    {{
+                      block.settings.logo
+                      | image_url: width: 360
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '120, 180, 240, 360',
+                        sizes: '180px',
+                        class: 'hargx-logo-marquee__logo',
+                        alt: ''
+                    }}
+                  {%- else -%}
+                    <span class="hargx-logo-marquee__text-logo">
+                      {{ block.settings.text_logo }}
+                    </span>
+                  {%- endif -%}
+
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  #HargxLogoMarquee-{{ section.id }} {
+    position: relative;
+    overflow: hidden;
+    background: var(--hargx-marquee-bg);
+    color: var(--hargx-marquee-text);
+    padding-top: var(--hargx-marquee-padding-top);
+    padding-bottom: var(--hargx-marquee-padding-bottom);
+    border-top: 1px solid var(--hargx-marquee-border);
+    border-bottom: 1px solid var(--hargx-marquee-border);
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__container {
+    width: 100%;
+  }
+
+  /* Header */
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__header {
+    margin-bottom: 34px;
+    text-align: center;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__eyebrow {
+    margin-bottom: 8px;
+    color: var(--hargx-marquee-accent);
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__heading {
+    margin: 0;
+    color: var(--hargx-marquee-text);
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Viewport */
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport::before,
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport::before {
+    left: 0;
+    background: linear-gradient(
+      to right,
+      var(--hargx-marquee-bg),
+      transparent
+    );
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport::after {
+    right: 0;
+    background: linear-gradient(
+      to left,
+      var(--hargx-marquee-bg),
+      transparent
+    );
+  }
+
+  /* Track */
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__track {
+    display: flex;
+    width: max-content;
+    animation: hargxLogoMarquee-{{ section.id }} var(--hargx-marquee-speed) linear infinite;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 170px;
+    margin-right: 54px;
+  }
+
+  /* Logo */
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(var(--hargx-marquee-logo-height) + 20px);
+    color: var(--hargx-marquee-text);
+    text-decoration: none;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__logo {
+    display: block;
+    width: auto;
+    max-width: 180px;
+    height: var(--hargx-marquee-logo-height);
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.48;
+    transition:
+      filter 0.3s ease,
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__link:hover
+    .hargx-logo-marquee__logo {
+    filter: grayscale(0%);
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  /* Text fallback */
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__text-logo {
+    display: block;
+    color: var(--hargx-marquee-text);
+    opacity: 0.48;
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__link:hover
+    .hargx-logo-marquee__text-logo {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  /* Pause */
+
+  #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport:hover
+    .hargx-logo-marquee__track {
+    animation-play-state: paused;
+  }
+
+  {% unless section.settings.pause_on_hover %}
+    #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport:hover
+      .hargx-logo-marquee__track {
+      animation-play-state: running;
+    }
+  {% endunless %}
+
+  @keyframes hargxLogoMarquee-{{ section.id }} {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Mobile */
+
+  @media screen and (max-width: 749px) {
+    #HargxLogoMarquee-{{ section.id }} {
+      padding-top: calc(var(--hargx-marquee-padding-top) * 0.75);
+      padding-bottom: calc(var(--hargx-marquee-padding-bottom) * 0.75);
+    }
+
+    #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__header {
+      margin-bottom: 24px;
+    }
+
+    #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__heading {
+      font-size: 19px;
+    }
+
+    #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__item {
+      min-width: 130px;
+      margin-right: 34px;
+    }
+
+    #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__logo {
+      max-width: 140px;
+      height: calc(var(--hargx-marquee-logo-height) * 0.85);
+    }
+
+    #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport::before,
+    #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__viewport::after {
+      width: 45px;
+    }
+  }
+
+  /* Reduced motion */
+
+  @media (prefers-reduced-motion: reduce) {
+    #HargxLogoMarquee-{{ section.id }} .hargx-logo-marquee__track {
+      animation: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "HARGX Logo Marquee",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Trusted by great brands"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Brands we work with"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Marquee speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "default": 30
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 38
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#FE7442"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#E8E4DE"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "text",
+          "id": "text_logo",
+          "label": "Text fallback",
+          "default": "BRAND"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt text",
+          "default": "Brand logo"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_new_tab",
+          "label": "Open link in new tab",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Logo Marquee",
+      "blocks": [
+        {
+          "type": "logo",
+          "settings": {
+            "text_logo": "NOVA"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "text_logo": "FORM"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "text_logo": "MONO"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "text_logo": "NORTH"
+          }
+        },
+        {
+          "type": "logo",
+          "settings": {
+            "text_logo": "STUDIO"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
