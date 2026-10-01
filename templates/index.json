@@ -108,9 +108,10 @@
         "category_nrYhaM": {
           "type": "category",
           "settings": {
+            "image": "shopify://shop_images/buffalo-milk-1-litre.png",
             "title": "New Arrivals",
             "description": "Discover the latest additions.",
-            "link": "",
+            "link": "shopify://collections/all-product",
             "show_link": true,
             "link_text": "Shop now",
             "content_position": "bottom"
@@ -119,9 +120,10 @@
         "category_HQyUgd": {
           "type": "category",
           "settings": {
-            "title": "New Arrivals",
+            "image": "shopify://shop_images/cow-milk-500ml.png",
+            "title": "Cow Milk",
             "description": "Discover the latest additions.",
-            "link": "",
+            "link": "shopify://collections/cow-milk",
             "show_link": true,
             "link_text": "Shop now",
             "content_position": "bottom"
