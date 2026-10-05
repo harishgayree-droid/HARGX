@@ -9,34 +9,17 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hargx-collection-product-grid",
-      "settings": {}
-    },
-    "hargx_collection_hero_89wNPx": {
-      "type": "hargx-collection-hero",
-      "name": "HARGX Collection Hero",
-      "settings": { 
-        "layout": "with_image",
-        "show_breadcrumbs": true,
-        "eyebrow": "Explore the collection",
-        "show_description": true,
-        "show_image": true,
-        "show_overlay": false,
-        "overlay_opacity": 20,
-        "overlay_color": "#000000",
-        "column_gap": 64,
-        "image_radius": 20,
-        "background_color": "#FAF8F4",
-        "text_color": "#000000",
-        "accent_color": "#FE7442",
-        "padding_top": 56,
-        "padding_bottom": 64
+    "main_collection_product_grid_LemKMV": {
+      "type": "main-collection-product-grid",
+      "name": "HARGX Collection Grid",
+      "settings": {
+        "products_per_page": 24,
+        "desktop_columns": 4,
+        "mobile_columns": "2"
       }
     }
   },
   "order": [
-    "hargx_collection_hero_89wNPx",
-    "main"
+    "main_collection_product_grid_LemKMV"
   ]
 }
