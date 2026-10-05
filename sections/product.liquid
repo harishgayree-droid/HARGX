@@ -1,52 +1,431 @@
 {% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
+  HARGX Product Page
+  Product media, product information, variants and purchase actions.
 {% endcomment %}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'HargxProductForm-' | append: section.id
+-%}
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+<section
+  id="HargxProduct-{{ section.id }}"
+  class="hargx-product"
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ product.id }}"
+>
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+  <div class="hargx-product__container page-width">
 
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
+    <div class="hargx-product__layout">
 
-    <input type="text" name="quantity" min="1" value="1">
+      {%- comment -%}
+        Product Media
+      {%- endcomment -%}
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+      <div class="hargx-product__media">
+
+        <div class="hargx-product__media-grid">
+
+          {%- if product.media.size > 0 -%}
+
+            {%- for media in product.media -%}
+
+              <div
+                class="
+                  hargx-product__media-item
+                  hargx-product__media-item--{{ media.media_type }}
+                "
+              >
+
+                {%- case media.media_type -%}
+
+                  {%- when 'image' -%}
+
+                    {{
+                      media
+                      | image_url: width: 1600
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '500, 750, 1000, 1200, 1600',
+                        sizes: '(min-width: 990px) 50vw, 100vw',
+                        class: 'hargx-product__image',
+                        alt: media.alt | default: product.title
+                    }}
+
+                  {%- when 'video' -%}
+
+                    {{
+                      media
+                      | video_tag:
+                        controls: true,
+                        autoplay: false,
+                        loop: false,
+                        muted: false,
+                        class: 'hargx-product__video'
+                    }}
+
+                  {%- when 'external_video' -%}
+
+                    {{ media | external_video_tag }}
+
+                  {%- when 'model' -%}
+
+                    {{ media | model_viewer_tag }}
+
+                {%- endcase -%}
+
+              </div>
+
+            {%- endfor -%}
+
+          {%- else -%}
+
+            <div class="hargx-product__media-placeholder">
+              {{ 'product-1' | placeholder_svg_tag }}
+            </div>
+
+          {%- endif -%}
+
+        </div>
+
+      </div>
+
+
+      {%- comment -%}
+        Product Information
+      {%- endcomment -%}
+
+      <div class="hargx-product__info">
+
+        <div class="hargx-product__info-inner">
+
+          {%- if section.settings.show_vendor and product.vendor != blank -%}
+
+            <div class="hargx-product__vendor">
+              {{ product.vendor | escape }}
+            </div>
+
+          {%- endif -%}
+
+
+          <h1 class="hargx-product__title">
+            {{ product.title | escape }}
+          </h1>
+
+
+          {%- comment -%}
+            Product Price
+          {%- endcomment -%}
+
+          <div
+            class="hargx-product__price"
+            data-hargx-price
+          >
+
+            {%- if current_variant.compare_at_price > current_variant.price -%}
+
+              <span class="hargx-product__price-current">
+                {{ current_variant.price | money }}
+              </span>
+
+              <s class="hargx-product__price-compare">
+                {{ current_variant.compare_at_price | money }}
+              </s>
+
+              <span class="hargx-product__price-badge">
+                Sale
+              </span>
+
+            {%- else -%}
+
+              <span class="hargx-product__price-current">
+                {{ current_variant.price | money }}
+              </span>
+
+            {%- endif -%}
+
+          </div>
+
+
+          {%- comment -%}
+            Product Description
+          {%- endcomment -%}
+
+          {%- if product.description != blank -%}
+
+            <div class="hargx-product__description rte">
+              {{ product.description }}
+            </div>
+
+          {%- endif -%}
+
+
+          {%- comment -%}
+            Product Form
+          {%- endcomment -%}
+
+          {% form 'product',
+            product,
+            id: product_form_id,
+            class: 'hargx-product-form',
+            novalidate: 'novalidate'
+          %}
+
+            <input
+              type="hidden"
+              name="id"
+              value="{{ current_variant.id }}"
+              data-hargx-variant-id
+            >
+
+
+            {%- comment -%}
+              Variant Selector
+            {%- endcomment -%}
+
+            {%- unless product.has_only_default_variant -%}
+
+              <div class="hargx-product__variants">
+
+                {%- for option in product.options_with_values -%}
+
+                  <fieldset
+                    class="hargx-product__option"
+                    data-option-position="{{ option.position }}"
+                  >
+
+                    <legend class="hargx-product__option-label">
+                      {{ option.name }}
+                    </legend>
+
+
+                    <div class="hargx-product__option-values">
+
+                      {%- for value in option.values -%}
+
+                        {%- assign option_value_id = 'HargxOption-' | append: section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
+
+                        <input
+                          type="radio"
+                          id="{{ option_value_id }}"
+                          name="option-{{ option.position }}"
+                          value="{{ value | escape }}"
+                          class="hargx-product__option-input"
+                          {% if option.selected_value == value %}
+                            checked
+                          {% endif %}
+                          data-hargx-option
+                          data-option-position="{{ option.position }}"
+                        >
+
+                        <label
+                          for="{{ option_value_id }}"
+                          class="hargx-product__option-value"
+                        >
+                          {{ value }}
+                        </label>
+
+                      {%- endfor -%}
+
+                    </div>
+
+                  </fieldset>
+
+                {%- endfor -%}
+
+              </div>
+
+            {%- endunless -%}
+
+
+            {%- comment -%}
+              Quantity
+            {%- endcomment -%}
+
+            <div class="hargx-product__quantity">
+
+              <label
+                for="HargxQuantity-{{ section.id }}"
+                class="hargx-product__quantity-label"
+              >
+                Quantity
+              </label>
+
+              <div class="hargx-product__quantity-control">
+
+                <button
+                  type="button"
+                  class="hargx-product__quantity-button"
+                  data-hargx-quantity-minus
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+
+                <input
+                  id="HargxQuantity-{{ section.id }}"
+                  type="number"
+                  name="quantity"
+                  value="1"
+                  min="1"
+                  step="1"
+                  class="hargx-product__quantity-input"
+                  data-hargx-quantity
+                >
+
+                <button
+                  type="button"
+                  class="hargx-product__quantity-button"
+                  data-hargx-quantity-plus
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+
+              </div>
+
+            </div>
+
+
+            {%- comment -%}
+              Add to Cart
+            {%- endcomment -%}
+
+            <button
+              type="submit"
+              name="add"
+              class="hargx-product__add-to-cart"
+              {% unless current_variant.available %}
+                disabled
+              {% endunless %}
+              data-hargx-add-to-cart
+            >
+
+              <span data-hargx-add-text>
+
+                {%- if current_variant.available -%}
+                  Add to cart
+                {%- else -%}
+                  Sold out
+                {%- endif -%}
+
+              </span>
+
+            </button>
+
+
+            {%- if section.settings.show_buy_now -%}
+
+              <div class="hargx-product__buy-now">
+
+                {{ form | payment_button }}
+
+              </div>
+
+            {%- endif -%}
+
+          {% endform %}
+
+
+          {%- comment -%}
+            Trust Information
+          {%- endcomment -%}
+
+          {%- if section.settings.show_trust_information -%}
+
+            <div class="hargx-product__trust">
+
+              <div class="hargx-product__trust-item">
+
+                <span
+                  class="hargx-product__trust-icon"
+                  aria-hidden="true"
+                >
+                  ✓
+                </span>
+
+                <span>
+                  Secure checkout
+                </span>
+
+              </div>
+
+
+              <div class="hargx-product__trust-item">
+
+                <span
+                  class="hargx-product__trust-icon"
+                  aria-hidden="true"
+                >
+                  ↗
+                </span>
+
+                <span>
+                  Fast shipping
+                </span>
+
+              </div>
+
+
+              <div class="hargx-product__trust-item">
+
+                <span
+                  class="hargx-product__trust-icon"
+                  aria-hidden="true"
+                >
+                  ↩
+                </span>
+
+                <span>
+                  Easy returns
+                </span>
+
+              </div>
+
+            </div>
+
+          {%- endif -%}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
 
 {% schema %}
 {
-  "name": "t:general.product",
-  "settings": [],
+  "name": "HARGX Product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_now",
+      "label": "Show accelerated checkout",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_information",
+      "label": "Show trust information",
+      "default": true
+    }
+  ],
   "disabled_on": {
-    "groups": ["header", "footer"]
+    "groups": [
+      "header",
+      "footer"
+    ]
   }
 }
 {% endschema %}
