@@ -2,7 +2,26 @@
 <html lang="{{ request.locale.iso_code }}">
   <head>
    
-    {{ settings.type_primary_font | font_face }}
+    {% if settings.type_primary_font.system? %}
+      {% if settings.type_heading_font.system? %}
+        {%- comment -%}
+          Both fonts are system fonts.
+        {%- endcomment -%}
+      {% else %}
+        {{ settings.type_heading_font | font_face }}
+      {% endif %}
+    {% else %}
+      {{ settings.type_primary_font | font_face }}
+
+      {% unless settings.type_heading_font.system? %}
+        {% if settings.type_heading_font.family != settings.type_primary_font.family
+          or settings.type_heading_font.weight != settings.type_primary_font.weight
+          or settings.type_heading_font.style != settings.type_primary_font.style
+        %}
+          {{ settings.type_heading_font | font_face }}
+        {% endif %}
+      {% endunless %}
+    {% endif %}
 
     <style>
       /* ========================================
