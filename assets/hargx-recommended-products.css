@@ -36,7 +36,6 @@
 }
 
 .hargx-recommended-products__subheading {
-  max-width: 620px;
   margin-top: 12px;
   color: var(--color-muted-text);
   font-family: var(--font-primary--family);
