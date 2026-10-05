@@ -87,190 +87,98 @@
 
     </div>
 
-    {%- if collection.filters.size > 0 -%}
+   {%- if collection.filters.size > 0 -%}
 
-        <div class="hargx-collection__content">
+        <div
+            class="
+            hargx-collection__filter-system
+            hargx-collection__filter-system--{{ section.settings.desktop_filter_layout }}
+            "
+            data-filter-layout="{{ section.settings.desktop_filter_layout }}"
+        >
 
-            <aside
-            class="hargx-collection__filters"
-            data-hargx-filters
-            aria-label="Collection filters"
-            >
+            {%- comment -%}
+            Desktop Horizontal Filters
+            {%- endcomment -%}
 
-            <div class="hargx-collection__filters-header">
-                <h2>Filter</h2>
-            </div>
+            {%- if section.settings.desktop_filter_layout == 'horizontal' -%}
 
+            <div class="hargx-collection__horizontal-filters">
 
-            {%- for filter in collection.filters -%}
+                {%- for filter in collection.filters -%}
 
-                <details
-                class="hargx-filter"
-                {% if filter.active_values.size > 0 %}open{% endif %}
-                >
+                <details class="hargx-filter hargx-filter--horizontal">
 
-                <summary class="hargx-filter__summary">
+                    <summary class="hargx-filter__summary">
 
                     <span class="hargx-filter__title">
-                    {{ filter.label }}
+                        {{ filter.label }}
                     </span>
 
-                    <span
-                    class="hargx-filter__icon"
-                    aria-hidden="true"
-                    >
-                    +
+                    <span class="hargx-filter__icon" aria-hidden="true">
+                        +
                     </span>
 
-                </summary>
+                    </summary>
 
+                    <div class="hargx-filter__dropdown">
 
-                <div class="hargx-filter__content">
+                    {% render 'hargx-filters', filter: filter %}
 
-                    {%- case filter.type -%}
-
-                    {%- when 'boolean' -%}
-
-                        <label class="hargx-filter__checkbox">
-
-                        <input
-                            type="checkbox"
-                            value="{{ filter.true_value.value }}"
-                            {% if filter.true_value.active %}
-                            checked
-                            {% endif %}
-                            {% if filter.true_value.count == 0 and filter.true_value.active == false %}
-                            disabled
-                            {% endif %}
-                            data-hargx-filter-input
-                        >
-
-                        <span>
-                            {{ filter.true_value.label }}
-                        </span>
-
-                        <span class="hargx-filter__count">
-                            {{ filter.true_value.count }}
-                        </span>
-
-                        </label>
-
-
-                    {%- when 'list' -%}
-
-                        <div class="hargx-filter__options">
-
-                        {%- for value in filter.values -%}
-
-                            <label
-                            class="hargx-filter__checkbox{% if value.active %} is-active{% endif %}"
-                            >
-
-                            <input
-                            type="checkbox"
-                            name="{{ filter.param_name }}"
-                            value="{{ value.value }}"
-                            {% if value.active %}
-                                checked
-                            {% endif %}
-                            {% if value.count == 0 and value.active == false %}
-                                disabled
-                            {% endif %}
-                            data-hargx-filter-input
-                            >
-
-                            <span class="hargx-filter__checkbox-mark"></span>
-
-                            <span class="hargx-filter__label">
-                                {{ value.label }}
-                            </span>
-
-                            <span class="hargx-filter__count">
-                                {{ value.count }}
-                            </span>
-
-                            </label>
-
-                        {%- endfor -%}
-
-                        </div>
-
-
-                    {%- when 'price_range' -%}
-
-                        <div class="hargx-filter__price">
-
-                        <div class="hargx-filter__price-field">
-
-                            <label
-                            for="HargxPriceMin-{{ section.id }}-{{ forloop.index }}"
-                            >
-                            From
-                            </label>
-
-                            <div class="hargx-filter__price-input">
-
-                            <span>
-                                {{ cart.currency.symbol }}
-                            </span>
-
-                            <input
-                                id="HargxPriceMin-{{ section.id }}-{{ forloop.index }}"
-                                type="number"
-                                name="{{ filter.min_value.param_name }}"
-                                min="0"
-                                max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                                value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
-                                placeholder="0"
-                                data-hargx-price-input
-                            >
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="hargx-filter__price-field">
-
-                            <label
-                            for="HargxPriceMax-{{ section.id }}-{{ forloop.index }}"
-                            >
-                            To
-                            </label>
-
-                            <div class="hargx-filter__price-input">
-
-                            <span>
-                                {{ cart.currency.symbol }}
-                            </span>
-
-                            <input
-                                id="HargxPriceMax-{{ section.id }}-{{ forloop.index }}"
-                                type="number"
-                                name="{{ filter.max_value.param_name }}"
-                                min="0"
-                                max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                                value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
-                                placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                                data-hargx-price-input
-                            >
-
-                            </div>
-
-                        </div>
-
-                        </div>
-
-                    {%- endcase -%}
-
-                </div>
+                    </div>
 
                 </details>
 
-            {%- endfor -%}
+                {%- endfor -%}
+ 
+            </div>
+
+            {%- endif -%}
 
 
-            {%- if collection.filters.size > 0 -%}
+            {%- comment -%}
+            Desktop Vertical Filters
+            {%- endcomment -%}
+
+            {%- if section.settings.desktop_filter_layout == 'vertical' -%}
+
+            <aside
+                class="hargx-collection__filters"
+                aria-label="Collection filters"
+            >
+
+                <div class="hargx-collection__filters-header">
+                <h2>Filter</h2>
+                </div>
+
+                {%- for filter in collection.filters -%}
+
+                <details
+                    class="hargx-filter"
+                    {% if filter.active_values.size > 0 %}open{% endif %}
+                >
+
+                    <summary class="hargx-filter__summary">
+
+                    <span class="hargx-filter__title">
+                        {{ filter.label }}
+                    </span>
+
+                    <span class="hargx-filter__icon" aria-hidden="true">
+                        +
+                    </span>
+
+                    </summary>
+
+                    <div class="hargx-filter__content">
+
+                    {% render 'hargx-filters', filter: filter %}
+
+                    </div>
+
+                </details>
+
+                {%- endfor -%}
 
                 <a
                 href="{{ collection.url }}"
@@ -279,14 +187,42 @@
                 Clear all
                 </a>
 
-            {%- endif -%}
-
             </aside>
 
+            {%- endif -%}
+
+
+            {%- comment -%}
+            Products
+            {%- endcomment -%}
 
             <div class="hargx-collection__products">
 
-            <!-- Product grid will remain here -->
+            <div class="hargx-collection__grid">
+
+                {%- for product in collection.products -%}
+
+                {% render 'hargx-product-card', product: product %}
+
+                {%- endfor -%}
+
+            </div>
+
+            </div>
+
+        </div>
+
+        {%- else -%}
+
+        <div class="hargx-collection__products">
+
+            <div class="hargx-collection__grid">
+
+            {%- for product in collection.products -%}
+
+                {% render 'hargx-product-card', product: product %}
+
+            {%- endfor -%}
 
             </div>
 
@@ -930,6 +866,50 @@
   text-underline-offset: 4px;
 }
 
+/* =========================================================
+   HORIZONTAL FILTERS
+   ========================================================= */
+
+.hargx-collection__horizontal-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 30px;
+}
+
+.hargx-filter--horizontal {
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.hargx-filter--horizontal .hargx-filter__summary {
+  min-width: 140px;
+  padding: 12px 14px;
+}
+
+.hargx-filter--horizontal .hargx-filter__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+
+  z-index: 20;
+
+  width: 280px;
+  max-height: 420px;
+  overflow-y: auto;
+
+  padding: 18px;
+
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.hargx-filter--horizontal[open] {
+  z-index: 30;
+}
 
   /* Mobile */
 
@@ -1011,6 +991,26 @@
         }
       ],
       "default": "2"
+    },
+    {
+        "type": "select",
+        "id": "desktop_filter_layout",
+        "label": "Desktop filter layout",
+        "options": [
+            {
+            "value": "vertical",
+            "label": "Vertical sidebar"
+            },
+            {
+            "value": "horizontal",
+            "label": "Horizontal"
+            },
+            {
+            "value": "drawer",
+            "label": "Drawer"
+            }
+        ],
+        "default": "vertical"
     }
   ],
 

@@ -1,0 +1,132 @@
+
+{%- case filter.type -%}
+
+  {%- when 'boolean' -%}
+
+    <label class="hargx-filter__checkbox">
+
+      <input
+        type="checkbox"
+        name="{{ filter.param_name }}"
+        value="{{ filter.true_value.value }}"
+        {% if filter.true_value.active %}checked{% endif %}
+        {% if filter.true_value.count == 0 and filter.true_value.active == false %}
+          disabled
+        {% endif %}
+        data-hargx-filter-input
+      >
+
+      <span class="hargx-filter__checkbox-mark"></span>
+
+      <span class="hargx-filter__label">
+        {{ filter.true_value.label }}
+      </span>
+
+      <span class="hargx-filter__count">
+        {{ filter.true_value.count }}
+      </span>
+
+    </label>
+
+
+  {%- when 'list' -%}
+
+    <div class="hargx-filter__options">
+
+      {%- for value in filter.values -%}
+
+        <label
+          class="
+            hargx-filter__checkbox
+            {% if value.active %}is-active{% endif %}
+          "
+        >
+
+          <input
+            type="checkbox"
+            name="{{ filter.param_name }}"
+            value="{{ value.value }}"
+            {% if value.active %}checked{% endif %}
+            {% if value.count == 0 and value.active == false %}
+              disabled
+            {% endif %}
+            data-hargx-filter-input
+          >
+
+          <span class="hargx-filter__checkbox-mark"></span>
+
+          <span class="hargx-filter__label">
+            {{ value.label }}
+          </span>
+
+          <span class="hargx-filter__count">
+            {{ value.count }}
+          </span>
+
+        </label>
+
+      {%- endfor -%}
+
+    </div>
+
+
+  {%- when 'price_range' -%}
+
+    <div class="hargx-filter__price">
+
+      <div class="hargx-filter__price-field">
+
+        <label>
+          From
+        </label>
+
+        <div class="hargx-filter__price-input">
+
+          <span>
+            {{ cart.currency.symbol }}
+          </span>
+
+          <input
+            type="number"
+            name="{{ filter.min_value.param_name }}"
+            min="0"
+            max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+            value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+            placeholder="0"
+            data-hargx-price-input
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="hargx-filter__price-field">
+
+        <label>
+          To
+        </label>
+
+        <div class="hargx-filter__price-input">
+
+          <span>
+            {{ cart.currency.symbol }}
+          </span>
+
+          <input
+            type="number"
+            name="{{ filter.max_value.param_name }}"
+            min="0"
+            max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+            value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+            placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+            data-hargx-price-input
+          >
+
+        </div>
+
+      </div>
+
+    </div>
+
+{%- endcase -%}
