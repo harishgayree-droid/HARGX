@@ -86,7 +86,7 @@
       "settings": {
         "heading": "You may also like",
         "subheading": "<p>More products you might love.</p>",
-        "heading_alignment": "left",
+        "heading_alignment": "center",
         "products_to_show": 4,
         "desktop_columns": "4",
         "mobile_columns": "2",
