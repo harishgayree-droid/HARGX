@@ -1,0 +1,180 @@
+/* =========================================================
+   HARGX — Recommended Products
+   ========================================================= */
+
+.hargx-recommended-products {
+  --hargx-recommendations-spacing-top: 80px;
+  --hargx-recommendations-spacing-bottom: 80px;
+
+  padding-top: var(--hargx-recommendations-spacing-top);
+  padding-bottom: var(--hargx-recommendations-spacing-bottom);
+  background: var(--color-background);
+}
+
+.hargx-recommended-products__container {
+  width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+  margin-inline: auto;
+}
+
+.hargx-recommended-products__header {
+  margin-bottom: 32px;
+   text-align: var(--hargx-recommendations-heading-alignment);
+}
+
+.hargx-recommended-products__heading {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading--family);
+  font-style: var(--font-heading--style);
+  font-weight: var(--font-heading--weight);
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.hargx-recommended-products__subheading {
+  max-width: 620px;
+  margin-top: 12px;
+  color: var(--color-muted-text);
+  font-family: var(--font-primary--family);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.hargx-recommended-products__subheading p {
+  margin: 0;
+}
+
+.hargx-recommended-products__grid {
+  display: grid;
+  grid-template-columns: repeat(
+    var(--hargx-recommendations-desktop-columns),
+    minmax(0, 1fr)
+  );
+  gap: var(--grid-gap);
+}
+
+.hargx-recommended-products__grid .hargx-product-card {
+  min-width: 0;
+}
+
+.hargx-recommended-products__footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.hargx-recommended-products__view-all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding:
+    var(--button-vertical-padding)
+    var(--button-horizontal-padding);
+  border: 1px solid var(--color-black);
+  border-radius: var(--button-radius);
+  background: transparent;
+  color: var(--color-black);
+  font-family: var(--font-primary--family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.hargx-recommended-products__view-all:hover {
+  background: var(--color-black);
+  color: var(--color-white);
+  transform: translateY(-2px);
+}
+
+.hargx-recommended-products.is-loading
+  .hargx-recommended-products__grid {
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.hargx-recommended-products.is-empty {
+  display: none;
+}
+
+.hargx-recommended-products__subheading {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.hargx-recommended-products__header {
+  text-align: var(--hargx-recommendations-heading-alignment);
+}
+
+.hargx-recommended-products__header {
+  --hargx-subheading-margin-left: 0;
+  --hargx-subheading-margin-right: auto;
+}
+
+.hargx-recommended-products__subheading {
+  margin-left: var(--hargx-subheading-margin-left);
+  margin-right: var(--hargx-subheading-margin-right);
+}
+
+
+/* =========================================================
+   Tablet
+   ========================================================= */
+
+@media screen and (max-width: 989px) {
+  .hargx-recommended-products__grid {
+    grid-template-columns: repeat(
+      var(--hargx-recommendations-mobile-columns),
+      minmax(0, 1fr)
+    );
+  }
+
+  .hargx-recommended-products__header {
+    margin-bottom: 24px;
+  }
+}
+
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media screen and (max-width: 749px) {
+  .hargx-recommended-products {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+
+  .hargx-recommended-products__container {
+    width: min(
+      calc(var(--page-width) - var(--page-margin-mobile) * 2),
+      calc(100% - var(--page-margin-mobile) * 2)
+    );
+  }
+
+  .hargx-recommended-products__heading {
+    font-size: 28px;
+  }
+
+  .hargx-recommended-products__subheading {
+    font-size: 14px;
+  }
+
+  .hargx-recommended-products__grid {
+    gap: 16px;
+  }
+
+  .hargx-recommended-products__footer {
+    margin-top: 28px;
+  }
+}
