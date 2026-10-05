@@ -1,49 +1,66 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const productSections = document.querySelectorAll(
-    '[data-section-id][data-product-id]'
-  );
+  initializeHargxProducts();
+});
 
-  if (!productSections.length) return;
+document.addEventListener('shopify:section:load', (event) => {
+  const section = event.target.querySelector?.('.hargx-product');
 
-  productSections.forEach((section) => {
+  if (section) {
+    initHargxProduct(section);
+  }
+});
+
+function initializeHargxProducts() {
+  const sections = document.querySelectorAll('.hargx-product');
+
+  sections.forEach((section) => {
     initHargxProduct(section);
   });
-});
+}
 
 
 function initHargxProduct(section) {
+  if (section.dataset.hargxInitialized === 'true') {
+    return;
+  }
+
+  section.dataset.hargxInitialized = 'true';
+
   const productForm = section.querySelector('.hargx-product-form');
+  const productDataElement = section.querySelector(
+    '[data-hargx-product-data]'
+  );
 
-  if (!productForm) return;
+  if (!productForm || !productDataElement) {
+    return;
+  }
+
+  let productData;
+
+  try {
+    productData = JSON.parse(productDataElement.textContent);
+  } catch (error) {
+    console.error('HARGX Product: Unable to read product data.', error);
+    return;
+  }
+
+  if (!productData?.variants?.length) {
+    return;
+  }
 
 
-  /* =========================================================
-     PRODUCT DATA
-     ========================================================= */
-
-  const productData = window.hargxProducts?.[section.dataset.productId];
-
-  if (!productData) return;
-
-
-  /* =========================================================
-     ELEMENTS
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Elements
+   * ------------------------------------------------------------
+   */
 
   const variantInput = productForm.querySelector(
     '[data-hargx-variant-id]'
   );
 
-  const priceContainer = section.querySelector(
-    '[data-hargx-price]'
-  );
-
-  const addToCartButton = productForm.querySelector(
-    '[data-hargx-add-to-cart]'
-  );
-
-  const addToCartText = productForm.querySelector(
-    '[data-hargx-add-text]'
+  const hiddenQuantityInput = productForm.querySelector(
+    '[data-hargx-hidden-quantity]'
   );
 
   const quantityInput = productForm.querySelector(
@@ -62,36 +79,89 @@ function initHargxProduct(section) {
     '[data-hargx-option]'
   );
 
+  const priceCurrent = section.querySelector(
+    '[data-hargx-current-price]'
+  );
 
-  /* =========================================================
-     FORMAT MONEY
-     ========================================================= */
+  const priceCompare = section.querySelector(
+    '[data-hargx-compare-price]'
+  );
+
+  const saleBadge = section.querySelector(
+    '[data-hargx-sale-badge]'
+  );
+
+  const addToCartButton = productForm.querySelector(
+    '[data-hargx-add-to-cart]'
+  );
+
+  const addToCartText = productForm.querySelector(
+    '[data-hargx-add-text]'
+  );
+
+  const skuElement = section.querySelector(
+    '[data-hargx-sku]'
+  );
+
+  const inventoryElement = section.querySelector(
+    '[data-hargx-inventory]'
+  );
+
+
+  /*
+   * ------------------------------------------------------------
+   * Current Variant
+   * ------------------------------------------------------------
+   */
+
+  let activeVariant =
+    productData.variants.find(
+      (variant) =>
+        String(variant.id) === String(variantInput?.value)
+    ) ||
+    productData.variants.find(
+      (variant) =>
+        String(variant.id) === String(productData.selectedVariantId)
+    ) ||
+    productData.variants[0];
+
+
+  /*
+   * ------------------------------------------------------------
+   * Money
+   * ------------------------------------------------------------
+   */
 
   function formatMoney(cents) {
-    const moneyFormat =
-      window.Shopify?.money_format ||
-      '${{amount}}';
-
     if (window.Shopify?.formatMoney) {
+      const moneyFormat =
+        window.Shopify.money_format ||
+        window.theme?.moneyFormat ||
+        '${{amount}}';
+
       return window.Shopify.formatMoney(
         cents,
         moneyFormat
       );
     }
 
-    return `${(cents / 100).toFixed(2)}`;
+    return `${(Number(cents) / 100).toFixed(2)}`;
   }
 
 
-  /* =========================================================
-     GET SELECTED OPTIONS
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Selected Options
+   * ------------------------------------------------------------
+   */
 
   function getSelectedOptions() {
     const selectedOptions = [];
 
     optionInputs.forEach((input) => {
-      if (!input.checked) return;
+      if (!input.checked) {
+        return;
+      }
 
       const position = Number(
         input.dataset.optionPosition
@@ -104,11 +174,22 @@ function initHargxProduct(section) {
   }
 
 
-  /* =========================================================
-     FIND VARIANT
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Find Variant
+   *
+   * IMPORTANT:
+   * If product has no variant picker,
+   * the current/default variant is returned directly.
+   * ------------------------------------------------------------
+   */
 
   function findVariant() {
+
+    if (!optionInputs.length) {
+      return activeVariant || productData.variants[0];
+    }
+
     const selectedOptions = getSelectedOptions();
 
     return productData.variants.find((variant) => {
@@ -123,141 +204,189 @@ function initHargxProduct(section) {
   }
 
 
-  /* =========================================================
-     UPDATE PRICE
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Price
+   * ------------------------------------------------------------
+   */
 
   function updatePrice(variant) {
-    if (!priceContainer || !variant) return;
+    if (!variant) {
+      return;
+    }
 
-    const price = formatMoney(
-      variant.price
-    );
+    if (priceCurrent) {
+      priceCurrent.textContent =
+        formatMoney(variant.price);
+    }
 
     const compareAtPrice =
-      variant.compare_at_price;
+      Number(variant.compare_at_price || 0);
+
+    const currentPrice =
+      Number(variant.price || 0);
 
     if (
-      compareAtPrice &&
-      compareAtPrice > variant.price
+      priceCompare &&
+      saleBadge
     ) {
 
-      priceContainer.innerHTML = `
-        <span class="hargx-product__price-current">
-          ${price}
-        </span>
+      if (compareAtPrice > currentPrice) {
 
-        <s class="hargx-product__price-compare">
-          ${formatMoney(compareAtPrice)}
-        </s>
+        priceCompare.hidden = false;
+        priceCompare.textContent =
+          formatMoney(compareAtPrice);
 
-        <span class="hargx-product__price-badge">
-          Sale
-        </span>
-      `;
+        saleBadge.hidden = false;
 
-    } else {
+      } else {
 
-      priceContainer.innerHTML = `
-        <span class="hargx-product__price-current">
-          ${price}
-        </span>
-      `;
+        priceCompare.hidden = true;
+        priceCompare.textContent = '';
 
+        saleBadge.hidden = true;
+      }
     }
   }
 
 
-  /* =========================================================
-     UPDATE AVAILABILITY
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Availability
+   * ------------------------------------------------------------
+   */
 
   function updateAvailability(variant) {
-    if (!addToCartButton || !addToCartText) {
-      return;
-    }
-
     if (!variant) {
-
-      addToCartButton.disabled = true;
-
-      addToCartText.textContent =
-        'Unavailable';
-
       return;
     }
 
+    if (addToCartButton) {
 
-    if (variant.available) {
+      addToCartButton.disabled =
+        !variant.available;
+    }
 
-      addToCartButton.disabled = false;
-
-      addToCartText.textContent =
-        'Add to cart';
-
-    } else {
-
-      addToCartButton.disabled = true;
+    if (addToCartText) {
 
       addToCartText.textContent =
-        'Sold out';
+        variant.available
+          ? 'Add to cart'
+          : 'Sold out';
+    }
 
+
+    /*
+     * Inventory block
+     */
+
+    if (inventoryElement) {
+
+      if (!variant.available) {
+
+        inventoryElement.innerHTML =
+          '<span>Out of stock</span>';
+
+      } else if (
+        variant.inventory_management === 'shopify' &&
+        Number(variant.inventory_quantity) > 0 &&
+        Number(variant.inventory_quantity) <= 5
+      ) {
+
+        inventoryElement.innerHTML =
+          `<span>Only ${variant.inventory_quantity} left in stock</span>`;
+
+      } else {
+
+        inventoryElement.innerHTML =
+          '<span>In stock</span>';
+      }
+    }
+
+
+    /*
+     * SKU
+     */
+
+    if (skuElement) {
+
+      skuElement.textContent =
+        variant.sku || '';
     }
   }
 
 
-  /* =========================================================
-     UPDATE VARIANT
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Update Variant
+   * ------------------------------------------------------------
+   */
 
   function updateVariant() {
+
     const variant = findVariant();
 
     if (!variant) {
-      updateAvailability(null);
+
+      if (addToCartButton) {
+        addToCartButton.disabled = true;
+      }
+
       return;
     }
 
+    activeVariant = variant;
 
-    /* Update hidden variant ID */
+
+    /*
+     * Hidden variant ID
+     */
 
     if (variantInput) {
-      variantInput.value = variant.id;
+
+      variantInput.value =
+        variant.id;
     }
 
 
-    /* Update URL */
-
-    const url = new URL(
-      window.location.href
-    );
-
-    url.searchParams.set(
-      'variant',
-      variant.id
-    );
-
-    window.history.replaceState(
-      {},
-      '',
-      url.toString()
-    );
-
-
-    /* Update price */
+    /*
+     * Update UI
+     */
 
     updatePrice(variant);
-
-
-    /* Update availability */
-
     updateAvailability(variant);
+
+
+    /*
+     * Update URL
+     *
+     * Only when the product actually has options.
+     */
+
+    if (optionInputs.length) {
+
+      const url =
+        new URL(window.location.href);
+
+      url.searchParams.set(
+        'variant',
+        variant.id
+      );
+
+      window.history.replaceState(
+        {},
+        '',
+        url.toString()
+      );
+    }
   }
 
 
-  /* =========================================================
-     VARIANT EVENTS
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Variant Change Events
+   * ------------------------------------------------------------
+   */
 
   optionInputs.forEach((input) => {
 
@@ -269,12 +398,17 @@ function initHargxProduct(section) {
   });
 
 
-  /* =========================================================
-     QUANTITY
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Quantity
+   * ------------------------------------------------------------
+   */
 
   function getQuantity() {
-    if (!quantityInput) return 1;
+
+    if (!quantityInput) {
+      return 1;
+    }
 
     const quantity =
       parseInt(
@@ -294,13 +428,22 @@ function initHargxProduct(section) {
 
 
   function updateQuantity(value) {
-    if (!quantityInput) return;
 
-    quantityInput.value =
+    const quantity =
       Math.max(
         1,
         parseInt(value, 10) || 1
       );
+
+    if (quantityInput) {
+      quantityInput.value =
+        quantity;
+    }
+
+    if (hiddenQuantityInput) {
+      hiddenQuantityInput.value =
+        quantity;
+    }
   }
 
 
@@ -309,9 +452,11 @@ function initHargxProduct(section) {
     quantityMinus.addEventListener(
       'click',
       () => {
+
         updateQuantity(
           getQuantity() - 1
         );
+
       }
     );
 
@@ -323,9 +468,11 @@ function initHargxProduct(section) {
     quantityPlus.addEventListener(
       'click',
       () => {
+
         updateQuantity(
           getQuantity() + 1
         );
+
       }
     );
 
@@ -337,24 +484,26 @@ function initHargxProduct(section) {
     quantityInput.addEventListener(
       'change',
       () => {
+
         updateQuantity(
           getQuantity()
         );
+
       }
     );
 
   }
 
 
-  /* =========================================================
-     FORM SUBMIT
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Add to Cart
+   * ------------------------------------------------------------
+   */
 
   productForm.addEventListener(
     'submit',
     () => {
-
-      if (!variantInput) return;
 
       const variant =
         findVariant();
@@ -363,21 +512,24 @@ function initHargxProduct(section) {
         return;
       }
 
-      variantInput.value =
-        variant.id;
-
-      if (quantityInput) {
-        quantityInput.value =
-          getQuantity();
+      if (variantInput) {
+        variantInput.value =
+          variant.id;
       }
+
+      updateQuantity(
+        getQuantity()
+      );
 
     }
   );
 
 
-  /* =========================================================
-     INITIAL STATE
-     ========================================================= */
+  /*
+   * ------------------------------------------------------------
+   * Initial State
+   * ------------------------------------------------------------
+   */
 
   updateVariant();
 }
