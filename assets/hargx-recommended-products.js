@@ -19,11 +19,13 @@ async function initHargxRecommendations(section) {
   const productId = section.dataset.productId;
   const limit = section.dataset.limit;
   const url = section.dataset.url;
+  const sectionId = section.dataset.sectionId;
+
   const grid = section.querySelector(
     '[data-hargx-recommendations-grid]'
   );
 
-  if (!productId || !limit || !url || !grid) {
+  if (!productId || !limit || !url || !sectionId || !grid) {
     section.classList.add('is-empty');
     return;
   }
@@ -31,7 +33,10 @@ async function initHargxRecommendations(section) {
   section.classList.add('is-loading');
 
   try {
-    const recommendationUrl = new URL(url, window.location.origin);
+    const recommendationUrl = new URL(
+      url,
+      window.location.origin
+    );
 
     recommendationUrl.searchParams.set(
       'product_id',
@@ -48,13 +53,13 @@ async function initHargxRecommendations(section) {
       'related'
     );
 
+    recommendationUrl.searchParams.set(
+      'section_id',
+      'hargx-recommended-products'
+    );
+
     const response = await fetch(
-      recommendationUrl.toString(),
-      {
-        headers: {
-          Accept: 'text/html'
-        }
-      }
+      recommendationUrl.toString()
     );
 
     if (!response.ok) {
@@ -77,16 +82,19 @@ async function initHargxRecommendations(section) {
       'text/html'
     );
 
-    const recommendations = documentFragment.querySelector(
-      '[data-hargx-recommendations-grid]'
-    );
+    const recommendations =
+      documentFragment.querySelector(
+        '[data-hargx-recommendations-grid]'
+      );
 
     if (!recommendations) {
       section.classList.add('is-empty');
       return;
     }
 
-    const productCards = recommendations.children;
+    const productCards = Array.from(
+      recommendations.children
+    );
 
     if (!productCards.length) {
       section.classList.add('is-empty');
@@ -95,13 +103,13 @@ async function initHargxRecommendations(section) {
 
     grid.innerHTML = '';
 
-    Array.from(productCards)
+    productCards
       .slice(0, Number(limit))
       .forEach((card) => {
         grid.appendChild(card);
       });
 
-    section.classList.remove('is-loading');
+    section.classList.remove('is-empty');
 
   } catch (error) {
     console.warn(
