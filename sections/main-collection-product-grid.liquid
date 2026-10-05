@@ -436,6 +436,138 @@
 
 {% stylesheet %}
 
+/* =========================================================
+   FILTER DRAWER
+   ========================================================= */
+
+.hargx-filter-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
+  padding: 10px 20px;
+
+  border: 1px solid #000000;
+  background: #FFFFFF;
+  color: #000000;
+
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.hargx-filter-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.hargx-filter-drawer__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.hargx-filter-drawer__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  width: min(420px, 90vw);
+
+  display: flex;
+  flex-direction: column;
+
+  background: #FFFFFF;
+
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hargx-filter-drawer.is-open
+.hargx-filter-drawer__panel {
+  transform: translateX(0);
+}
+
+.hargx-filter-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.hargx-filter-drawer__header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.hargx-filter-drawer__close {
+  width: 36px;
+  height: 36px;
+
+  border: 0;
+  background: transparent;
+
+  font-size: 28px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.hargx-filter-drawer__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px;
+}
+
+.hargx-filter-drawer__footer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 15px 20px;
+
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.hargx-filter-drawer__clear {
+  flex: 1;
+
+  padding: 13px;
+
+  text-align: center;
+  color: inherit;
+
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hargx-filter-drawer__apply {
+  flex: 1;
+
+  padding: 13px;
+
+  border: 1px solid #000000;
+  background: #000000;
+  color: #FFFFFF;
+
+  font: inherit;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  cursor: pointer;
+}
+
   .hargx-collection {
     padding: 60px 0 80px;
   }
@@ -729,38 +861,6 @@
   line-height: 1;
 }
 
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media screen and (max-width: 749px) {
-
-  .hargx-collection__toolbar {
-    margin-bottom: 24px;
-    padding: 12px 0;
-  }
-
-  .hargx-collection__toolbar-count {
-    font-size: 12px;
-  }
-
-  .hargx-collection__toolbar-sort {
-    gap: 5px;
-  }
-
-  .hargx-collection__sort-label {
-    font-size: 12px;
-  }
-
-  .hargx-collection__sort-select {
-    min-width: 125px;
-    padding-right: 24px;
-    font-size: 12px;
-  }
-
-}
-
 /* =========================================================
    HARGX FILTER LAYOUT
    ========================================================= */
@@ -1024,6 +1124,15 @@
   z-index: 30;
 }
 
+.hargx-filter-trigger {
+  display: none;
+}
+
+.hargx-collection__filter-system--drawer
+~ .hargx-filter-trigger {
+  display: inline-flex;
+}
+
   /* Mobile */
 
   @media screen and (max-width: 749px) {
@@ -1059,6 +1168,48 @@
     .hargx-pagination {
       margin-top: 50px;
       gap: 15px;
+    }
+
+      
+    .hargx-collection__filter-system--vertical,
+    .hargx-collection__filter-system--horizontal,
+    .hargx-collection__filter-system--drawer {
+      display: block;
+    }
+
+    .hargx-collection__filters,
+    .hargx-collection__horizontal-filters {
+      display: none;
+    }
+
+    .hargx-filter-trigger {
+      display: flex;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+
+    .hargx-collection__toolbar {
+      margin-bottom: 24px;
+      padding: 12px 0;
+    }
+
+    .hargx-collection__toolbar-count {
+      font-size: 12px;
+    }
+
+    .hargx-collection__toolbar-sort {
+      gap: 5px;
+    }
+
+    .hargx-collection__sort-label {
+      font-size: 12px;
+    }
+
+    .hargx-collection__sort-select {
+      min-width: 125px;
+      padding-right: 24px;
+      font-size: 12px;
     }
 
   }

@@ -75,3 +75,67 @@ priceInputs.forEach((input) => {
     }
   });
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const drawer = document.querySelector(
+    '[data-hargx-filter-drawer]'
+  );
+
+  const openButtons = document.querySelectorAll(
+    '[data-hargx-filter-open]'
+  );
+
+  const closeButtons = document.querySelectorAll(
+    '[data-hargx-filter-close]'
+  );
+
+  if (!drawer) return;
+
+
+  function openDrawer() {
+    drawer.hidden = false;
+
+    requestAnimationFrame(() => {
+      drawer.classList.add('is-open');
+    });
+
+    document.documentElement.classList.add(
+      'hargx-filter-drawer-open'
+    );
+  }
+
+
+  function closeDrawer() {
+    drawer.classList.remove('is-open');
+
+    document.documentElement.classList.remove(
+      'hargx-filter-drawer-open'
+    );
+
+    setTimeout(() => {
+      drawer.hidden = true;
+    }, 350);
+  }
+
+
+  openButtons.forEach((button) => {
+    button.addEventListener('click', openDrawer);
+  });
+
+
+  closeButtons.forEach((button) => {
+    button.addEventListener('click', closeDrawer);
+  });
+
+
+  document.addEventListener('keydown', (event) => {
+
+    if (event.key === 'Escape' && !drawer.hidden) {
+      closeDrawer();
+    }
+
+  });
+
+});
