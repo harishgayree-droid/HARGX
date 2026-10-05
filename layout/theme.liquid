@@ -24,6 +24,11 @@
     {% render 'meta-tags' %}
 
     {{ content_for_header }}
+
+    <script
+      src="{{ 'hargx-collection.js' | asset_url }}"
+      defer="defer"
+    ></script>
   </head>
 
   <body>

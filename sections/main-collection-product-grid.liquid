@@ -37,6 +37,61 @@
 
     </header>
 
+    {%- comment -%}
+    Collection Toolbar
+    {%- endcomment -%}
+
+    <div class="hargx-collection__toolbar">
+
+        <div class="hargx-collection__toolbar-count">
+            {{ collection.products_count }}
+            {{ collection.products_count | pluralize: 'product', 'products' }}
+        </div>
+
+
+        <div class="hargx-collection__toolbar-sort">
+
+            <label
+            for="HargxSortBy-{{ section.id }}"
+            class="hargx-collection__sort-label"
+            >
+            Sort by
+            </label>
+
+            <div class="hargx-collection__sort-select-wrap">
+
+            <select
+                id="HargxSortBy-{{ section.id }}"
+                class="hargx-collection__sort-select"
+                name="sort_by"
+                data-hargx-sort
+            >
+
+                {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
+
+                {%- for option in collection.sort_options -%}
+
+                <option
+                    value="{{ option.value }}"
+                    {% if option.value == current_sort %}selected{% endif %}
+                >
+                    {{ option.name }}
+                </option>
+
+                {%- endfor -%}
+
+            </select>
+
+            <span class="hargx-collection__sort-icon" aria-hidden="true">
+                ↓
+            </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
 
     {%- comment -%}
       Product Grid
@@ -343,6 +398,127 @@
   .hargx-collection__empty p {
     margin: 0;
   }
+
+/* =========================================================
+   HARGX COLLECTION TOOLBAR
+   ========================================================= */
+
+.hargx-collection__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 30px;
+  padding: 16px 0;
+
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+
+/* Product Count */
+
+.hargx-collection__toolbar-count {
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.65;
+}
+
+
+/* Sorting */
+
+.hargx-collection__toolbar-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hargx-collection__sort-label {
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.hargx-collection__sort-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hargx-collection__sort-select {
+  appearance: none;
+  -webkit-appearance: none;
+
+  min-width: 180px;
+  padding: 8px 30px 8px 4px;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  color: inherit;
+
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+
+  cursor: pointer;
+}
+
+.hargx-collection__sort-select:focus {
+  outline: none;
+}
+
+.hargx-collection__sort-select:focus-visible {
+  outline: 1px solid #000000;
+  outline-offset: 3px;
+}
+
+.hargx-collection__sort-icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+
+  pointer-events: none;
+
+  transform: translateY(-50%);
+
+  font-size: 13px;
+  line-height: 1;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 749px) {
+
+  .hargx-collection__toolbar {
+    margin-bottom: 24px;
+    padding: 12px 0;
+  }
+
+  .hargx-collection__toolbar-count {
+    font-size: 12px;
+  }
+
+  .hargx-collection__toolbar-sort {
+    gap: 5px;
+  }
+
+  .hargx-collection__sort-label {
+    font-size: 12px;
+  }
+
+  .hargx-collection__sort-select {
+    min-width: 125px;
+    padding-right: 24px;
+    font-size: 12px;
+  }
+
+}
+
 
 
   /* Mobile */
