@@ -87,7 +87,7 @@
 
     </div>
 
-   {%- if collection.filters.size > 0 -%}
+    {%- if collection.filters.size > 0 -%}
 
         <div
             class="
@@ -189,7 +189,7 @@
 
             </aside>
 
-            {%- endif -%}
+        {%- endif -%}
 
 
             {%- comment -%}
@@ -230,6 +230,111 @@
 
     {%- endif -%}
 
+    {%- if section.settings.desktop_filter_layout == 'drawer' -%}
+
+      <button
+        type="button"
+        class="hargx-filter-trigger"
+        data-hargx-filter-open
+        aria-controls="HargxFilterDrawer-{{ section.id }}"
+      >
+        Filter
+      </button>
+
+
+      <div
+        id="HargxFilterDrawer-{{ section.id }}"
+        class="hargx-filter-drawer"
+        data-hargx-filter-drawer
+        hidden
+      >
+
+        <div
+          class="hargx-filter-drawer__overlay"
+          data-hargx-filter-close
+        ></div>
+
+        <aside
+          class="hargx-filter-drawer__panel"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Filters"
+        >
+
+          <div class="hargx-filter-drawer__header">
+
+            <h2>Filters</h2>
+
+            <button
+              type="button"
+              class="hargx-filter-drawer__close"
+              data-hargx-filter-close
+              aria-label="Close filters"
+            >
+              ×
+            </button>
+
+          </div>
+
+
+          <div class="hargx-filter-drawer__content">
+
+            {%- for filter in collection.filters -%}
+
+              <details
+                class="hargx-filter"
+                {% if filter.active_values.size > 0 %}open{% endif %}
+              >
+
+                <summary class="hargx-filter__summary">
+
+                  <span class="hargx-filter__title">
+                    {{ filter.label }}
+                  </span>
+
+                  <span class="hargx-filter__icon">
+                    +
+                  </span>
+
+                </summary>
+
+                <div class="hargx-filter__content">
+
+                  {% render 'hargx-filters', filter: filter %}
+
+                </div>
+
+              </details>
+
+            {%- endfor -%}
+
+          </div>
+
+
+          <div class="hargx-filter-drawer__footer">
+
+            <a
+              href="{{ collection.url }}"
+              class="hargx-filter-drawer__clear"
+            >
+              Clear all
+            </a>
+
+            <button
+              type="button"
+              class="hargx-filter-drawer__apply"
+              data-hargx-filter-close
+            >
+              Done
+            </button>
+
+          </div>
+
+        </aside>
+
+      </div>
+
+    {%- endif -%}
 
     {%- comment -%}
       Product Grid
@@ -237,7 +342,6 @@
 
     {%- if collection.products.size > 0 -%}
 
-        <div class="hargx-collection__products">
         <div
             class="hargx-collection__grid"
             style="
@@ -250,7 +354,6 @@
             {% render 'hargx-product-card', product: product %}
         {%- endfor -%}
 
-        </div>
         </div>
     {%- else -%}
 
@@ -662,11 +765,21 @@
    HARGX FILTER LAYOUT
    ========================================================= */
 
-.hargx-collection__content {
+.hargx-collection__filter-system--vertical {
   display: grid;
   grid-template-columns: 230px minmax(0, 1fr);
   gap: 40px;
   align-items: start;
+}
+
+.hargx-collection__filter-system--vertical
+.hargx-collection__filters {
+  position: sticky;
+  top: 30px;
+}
+
+.hargx-collection__filter-system--drawer {
+  display: block;
 }
 
 
