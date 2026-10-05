@@ -16,7 +16,7 @@
         "products_per_page": 24,
         "desktop_columns": 4,
         "mobile_columns": "2",
-        "desktop_filter_layout": "horizontal"
+        "desktop_filter_layout": "drawer"
       }
     }
   },
