@@ -1,6 +1,102 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
+    {{ settings.type_primary_font | font_face }}
+    {{ settings.type_heading_font | font_face }}
+    <style>
+      /* ========================================
+        HARGX — Theme Settings Variables
+        ======================================== */
+
+      :root {
+
+        /* Typography */
+
+        --font-primary--family:
+          {{ settings.type_primary_font.family }};
+
+        --font-primary--style:
+          {{ settings.type_primary_font.style }};
+
+        --font-primary--weight:
+          {{ settings.type_primary_font.weight }};
+
+        --font-heading--family:
+          {{ settings.type_heading_font.family }};
+
+        --font-heading--style:
+          {{ settings.type_heading_font.style }};
+
+        --font-heading--weight:
+          {{ settings.type_heading_font.weight }};
+
+        /* Layout */
+
+        --page-width:
+          {{ settings.max_page_width }};
+
+        --page-margin:
+          {{ settings.min_page_margin }}px;
+
+        --page-margin-mobile:
+          {{ settings.mobile_page_margin }}px;
+
+        --section-spacing:
+          {{ settings.section_spacing }}px;
+
+        --grid-gap:
+          {{ settings.grid_gap }}px;
+
+        --border-radius:
+          {{ settings.border_radius }}px;
+
+
+        /* Colors */
+
+        --color-primary:
+          {{ settings.color_primary }};
+
+        --color-black:
+          {{ settings.color_black }};
+
+        --color-white:
+          {{ settings.color_white }};
+
+        --color-warm-background:
+          {{ settings.color_warm_background }};
+
+        --color-text:
+          {{ settings.color_text }};
+
+        --color-muted-text:
+          {{ settings.color_muted_text }};
+
+        --color-border:
+          {{ settings.color_border }};
+
+
+        /* Shopify / HARGX aliases */
+
+        --color-background:
+          {{ settings.color_white }};
+
+        --color-foreground:
+          {{ settings.color_text }};
+
+
+        /* Buttons */
+
+        --button-radius:
+          {{ settings.button_radius }}px;
+
+        --button-vertical-padding:
+          {{ settings.button_vertical_padding }}px;
+
+        --button-horizontal-padding:
+          {{ settings.button_horizontal_padding }}px;
+
+      }
+    </style>
     {% # Inlined CSS Variables %}
     {% render 'css-variables' %}
 

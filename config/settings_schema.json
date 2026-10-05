@@ -51,15 +51,25 @@
         ],
         "default": "110rem"
       },
-      {
+     {
         "type": "range",
         "id": "min_page_margin",
         "min": 10,
         "max": 100,
         "step": 1,
         "unit": "px",
-        "label": "Page margin",
+        "label": "Desktop page margin",
         "default": 24
+      },
+      {
+        "type": "range",
+        "id": "mobile_page_margin",
+        "min": 10,
+        "max": 40,
+        "step": 1,
+        "unit": "px",
+        "label": "Mobile page margin",
+        "default": 16
       },
       {
         "type": "range",

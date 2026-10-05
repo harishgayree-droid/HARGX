@@ -91,31 +91,51 @@ body {
  * When a child element is given the `full-width` class, it will span
  * the entire viewport.
  */
+/* ========================================
+   HARGX — Shopify Section Layout
+   ======================================== */
+
 .shopify-section {
-  --content-width: min(
+  position: relative;
+  width: 100%;
+  max-width: none;
+}
+
+
+/*
+ * Every section is full-width by default.
+ * Individual sections control their own
+ * inner content width.
+ */
+
+.shopify-section > * {
+  width: 100%;
+  max-width: none;
+}
+
+
+/*
+ * Explicit full-width utility.
+ */
+
+.shopify-section > .full-width {
+  width: 100%;
+  max-width: none;
+}
+
+
+/*
+ * HARGX constrained container.
+ */
+
+.hargx-container {
+  width: min(
     calc(var(--page-width) - var(--page-margin) * 2),
     calc(100% - var(--page-margin) * 2)
   );
-  --content-margin: minmax(var(--page-margin), 1fr);
-  --content-grid: var(--content-margin) var(--content-width) var(--content-margin);
 
-  /* This is required to make <img> elements work as background images */
-  position: relative;
-  grid-template-columns: var(--content-grid);
-  display: grid;
-  width: 100%;
+  margin-inline: auto;
 }
-
-/* Child elements, by default, are constrained to the central column of the grid. */
-.shopify-section > * {
-  grid-column: 2;
-}
-
-/* Child elements that use the full-width utility class span the entire viewport. */
-.shopify-section > .full-width {
-  grid-column: 1 / -1;
-}
-
 
 /* ========================================
    HARGX — Global Design System
@@ -170,15 +190,6 @@ select {
   background-color: var(--color-warm-background);
 }
 
-/* HARGX container */
-
-.hargx-container {
-  width: min(
-    calc(var(--page-width) - var(--page-margin) * 2),
-    calc(100% - var(--page-margin) * 2)
-  );
-  margin-inline: auto;
-}
 
 /* HARGX section spacing */
 
@@ -205,6 +216,19 @@ select {
 
 .hargx-grid--4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* ========================================
+   HARGX — Page Width Utility
+   ======================================== */
+
+.page-width {
+  width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+
+  margin-inline: auto;
 }
 
 @media screen and (max-width: 989px) {
@@ -259,6 +283,54 @@ select {
     opacity 0.2s ease;
 }
 
+/* ========================================
+   HARGX — Global Button Style
+   ======================================== */
+
+.hargx-button {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+
+/*
+ * Solid
+ */
+
+.hargx-button--solid {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+
+/*
+ * Outline
+ */
+
+.hargx-button--outline {
+  background: transparent;
+  color: var(--color-black);
+  border-color: var(--color-black);
+}
+
+
+/*
+ * Text
+ */
+
+.hargx-button--text {
+  min-height: auto;
+  padding: 0;
+
+  background: transparent;
+  color: var(--color-black);
+
+  border: 0;
+  border-radius: 0;
+}
+
 /* Solid */
 
 .hargx-button--solid {
@@ -303,4 +375,16 @@ select {
 .hargx-button--text:hover,
 .hargx-button--text:focus-visible {
   color: var(--color-primary);
+}
+
+@media screen and (max-width: 749px) {
+
+  .hargx-container,
+  .page-width {
+    width: min(
+      calc(var(--page-width) - var(--page-margin-mobile) * 2),
+      calc(100% - var(--page-margin-mobile) * 2)
+    );
+  }
+
 }
