@@ -79,9 +79,26 @@
         "trust_item_aX879d"
       ],
       "settings": {}
+    },
+    "hargx_recommended_products_F4H7zN": {
+      "type": "hargx-recommended-products",
+      "name": "HARGX Recommended Products",
+      "settings": {
+        "heading": "You may also like",
+        "subheading": "<p>More products you might love.</p>",
+        "heading_alignment": "left",
+        "products_to_show": 4,
+        "desktop_columns": "4",
+        "mobile_columns": "2",
+        "show_view_all": false,
+        "view_all_text": "View all products",
+        "section_spacing_top": 80,
+        "section_spacing_bottom": 80
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "hargx_recommended_products_F4H7zN"
   ]
 }
