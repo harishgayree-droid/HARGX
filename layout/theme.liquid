@@ -117,6 +117,7 @@
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'hargx-product.css' | asset_url | stylesheet_tag }}
+    {{ 'hargx-recommended-products.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
@@ -129,6 +130,10 @@
     ></script>
     <script
       src="{{ 'hargx-product.js' | asset_url }}"
+      defer="defer"
+    ></script>
+    <script
+      src="{{ 'hargx-recommended-products.js' | asset_url }}"
       defer="defer"
     ></script>
   </head>

@@ -2,8 +2,6 @@
   assign products_to_show = section.settings.products_to_show
   assign desktop_columns = section.settings.desktop_columns
   assign mobile_columns = section.settings.mobile_columns
-
-  assign recommendation_limit = products_to_show
 -%}
 
 <section
@@ -11,7 +9,7 @@
   class="hargx-recommended-products"
   data-hargx-recommendations
   data-product-id="{{ product.id }}"
-  data-limit="{{ recommendation_limit }}"
+  data-limit="{{ products_to_show }}"
   data-section-id="{{ section.id }}"
   data-url="{{ routes.product_recommendations_url }}"
   style="
