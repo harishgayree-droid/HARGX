@@ -1,12 +1,9 @@
-{% comment %}
-  HARGX Product Page
-  Product media, product information, variants and purchase actions.
-{% endcomment %}
-
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
   assign product_form_id = 'HargxProductForm-' | append: section.id
 -%}
+
+{{ 'hargx-product.css' | asset_url | stylesheet_tag }}
 
 <section
   id="HargxProduct-{{ section.id }}"
@@ -14,163 +11,82 @@
   data-section-id="{{ section.id }}"
   data-product-id="{{ product.id }}"
 >
-
   <div class="hargx-product__container page-width">
 
     <div class="hargx-product__layout">
 
       {%- comment -%}
         Product Media
+        Step 4 me is gallery ko aur improve karenge.
       {%- endcomment -%}
 
       <div class="hargx-product__media">
-
         <div class="hargx-product__media-grid">
 
-          {%- if product.media.size > 0 -%}
+          {%- for media in product.media -%}
 
-            {%- for media in product.media -%}
+            <div
+              class="hargx-product__media-item"
+              data-media-id="{{ media.id }}"
+            >
 
-              <div
-                class="
-                  hargx-product__media-item
-                  hargx-product__media-item--{{ media.media_type }}
-                "
-              >
+              {%- case media.media_type -%}
 
-                {%- case media.media_type -%}
+                {%- when 'image' -%}
 
-                  {%- when 'image' -%}
+                  {{
+                    media
+                    | image_url: width: 1600
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '400, 600, 800, 1000, 1200, 1600',
+                      sizes: '(min-width: 990px) 50vw, 100vw',
+                      class: 'hargx-product__image',
+                      alt: media.alt | escape
+                  }}
 
-                    {{
-                      media
-                      | image_url: width: 1600
-                      | image_tag:
-                        loading: 'lazy',
-                        widths: '500, 750, 1000, 1200, 1600',
-                        sizes: '(min-width: 990px) 50vw, 100vw',
-                        class: 'hargx-product__image',
-                        alt: media.alt | default: product.title
-                    }}
+                {%- when 'video' -%}
 
-                  {%- when 'video' -%}
+                  {{
+                    media
+                    | video_tag:
+                      controls: true,
+                      class: 'hargx-product__video'
+                  }}
 
-                    {{
-                      media
-                      | video_tag:
-                        controls: true,
-                        autoplay: false,
-                        loop: false,
-                        muted: false,
-                        class: 'hargx-product__video'
-                    }}
+                {%- when 'external_video' -%}
 
-                  {%- when 'external_video' -%}
+                  {{ media | external_video_tag }}
 
-                    {{ media | external_video_tag }}
+                {%- when 'model' -%}
 
-                  {%- when 'model' -%}
+                  {{ media | model_viewer_tag }}
 
-                    {{ media | model_viewer_tag }}
+              {%- endcase -%}
 
-                {%- endcase -%}
-
-              </div>
-
-            {%- endfor -%}
-
-          {%- else -%}
-
-            <div class="hargx-product__media-placeholder">
-              {{ 'product-1' | placeholder_svg_tag }}
             </div>
 
-          {%- endif -%}
+          {%- endfor -%}
 
         </div>
-
       </div>
 
 
       {%- comment -%}
         Product Information
+        Everything inside this area is controlled by blocks.
       {%- endcomment -%}
 
       <div class="hargx-product__info">
 
         <div class="hargx-product__info-inner">
 
-          {%- if section.settings.show_vendor and product.vendor != blank -%}
-
-            <div class="hargx-product__vendor">
-              {{ product.vendor | escape }}
-            </div>
-
-          {%- endif -%}
-
-
-          <h1 class="hargx-product__title">
-            {{ product.title | escape }}
-          </h1>
-
-
-          {%- comment -%}
-            Product Price
-          {%- endcomment -%}
-
-          <div
-            class="hargx-product__price"
-            data-hargx-price
-          >
-
-            {%- if current_variant.compare_at_price > current_variant.price -%}
-
-              <span class="hargx-product__price-current">
-                {{ current_variant.price | money }}
-              </span>
-
-              <s class="hargx-product__price-compare">
-                {{ current_variant.compare_at_price | money }}
-              </s>
-
-              <span class="hargx-product__price-badge">
-                Sale
-              </span>
-
-            {%- else -%}
-
-              <span class="hargx-product__price-current">
-                {{ current_variant.price | money }}
-              </span>
-
-            {%- endif -%}
-
-          </div>
-
-
-          {%- comment -%}
-            Product Description
-          {%- endcomment -%}
-
-          {%- if product.description != blank -%}
-
-            <div class="hargx-product__description rte">
-              {{ product.description }}
-            </div>
-
-          {%- endif -%}
-
-
-          {%- comment -%}
-            Product Form
-          {%- endcomment -%}
-
-          {% form 'product',
+          {%- form 'product',
             product,
             id: product_form_id,
             class: 'hargx-product-form',
-            novalidate: 'novalidate'
-          %}
+            data-product-form: ''
+          -%}
 
             <input
               type="hidden"
@@ -179,270 +95,693 @@
               data-hargx-variant-id
             >
 
+            <input
+              type="hidden"
+              name="quantity"
+              value="1"
+              data-hargx-hidden-quantity
+            >
 
-            {%- comment -%}
-              Variant Selector
-            {%- endcomment -%}
 
-            {%- unless product.has_only_default_variant -%}
+            {%- for block in section.blocks -%}
 
-              <div class="hargx-product__variants">
+              {%- case block.type -%}
 
-                {%- for option in product.options_with_values -%}
+                {%- when 'vendor' -%}
 
-                  <fieldset
-                    class="hargx-product__option"
-                    data-option-position="{{ option.position }}"
+                  <div
+                    class="hargx-product__block hargx-product__vendor"
+                    {{ block.shopify_attributes }}
+                  >
+                    {%- if product.vendor != blank -%}
+                      {{ product.vendor }}
+                    {%- endif -%}
+                  </div>
+
+
+                {%- when 'title' -%}
+
+                  <div
+                    class="hargx-product__block"
+                    {{ block.shopify_attributes }}
+                  >
+                    <h1 class="hargx-product__title">
+                      {{ product.title | escape }}
+                    </h1>
+                  </div>
+
+
+                {%- when 'rating' -%}
+
+                  {%- assign rating = product.metafields.reviews.rating.value -%}
+                  {%- assign rating_count = product.metafields.reviews.rating_count -%}
+
+                  {%- if rating != blank -%}
+
+                    <div
+                      class="hargx-product__block hargx-product__rating"
+                      {{ block.shopify_attributes }}
+                    >
+
+                      <span
+                        class="hargx-product__rating-stars"
+                        aria-label="{{ rating }} out of 5 stars"
+                      >
+                        {%- for i in (1..5) -%}
+                          {%- if rating >= i -%}
+                            ★
+                          {%- else -%}
+                            ☆
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </span>
+
+                      {%- if rating_count != blank -%}
+                        <span class="hargx-product__rating-count">
+                          {{ rating_count }}
+                        </span>
+                      {%- endif -%}
+
+                    </div>
+
+                  {%- endif -%}
+
+
+                {%- when 'sku' -%}
+
+                  {%- if current_variant.sku != blank -%}
+
+                    <div
+                      class="hargx-product__block hargx-product__sku"
+                      {{ block.shopify_attributes }}
+                    >
+                      <span class="hargx-product__sku-label">
+                        SKU:
+                      </span>
+
+                      <span data-hargx-sku>
+                        {{ current_variant.sku }}
+                      </span>
+                    </div>
+
+                  {%- endif -%}
+
+
+                {%- when 'price' -%}
+
+                  <div
+                    class="hargx-product__block hargx-product__price"
+                    data-hargx-price
+                    {{ block.shopify_attributes }}
                   >
 
-                    <legend class="hargx-product__option-label">
-                      {{ option.name }}
-                    </legend>
+                    <span
+                      class="hargx-product__price-current"
+                      data-hargx-current-price
+                    >
+                      {{ current_variant.price | money }}
+                    </span>
+
+                    {%- if current_variant.compare_at_price > current_variant.price -%}
+
+                      <span
+                        class="hargx-product__price-compare"
+                        data-hargx-compare-price
+                      >
+                        {{ current_variant.compare_at_price | money }}
+                      </span>
+
+                      <span
+                        class="hargx-product__price-badge"
+                        data-hargx-sale-badge
+                      >
+                        Sale
+                      </span>
+
+                    {%- else -%}
+
+                      <span
+                        class="hargx-product__price-compare"
+                        data-hargx-compare-price
+                        hidden
+                      ></span>
+
+                      <span
+                        class="hargx-product__price-badge"
+                        data-hargx-sale-badge
+                        hidden
+                      >
+                        Sale
+                      </span>
+
+                    {%- endif -%}
+
+                  </div>
 
 
-                    <div class="hargx-product__option-values">
+                {%- when 'description' -%}
 
-                      {%- for value in option.values -%}
+                  {%- if product.description != blank -%}
 
-                        {%- assign option_value_id = 'HargxOption-' | append: section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
+                    <div
+                      class="hargx-product__block hargx-product__description rte"
+                      {{ block.shopify_attributes }}
+                    >
+                      {{ product.description }}
+                    </div>
 
-                        <input
-                          type="radio"
-                          id="{{ option_value_id }}"
-                          name="option-{{ option.position }}"
-                          value="{{ value | escape }}"
-                          class="hargx-product__option-input"
-                          {% if option.selected_value == value %}
-                            checked
-                          {% endif %}
-                          data-hargx-option
+                  {%- endif -%}
+
+
+                {%- when 'variant_picker' -%}
+
+                  {%- unless product.has_only_default_variant -%}
+
+                    <div
+                      class="hargx-product__block hargx-product__variants"
+                      data-hargx-variants
+                      {{ block.shopify_attributes }}
+                    >
+
+                      {%- for option in product.options_with_values -%}
+
+                        <fieldset
+                          class="hargx-product__option"
                           data-option-position="{{ option.position }}"
                         >
 
-                        <label
-                          for="{{ option_value_id }}"
-                          class="hargx-product__option-value"
-                        >
-                          {{ value }}
-                        </label>
+                          <legend class="hargx-product__option-label">
+                            {{ option.name }}
+                          </legend>
+
+                          <div class="hargx-product__option-values">
+
+                            {%- for value in option.values -%}
+
+                              {%- assign option_id = 'HargxOption-' | append: section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
+
+                              <input
+                                type="radio"
+                                id="{{ option_id }}"
+                                name="options[{{ option.name | escape }}]"
+                                value="{{ value | escape }}"
+                                class="hargx-product__option-input"
+                                data-hargx-option
+                                data-option-position="{{ option.position }}"
+                                {% if option.selected_value == value %}
+                                  checked
+                                {% endif %}
+                              >
+
+                              <label
+                                for="{{ option_id }}"
+                                class="hargx-product__option-value"
+                              >
+                                {{ value }}
+                              </label>
+
+                            {%- endfor -%}
+
+                          </div>
+
+                        </fieldset>
 
                       {%- endfor -%}
 
                     </div>
 
-                  </fieldset>
-
-                {%- endfor -%}
-
-              </div>
-
-            {%- endunless -%}
+                  {%- endunless -%}
 
 
-            {%- comment -%}
-              Quantity
-            {%- endcomment -%}
+                {%- when 'quantity' -%}
 
-            <div class="hargx-product__quantity">
+                  <div
+                    class="hargx-product__block hargx-product__quantity"
+                    {{ block.shopify_attributes }}
+                  >
 
-              <label
-                for="HargxQuantity-{{ section.id }}"
-                class="hargx-product__quantity-label"
-              >
-                Quantity
-              </label>
+                    <label
+                      class="hargx-product__quantity-label"
+                      for="HargxQuantity-{{ section.id }}"
+                    >
+                      {{ block.settings.label }}
+                    </label>
 
-              <div class="hargx-product__quantity-control">
+                    <div class="hargx-product__quantity-control">
 
-                <button
-                  type="button"
-                  class="hargx-product__quantity-button"
-                  data-hargx-quantity-minus
-                  aria-label="Decrease quantity"
-                >
-                  −
-                </button>
+                      <button
+                        type="button"
+                        class="hargx-product__quantity-button"
+                        data-hargx-quantity-minus
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
 
-                <input
-                  id="HargxQuantity-{{ section.id }}"
-                  type="number"
-                  name="quantity"
-                  value="1"
-                  min="1"
-                  step="1"
-                  class="hargx-product__quantity-input"
-                  data-hargx-quantity
-                >
+                      <input
+                        id="HargxQuantity-{{ section.id }}"
+                        class="hargx-product__quantity-input"
+                        type="number"
+                        name="quantity"
+                        min="1"
+                        value="1"
+                        data-hargx-quantity
+                      >
 
-                <button
-                  type="button"
-                  class="hargx-product__quantity-button"
-                  data-hargx-quantity-plus
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
+                      <button
+                        type="button"
+                        class="hargx-product__quantity-button"
+                        data-hargx-quantity-plus
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
 
-              </div>
+                    </div>
 
-            </div>
-
-
-            {%- comment -%}
-              Add to Cart
-            {%- endcomment -%}
-
-            <button
-              type="submit"
-              name="add"
-              class="hargx-product__add-to-cart"
-              {% unless current_variant.available %}
-                disabled
-              {% endunless %}
-              data-hargx-add-to-cart
-            >
-
-              <span data-hargx-add-text>
-
-                {%- if current_variant.available -%}
-                  Add to cart
-                {%- else -%}
-                  Sold out
-                {%- endif -%}
-
-              </span>
-
-            </button>
+                  </div>
 
 
-            {%- if section.settings.show_buy_now -%}
+                {%- when 'inventory_status' -%}
 
-              <div class="hargx-product__buy-now">
+                  <div
+                    class="hargx-product__block hargx-product__inventory"
+                    data-hargx-inventory
+                    {{ block.shopify_attributes }}
+                  >
 
-                {{ form | payment_button }}
+                    {%- if current_variant.available -%}
 
-              </div>
+                      {%- if current_variant.inventory_management == 'shopify'
+                        and current_variant.inventory_quantity > 0
+                        and current_variant.inventory_quantity <= block.settings.low_stock_threshold
+                      -%}
 
-            {%- endif -%}
+                        <span>
+                          Only {{ current_variant.inventory_quantity }}
+                          left in stock
+                        </span>
 
-          {% endform %}
+                      {%- else -%}
 
+                        <span>
+                          {{ block.settings.in_stock_text }}
+                        </span>
 
-          {%- comment -%}
-            Trust Information
-          {%- endcomment -%}
+                      {%- endif -%}
 
-          {%- if section.settings.show_trust_information -%}
+                    {%- else -%}
 
-            <div class="hargx-product__trust">
+                      <span>
+                        {{ block.settings.out_of_stock_text }}
+                      </span>
 
-              <div class="hargx-product__trust-item">
+                    {%- endif -%}
 
-                <span
-                  class="hargx-product__trust-icon"
-                  aria-hidden="true"
-                >
-                  ✓
-                </span>
-
-                <span>
-                  Secure checkout
-                </span>
-
-              </div>
-
-
-              <div class="hargx-product__trust-item">
-
-                <span
-                  class="hargx-product__trust-icon"
-                  aria-hidden="true"
-                >
-                  ↗
-                </span>
-
-                <span>
-                  Fast shipping
-                </span>
-
-              </div>
+                  </div>
 
 
-              <div class="hargx-product__trust-item">
+                {%- when 'buy_buttons' -%}
 
-                <span
-                  class="hargx-product__trust-icon"
-                  aria-hidden="true"
-                >
-                  ↩
-                </span>
+                  <div
+                    class="hargx-product__block hargx-product__buy-buttons"
+                    {{ block.shopify_attributes }}
+                  >
 
-                <span>
-                  Easy returns
-                </span>
+                    <button
+                      type="submit"
+                      name="add"
+                      class="hargx-product__add-to-cart"
+                      data-hargx-add-to-cart
+                      {% unless current_variant.available %}
+                        disabled
+                      {% endunless %}
+                    >
 
-              </div>
+                      <span data-hargx-add-text>
+                        {%- if current_variant.available -%}
+                          {{ block.settings.add_to_cart_text }}
+                        {%- else -%}
+                          {{ block.settings.sold_out_text }}
+                        {%- endif -%}
+                      </span>
 
-            </div>
+                    </button>
 
-          {%- endif -%}
+                    {%- if block.settings.show_dynamic_checkout -%}
+
+                      <div class="hargx-product__buy-now">
+                        {{ form | payment_button }}
+                      </div>
+
+                    {%- endif -%}
+
+                  </div>
+
+
+                {%- when 'trust_item' -%}
+
+                  <div
+                    class="hargx-product__block hargx-product__trust"
+                    {{ block.shopify_attributes }}
+                  >
+
+                    <div class="hargx-product__trust-item">
+
+                      {%- if block.settings.icon != blank -%}
+                        <span class="hargx-product__trust-icon">
+                          {{ block.settings.icon }}
+                        </span>
+                      {%- endif -%}
+
+                      <span class="hargx-product__trust-text">
+                        {{ block.settings.text }}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+
+                {%- when 'collapsible_tab' -%}
+
+                  <details
+                    class="hargx-product__block hargx-product__collapsible"
+                    {{ block.shopify_attributes }}
+                  >
+
+                    <summary>
+                      <span>
+                        {{ block.settings.heading }}
+                      </span>
+
+                      <span aria-hidden="true">
+                        +
+                      </span>
+                    </summary>
+
+                    <div class="hargx-product__collapsible-content rte">
+                      {{ block.settings.content }}
+                    </div>
+
+                  </details>
+
+
+                {%- when 'share' -%}
+
+                  <div
+                    class="hargx-product__block hargx-product__share"
+                    {{ block.shopify_attributes }}
+                  >
+
+                    <span>
+                      {{ block.settings.heading }}
+                    </span>
+
+                    <button
+                      type="button"
+                      data-hargx-share
+                    >
+                      {{ block.settings.button_text }}
+                    </button>
+
+                  </div>
+
+
+                {%- when 'custom_liquid' -%}
+
+                  <div
+                    class="hargx-product__block"
+                    {{ block.shopify_attributes }}
+                  >
+                    {{ block.settings.custom_liquid }}
+                  </div>
+
+              {%- endcase -%}
+
+            {%- endfor -%}
+
+          {%- endform -%}
 
         </div>
-
       </div>
 
     </div>
-
   </div>
+
+
+  {%- comment -%}
+    Product data used by hargx-product.js
+  {%- endcomment -%}
+
+  <script
+    type="application/json"
+    data-hargx-product-data
+  >
+    {
+      "productId": {{ product.id | json }},
+      "selectedVariantId": {{ current_variant.id | json }},
+      "variants": [
+        {%- for variant in product.variants -%}
+          {
+            "id": {{ variant.id | json }},
+            "available": {{ variant.available | json }},
+            "price": {{ variant.price | json }},
+            "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
+            "sku": {{ variant.sku | json }},
+            "inventory_quantity": {{ variant.inventory_quantity | json }},
+            "inventory_management": {{ variant.inventory_management | json }},
+            "options": {{ variant.options | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
 
 </section>
 
-<script>
-  window.hargxProducts = window.hargxProducts || {};
-
-  window.hargxProducts[{{ product.id }}] = {
-    variants: [
-      {%- for variant in product.variants -%}
-        {
-          id: {{ variant.id }},
-          available: {{ variant.available | json }},
-          price: {{ variant.price }},
-          compare_at_price: {{ variant.compare_at_price | default: 0 }},
-          options: {{ variant.options | json }}
-        }{% unless forloop.last %},{% endunless %}
-      {%- endfor -%}
-    ]
-  };
-</script>
 
 {% schema %}
 {
   "name": "HARGX Product",
-  "settings": [
+  "settings": [],
+  "blocks": [
     {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show vendor",
-      "default": true
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1,
+      "settings": []
     },
     {
-      "type": "checkbox",
-      "id": "show_buy_now",
-      "label": "Show accelerated checkout",
-      "default": true
+      "type": "title",
+      "name": "Title",
+      "limit": 1,
+      "settings": []
     },
     {
-      "type": "checkbox",
-      "id": "show_trust_information",
-      "label": "Show trust information",
-      "default": true
+      "type": "rating",
+      "name": "Rating",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "sku",
+      "name": "SKU",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "quantity",
+      "name": "Quantity",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Quantity"
+        }
+      ]
+    },
+    {
+      "type": "inventory_status",
+      "name": "Inventory status",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "low_stock_threshold",
+          "label": "Low stock threshold",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "in_stock_text",
+          "label": "In stock text",
+          "default": "In stock"
+        },
+        {
+          "type": "text",
+          "id": "out_of_stock_text",
+          "label": "Out of stock text",
+          "default": "Out of stock"
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "add_to_cart_text",
+          "label": "Add to cart text",
+          "default": "Add to cart"
+        },
+        {
+          "type": "text",
+          "id": "sold_out_text",
+          "label": "Sold out text",
+          "default": "Sold out"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Show dynamic checkout button",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "trust_item",
+      "name": "Trust item",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon",
+          "default": "✓"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Secure checkout"
+        }
+      ]
+    },
+    {
+      "type": "collapsible_tab",
+      "name": "Collapsible tab",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Product information"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Add your product information here.</p>"
+        }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "Share",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Share"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Share product"
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom Liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid"
+        }
+      ]
     }
   ],
-  "disabled_on": {
-    "groups": [
-      "header",
-      "footer"
-    ]
-  }
+  "presets": [
+    {
+      "name": "HARGX Product",
+      "blocks": [
+        {
+          "type": "vendor"
+        },
+        {
+          "type": "title"
+        },
+        {
+          "type": "rating"
+        },
+        {
+          "type": "price"
+        },
+        {
+          "type": "description"
+        },
+        {
+          "type": "variant_picker"
+        },
+        {
+          "type": "quantity"
+        },
+        {
+          "type": "buy_buttons"
+        },
+        {
+          "type": "trust_item"
+        },
+        {
+          "type": "trust_item"
+        },
+        {
+          "type": "collapsible_tab"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}
