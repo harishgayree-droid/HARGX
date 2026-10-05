@@ -11,6 +11,81 @@
   "sections": {
     "main": {
       "type": "product",
+      "blocks": {
+        "vendor_N6w9Gc": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title_eKptiE": {
+          "type": "title",
+          "settings": {}
+        },
+        "rating_dB4P8h": {
+          "type": "rating",
+          "settings": {}
+        },
+        "price_Cg8niP": {
+          "type": "price",
+          "settings": {}
+        },
+        "inventory_status_xQt6U8": {
+          "type": "inventory_status",
+          "settings": {
+            "low_stock_threshold": 5,
+            "in_stock_text": "In stock",
+            "out_of_stock_text": "Out of stock"
+          }
+        },
+        "quantity_cprgyK": {
+          "type": "quantity",
+          "settings": {
+            "label": "Quantity"
+          }
+        },
+        "variant_picker_xetgzf": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "buy_buttons_dU9heg": {
+          "type": "buy_buttons",
+          "settings": {
+            "add_to_cart_text": "Add to cart",
+            "sold_out_text": "Sold out",
+            "show_dynamic_checkout": true
+          }
+        },
+        "description_FQdaMF": {
+          "type": "description",
+          "settings": {}
+        },
+        "trust_item_aX879d": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "✓",
+            "text": "Secure checkout"
+          }
+        },
+        "collapsible_tab_mWje49": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Product information",
+            "content": "<p>Add your product information here.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "vendor_N6w9Gc",
+        "title_eKptiE",
+        "rating_dB4P8h",
+        "price_Cg8niP",
+        "inventory_status_xQt6U8",
+        "quantity_cprgyK",
+        "variant_picker_xetgzf",
+        "buy_buttons_dU9heg",
+        "description_FQdaMF",
+        "trust_item_aX879d",
+        "collapsible_tab_mWje49"
+      ],
       "settings": {}
     }
   },
