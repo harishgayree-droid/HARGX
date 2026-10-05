@@ -87,6 +87,213 @@
 
     </div>
 
+    {%- if collection.filters.size > 0 -%}
+
+        <div class="hargx-collection__content">
+
+            <aside
+            class="hargx-collection__filters"
+            data-hargx-filters
+            aria-label="Collection filters"
+            >
+
+            <div class="hargx-collection__filters-header">
+                <h2>Filter</h2>
+            </div>
+
+
+            {%- for filter in collection.filters -%}
+
+                <details
+                class="hargx-filter"
+                {% if filter.active_values.size > 0 %}open{% endif %}
+                >
+
+                <summary class="hargx-filter__summary">
+
+                    <span class="hargx-filter__title">
+                    {{ filter.label }}
+                    </span>
+
+                    <span
+                    class="hargx-filter__icon"
+                    aria-hidden="true"
+                    >
+                    +
+                    </span>
+
+                </summary>
+
+
+                <div class="hargx-filter__content">
+
+                    {%- case filter.type -%}
+
+                    {%- when 'boolean' -%}
+
+                        <label class="hargx-filter__checkbox">
+
+                        <input
+                            type="checkbox"
+                            value="{{ filter.true_value.value }}"
+                            {% if filter.true_value.active %}
+                            checked
+                            {% endif %}
+                            {% if filter.true_value.count == 0 and filter.true_value.active == false %}
+                            disabled
+                            {% endif %}
+                            data-hargx-filter-input
+                        >
+
+                        <span>
+                            {{ filter.true_value.label }}
+                        </span>
+
+                        <span class="hargx-filter__count">
+                            {{ filter.true_value.count }}
+                        </span>
+
+                        </label>
+
+
+                    {%- when 'list' -%}
+
+                        <div class="hargx-filter__options">
+
+                        {%- for value in filter.values -%}
+
+                            <label
+                            class="hargx-filter__checkbox{% if value.active %} is-active{% endif %}"
+                            >
+
+                            <input
+                            type="checkbox"
+                            name="{{ filter.param_name }}"
+                            value="{{ value.value }}"
+                            {% if value.active %}
+                                checked
+                            {% endif %}
+                            {% if value.count == 0 and value.active == false %}
+                                disabled
+                            {% endif %}
+                            data-hargx-filter-input
+                            >
+
+                            <span class="hargx-filter__checkbox-mark"></span>
+
+                            <span class="hargx-filter__label">
+                                {{ value.label }}
+                            </span>
+
+                            <span class="hargx-filter__count">
+                                {{ value.count }}
+                            </span>
+
+                            </label>
+
+                        {%- endfor -%}
+
+                        </div>
+
+
+                    {%- when 'price_range' -%}
+
+                        <div class="hargx-filter__price">
+
+                        <div class="hargx-filter__price-field">
+
+                            <label
+                            for="HargxPriceMin-{{ section.id }}-{{ forloop.index }}"
+                            >
+                            From
+                            </label>
+
+                            <div class="hargx-filter__price-input">
+
+                            <span>
+                                {{ cart.currency.symbol }}
+                            </span>
+
+                            <input
+                                id="HargxPriceMin-{{ section.id }}-{{ forloop.index }}"
+                                type="number"
+                                name="{{ filter.min_value.param_name }}"
+                                min="0"
+                                max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                                placeholder="0"
+                                data-hargx-price-input
+                            >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="hargx-filter__price-field">
+
+                            <label
+                            for="HargxPriceMax-{{ section.id }}-{{ forloop.index }}"
+                            >
+                            To
+                            </label>
+
+                            <div class="hargx-filter__price-input">
+
+                            <span>
+                                {{ cart.currency.symbol }}
+                            </span>
+
+                            <input
+                                id="HargxPriceMax-{{ section.id }}-{{ forloop.index }}"
+                                type="number"
+                                name="{{ filter.max_value.param_name }}"
+                                min="0"
+                                max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                                placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                data-hargx-price-input
+                            >
+
+                            </div>
+
+                        </div>
+
+                        </div>
+
+                    {%- endcase -%}
+
+                </div>
+
+                </details>
+
+            {%- endfor -%}
+
+
+            {%- if collection.filters.size > 0 -%}
+
+                <a
+                href="{{ collection.url }}"
+                class="hargx-filter__clear"
+                >
+                Clear all
+                </a>
+
+            {%- endif -%}
+
+            </aside>
+
+
+            <div class="hargx-collection__products">
+
+            <!-- Product grid will remain here -->
+
+            </div>
+
+        </div>
+
+    {%- endif -%}
+
 
     {%- comment -%}
       Product Grid
@@ -94,20 +301,21 @@
 
     {%- if collection.products.size > 0 -%}
 
-      <div
-        class="hargx-collection__grid"
-        style="
-          --hargx-desktop-columns: {{ desktop_columns }};
-          --hargx-mobile-columns: {{ mobile_columns }};
-        "
-      >
+        <div class="hargx-collection__products">
+        <div
+            class="hargx-collection__grid"
+            style="
+            --hargx-desktop-columns: {{ desktop_columns }};
+            --hargx-mobile-columns: {{ mobile_columns }};
+            "
+        >
 
-      {%- for product in collection.products -%}
-        {% render 'hargx-product-card', product: product %}
-      {%- endfor -%}
+        {%- for product in collection.products -%}
+            {% render 'hargx-product-card', product: product %}
+        {%- endfor -%}
 
-      </div>
-
+        </div>
+        </div>
     {%- else -%}
 
       <div class="hargx-collection__empty">
@@ -514,6 +722,213 @@
 
 }
 
+/* =========================================================
+   HARGX FILTER LAYOUT
+   ========================================================= */
+
+.hargx-collection__content {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+
+/* =========================================================
+   FILTER SIDEBAR
+   ========================================================= */
+
+.hargx-collection__filters {
+  position: sticky;
+  top: 30px;
+}
+
+.hargx-collection__filters-header {
+  margin-bottom: 20px;
+}
+
+.hargx-collection__filters-header h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+
+/* Individual filter */
+
+.hargx-filter {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.hargx-filter:last-of-type {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.hargx-filter__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 17px 0;
+
+  cursor: pointer;
+  list-style: none;
+}
+
+.hargx-filter__summary::-webkit-details-marker {
+  display: none;
+}
+
+.hargx-filter__title {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.hargx-filter__icon {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.hargx-filter[open]
+.hargx-filter__icon {
+  transform: rotate(45deg);
+}
+
+
+/* Filter content */
+
+.hargx-filter__content {
+  padding: 0 0 17px;
+}
+
+.hargx-filter__options {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+
+/* Checkbox */
+
+.hargx-filter__checkbox {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 13px;
+  line-height: 1.4;
+
+  cursor: pointer;
+}
+
+.hargx-filter__checkbox input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hargx-filter__checkbox-mark {
+  width: 15px;
+  height: 15px;
+
+  border: 1px solid rgba(0, 0, 0, 0.35);
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.hargx-filter__checkbox input:checked
++ .hargx-filter__checkbox-mark {
+  background: #000000;
+  border-color: #000000;
+}
+
+.hargx-filter__label {
+  min-width: 0;
+}
+
+.hargx-filter__count {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+
+/* Disabled */
+
+.hargx-filter__checkbox input:disabled
+~ .hargx-filter__label {
+  opacity: 0.35;
+}
+
+.hargx-filter__checkbox:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+
+/* Price */
+
+.hargx-filter__price {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.hargx-filter__price-field label {
+  display: block;
+  margin-bottom: 5px;
+
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.hargx-filter__price-input {
+  display: flex;
+  align-items: center;
+
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.hargx-filter__price-input span {
+  padding-left: 9px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.hargx-filter__price-input input {
+  width: 100%;
+  min-width: 0;
+  padding: 9px;
+
+  border: 0;
+  background: transparent;
+
+  font: inherit;
+  font-size: 12px;
+}
+
+.hargx-filter__price-input input:focus {
+  outline: none;
+}
+
+
+/* Clear */
+
+.hargx-filter__clear {
+  display: inline-block;
+
+  margin-top: 18px;
+
+  color: inherit;
+
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 
 
   /* Mobile */
