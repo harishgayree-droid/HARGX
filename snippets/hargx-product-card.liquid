@@ -1,0 +1,109 @@
+<article class="hargx-product-card">
+
+  <a
+    href="{{ product.url }}"
+    class="hargx-product-card__link"
+    aria-label="{{ product.title | escape }}"
+  >
+
+    <div class="hargx-product-card__media">
+
+      {%- comment -%}
+        Product Badges
+      {%- endcomment -%}
+
+      {%- if product.available == false -%}
+
+        <span class="hargx-product-card__badge hargx-product-card__badge--sold-out">
+          Sold out
+        </span>
+
+      {%- elsif product.compare_at_price > product.price -%}
+
+        <span class="hargx-product-card__badge hargx-product-card__badge--sale">
+          Sale
+        </span>
+
+      {%- endif -%}
+
+
+      {%- comment -%}
+        Product Images
+      {%- endcomment -%}
+
+      {%- if product.featured_image != blank -%}
+
+        {{
+          product.featured_image
+          | image_url: width: 900
+          | image_tag:
+            loading: 'lazy',
+            widths: '360, 540, 720, 900',
+            sizes: '(min-width: 990px) calc((100vw - 120px) / var(--hargx-desktop-columns)), 50vw',
+            class: 'hargx-product-card__image hargx-product-card__image--primary',
+            alt: product.featured_image.alt | default: product.title
+        }}
+
+      {%- else -%}
+
+        {{ 'product-1' | placeholder_svg_tag: 'hargx-product-card__placeholder' }}
+
+      {%- endif -%}
+
+
+      {%- comment -%}
+        Second Image / Hover Image
+      {%- endcomment -%}
+
+      {%- if product.images.size > 1 -%}
+
+        {{
+          product.images[1]
+          | image_url: width: 900
+          | image_tag:
+            loading: 'lazy',
+            widths: '360, 540, 720, 900',
+            sizes: '(min-width: 990px) calc((100vw - 120px) / var(--hargx-desktop-columns)), 50vw',
+            class: 'hargx-product-card__image hargx-product-card__image--secondary',
+            alt: product.images[1].alt | default: product.title
+        }}
+
+      {%- endif -%}
+
+    </div>
+
+
+    <div class="hargx-product-card__content">
+
+      <h2 class="hargx-product-card__title">
+        {{ product.title | escape }}
+      </h2>
+
+
+      <div class="hargx-product-card__price">
+
+        {%- if product.compare_at_price > product.price -%}
+
+          <span class="hargx-product-card__price-current">
+            {{ product.price | money }}
+          </span>
+
+          <s class="hargx-product-card__price-compare">
+            {{ product.compare_at_price | money }}
+          </s>
+
+        {%- else -%}
+
+          <span class="hargx-product-card__price-current">
+            {{ product.price | money }}
+          </span>
+
+        {%- endif -%}
+
+      </div>
+
+    </div>
+
+  </a>
+
+</article>
