@@ -1,0 +1,429 @@
+{%- liquid
+  assign products_per_page = section.settings.products_per_page
+  assign desktop_columns = section.settings.desktop_columns
+  assign mobile_columns = section.settings.mobile_columns
+-%}
+
+{%- paginate collection.products by products_per_page -%}
+
+<section
+  id="HargxCollectionGrid-{{ section.id }}"
+  class="hargx-collection"
+  data-section-id="{{ section.id }}"
+>
+
+  <div class="hargx-collection__container page-width">
+
+    {%- comment -%}
+      Collection Header
+    {%- endcomment -%}
+
+    <header class="hargx-collection__header">
+
+      <h1 class="hargx-collection__title">
+        {{ collection.title | escape }}
+      </h1>
+
+      {%- if collection.description != blank -%}
+        <div class="hargx-collection__description rte">
+          {{ collection.description }}
+        </div>
+      {%- endif -%}
+
+      <div class="hargx-collection__count">
+        {{ collection.products_count }}
+        {{ collection.products_count | pluralize: 'product', 'products' }}
+      </div>
+
+    </header>
+
+
+    {%- comment -%}
+      Product Grid
+    {%- endcomment -%}
+
+    {%- if collection.products.size > 0 -%}
+
+      <div
+        class="hargx-collection__grid"
+        style="
+          --hargx-desktop-columns: {{ desktop_columns }};
+          --hargx-mobile-columns: {{ mobile_columns }};
+        "
+      >
+
+        {%- for product in collection.products -%}
+
+          <article class="hargx-product-card">
+
+            <a
+              href="{{ product.url }}"
+              class="hargx-product-card__link"
+              aria-label="{{ product.title | escape }}"
+            >
+
+              <div class="hargx-product-card__media">
+
+                {%- if product.featured_image != blank -%}
+
+                  {{
+                    product.featured_image
+                    | image_url: width: 900
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '360, 540, 720, 900',
+                      sizes: '(min-width: 990px) calc((100vw - 120px) / var(--hargx-desktop-columns)), 50vw',
+                      class: 'hargx-product-card__image',
+                      alt: product.featured_image.alt | default: product.title
+                  }}
+
+                {%- else -%}
+
+                  {{ 'product-1' | placeholder_svg_tag: 'hargx-product-card__placeholder' }}
+
+                {%- endif -%}
+
+              </div>
+
+
+              <div class="hargx-product-card__content">
+
+                <h2 class="hargx-product-card__title">
+                  {{ product.title | escape }}
+                </h2>
+
+                <div class="hargx-product-card__price">
+                  {{ product.price | money }}
+                </div>
+
+              </div>
+
+            </a>
+
+          </article>
+
+        {%- endfor -%}
+
+      </div>
+
+    {%- else -%}
+
+      <div class="hargx-collection__empty">
+        <h2>No products found</h2>
+        <p>There are currently no products in this collection.</p>
+      </div>
+
+    {%- endif -%}
+
+
+    {%- comment -%}
+      Pagination
+    {%- endcomment -%}
+
+    {%- if paginate.pages > 1 -%}
+
+      <nav
+        class="hargx-pagination"
+        aria-label="Pagination"
+      >
+
+        {%- if paginate.previous -%}
+          <a
+            href="{{ paginate.previous.url }}"
+            class="hargx-pagination__link"
+          >
+            Previous
+          </a>
+        {%- endif -%}
+
+
+        <div class="hargx-pagination__pages">
+
+          {%- for part in paginate.parts -%}
+
+            {%- if part.is_link -%}
+
+              <a
+                href="{{ part.url }}"
+                class="hargx-pagination__page"
+              >
+                {{ part.title }}
+              </a>
+
+            {%- else -%}
+
+              <span
+                class="hargx-pagination__page{% if part.title == paginate.current_page %} is-current{% endif %}"
+              >
+                {{ part.title }}
+              </span>
+
+            {%- endif -%}
+
+          {%- endfor -%}
+
+        </div>
+
+
+        {%- if paginate.next -%}
+          <a
+            href="{{ paginate.next.url }}"
+            class="hargx-pagination__link"
+          >
+            Next
+          </a>
+        {%- endif -%}
+
+      </nav>
+
+    {%- endif -%}
+
+  </div>
+
+</section>
+
+{%- endpaginate -%}
+
+
+{% stylesheet %}
+
+  .hargx-collection {
+    padding: 60px 0 80px;
+  }
+
+  .hargx-collection__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+
+  /* Collection Header */
+
+  .hargx-collection__header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 50px;
+  }
+
+  .hargx-collection__title {
+    margin: 0 0 16px;
+    font-size: clamp(32px, 4vw, 56px);
+    line-height: 1.05;
+    font-weight: 600;
+  }
+
+  .hargx-collection__description {
+    margin: 0 auto 18px;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .hargx-collection__count {
+    font-size: 13px;
+    opacity: 0.65;
+  }
+
+
+  /* Product Grid */
+
+  .hargx-collection__grid {
+    display: grid;
+    grid-template-columns: repeat(
+      var(--hargx-desktop-columns),
+      minmax(0, 1fr)
+    );
+    gap: 40px 24px;
+  }
+
+
+  /* Product Card */
+
+  .hargx-product-card {
+    min-width: 0;
+  }
+
+  .hargx-product-card__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .hargx-product-card__media {
+    position: relative;
+    overflow: hidden;
+    background: #FAF8F4;
+    aspect-ratio: 1 / 1;
+  }
+
+  .hargx-product-card__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hargx-product-card__placeholder {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hargx-product-card__content {
+    padding-top: 14px;
+  }
+
+  .hargx-product-card__title {
+    margin: 0 0 7px;
+    font-size: 15px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .hargx-product-card__price {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+
+  /* Pagination */
+
+  .hargx-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 70px;
+  }
+
+  .hargx-pagination__pages {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hargx-pagination__link,
+  .hargx-pagination__page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    min-height: 38px;
+    padding: 6px 10px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 13px;
+  }
+
+  .hargx-pagination__page.is-current {
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+
+
+  /* Empty State */
+
+  .hargx-collection__empty {
+    padding: 80px 20px;
+    text-align: center;
+  }
+
+  .hargx-collection__empty h2 {
+    margin: 0 0 10px;
+  }
+
+  .hargx-collection__empty p {
+    margin: 0;
+  }
+
+
+  /* Mobile */
+
+  @media screen and (max-width: 749px) {
+
+    .hargx-collection {
+      padding: 40px 0 60px;
+    }
+
+    .hargx-collection__header {
+      margin-bottom: 30px;
+    }
+
+    .hargx-collection__grid {
+      grid-template-columns: repeat(
+        var(--hargx-mobile-columns),
+        minmax(0, 1fr)
+      );
+      gap: 30px 12px;
+    }
+
+    .hargx-product-card__content {
+      padding-top: 10px;
+    }
+
+    .hargx-product-card__title {
+      font-size: 14px;
+    }
+
+    .hargx-product-card__price {
+      font-size: 13px;
+    }
+
+    .hargx-pagination {
+      margin-top: 50px;
+      gap: 15px;
+    }
+
+  }
+
+{% endstylesheet %}
+
+
+{% schema %}
+
+{
+  "name": "HARGX Collection Grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "desktop_columns",
+      "label": "Desktop columns",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Mobile columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "2"
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "HARGX Collection Grid"
+    }
+  ]
+}
+
+{% endschema %}
