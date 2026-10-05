@@ -64,13 +64,6 @@
             "icon": "✓",
             "text": "Secure checkout"
           }
-        },
-        "collapsible_tab_mWje49": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Product information",
-            "content": "<p>Add your product information here.</p>"
-          }
         }
       },
       "block_order": [
@@ -83,8 +76,7 @@
         "variant_picker_xetgzf",
         "buy_buttons_dU9heg",
         "description_FQdaMF",
-        "trust_item_aX879d",
-        "collapsible_tab_mWje49"
+        "trust_item_aX879d"
       ],
       "settings": {}
     }
