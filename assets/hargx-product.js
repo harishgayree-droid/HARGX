@@ -533,3 +533,292 @@ function initHargxProduct(section) {
 
   updateVariant();
 }
+
+/* =========================================================
+   HARGX PRODUCT GALLERY
+   ========================================================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+  initializeHargxGalleries();
+});
+
+document.addEventListener('shopify:section:load', (event) => {
+  const gallery = event.target.querySelector?.(
+    '[data-hargx-gallery]'
+  );
+
+  if (gallery) {
+    initHargxGallery(gallery);
+  }
+});
+
+
+function initializeHargxGalleries() {
+  const galleries = document.querySelectorAll(
+    '[data-hargx-gallery]'
+  );
+
+  galleries.forEach((gallery) => {
+    initHargxGallery(gallery);
+  });
+}
+
+
+function initHargxGallery(gallery) {
+  if (
+    gallery.dataset.hargxGalleryInitialized === 'true'
+  ) {
+    return;
+  }
+
+  gallery.dataset.hargxGalleryInitialized = 'true';
+
+
+  const slides = Array.from(
+    gallery.querySelectorAll(
+      '[data-hargx-gallery-slide]'
+    )
+  );
+
+  const thumbnails = Array.from(
+    gallery.querySelectorAll(
+      '[data-hargx-gallery-thumbnail]'
+    )
+  );
+
+  const previousButton =
+    gallery.querySelector(
+      '[data-hargx-gallery-prev]'
+    );
+
+  const nextButton =
+    gallery.querySelector(
+      '[data-hargx-gallery-next]'
+    );
+
+
+  if (!slides.length) {
+    return;
+  }
+
+
+  let activeIndex = 0;
+
+
+  function showSlide(index) {
+
+    if (index < 0) {
+      index = slides.length - 1;
+    }
+
+    if (index >= slides.length) {
+      index = 0;
+    }
+
+    activeIndex = index;
+
+
+    /*
+     * Slides
+     */
+
+    slides.forEach((slide, slideIndex) => {
+
+      const isActive =
+        slideIndex === activeIndex;
+
+      slide.classList.toggle(
+        'is-active',
+        isActive
+      );
+
+      slide.setAttribute(
+        'aria-hidden',
+        isActive ? 'false' : 'true'
+      );
+
+    });
+
+
+    /*
+     * Thumbnails
+     */
+
+    thumbnails.forEach(
+      (thumbnail, thumbnailIndex) => {
+
+        const isActive =
+          thumbnailIndex === activeIndex;
+
+        thumbnail.classList.toggle(
+          'is-active',
+          isActive
+        );
+
+        thumbnail.setAttribute(
+          'aria-current',
+          isActive
+            ? 'true'
+            : 'false'
+        );
+
+      }
+    );
+
+
+    /*
+     * Keep active thumbnail visible
+     */
+
+    const activeThumbnail =
+      thumbnails[activeIndex];
+
+    if (activeThumbnail) {
+
+      activeThumbnail.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+
+    }
+  }
+
+
+  /*
+   * Thumbnail click
+   */
+
+  thumbnails.forEach(
+    (thumbnail, index) => {
+
+      thumbnail.addEventListener(
+        'click',
+        () => {
+          showSlide(index);
+        }
+      );
+
+    }
+  );
+
+
+  /*
+   * Previous
+   */
+
+  if (previousButton) {
+
+    previousButton.addEventListener(
+      'click',
+      () => {
+        showSlide(activeIndex - 1);
+      }
+    );
+
+  }
+
+
+  /*
+   * Next
+   */
+
+  if (nextButton) {
+
+    nextButton.addEventListener(
+      'click',
+      () => {
+        showSlide(activeIndex + 1);
+      }
+    );
+
+  }
+
+
+  /*
+   * Keyboard navigation
+   */
+
+  gallery.addEventListener(
+    'keydown',
+    (event) => {
+
+      if (event.key === 'ArrowLeft') {
+        showSlide(activeIndex - 1);
+      }
+
+      if (event.key === 'ArrowRight') {
+        showSlide(activeIndex + 1);
+      }
+
+    }
+  );
+
+
+  /*
+   * Initial slide
+   */
+
+  showSlide(0);
+  initHargxGallerySwipe(gallery);
+}
+
+function initHargxGallerySwipe(gallery) {
+  const mainGallery =
+    gallery.querySelector(
+      '.hargx-product__gallery-main'
+    );
+
+  if (!mainGallery) {
+    return;
+  }
+
+  let startX = 0;
+  let endX = 0;
+
+  mainGallery.addEventListener(
+    'touchstart',
+    (event) => {
+      startX = event.changedTouches[0].screenX;
+    },
+    { passive: true }
+  );
+
+  mainGallery.addEventListener(
+    'touchend',
+    (event) => {
+
+      endX =
+        event.changedTouches[0].screenX;
+
+      const difference =
+        startX - endX;
+
+      if (Math.abs(difference) < 40) {
+        return;
+      }
+
+      const nextButton =
+        gallery.querySelector(
+          '[data-hargx-gallery-next]'
+        );
+
+      const previousButton =
+        gallery.querySelector(
+          '[data-hargx-gallery-prev]'
+        );
+
+      if (difference > 0) {
+
+        nextButton?.click();
+
+      } else {
+
+        previousButton?.click();
+
+      }
+
+    },
+    { passive: true }
+  );
+}

@@ -20,55 +20,173 @@
         Step 4 me is gallery ko aur improve karenge.
       {%- endcomment -%}
 
-      <div class="hargx-product__media">
-        <div class="hargx-product__media-grid">
+      <div
+        class="hargx-product__media"
+        data-hargx-gallery
+      >
 
-          {%- for media in product.media -%}
+        <div class="hargx-product__gallery">
 
-            <div
-              class="hargx-product__media-item"
-              data-media-id="{{ media.id }}"
+          {%- comment -%}
+            Main media viewer
+          {%- endcomment -%}
+
+          <div class="hargx-product__gallery-main">
+
+            {%- for media in product.media -%}
+
+              <div
+                class="hargx-product__gallery-slide{% if forloop.first %} is-active{% endif %}"
+                data-hargx-gallery-slide
+                data-media-id="{{ media.id }}"
+                data-media-index="{{ forloop.index0 }}"
+              >
+
+                {%- case media.media_type -%}
+
+                  {%- when 'image' -%}
+
+                    {{
+                      media
+                      | image_url: width: 2000
+                      | image_tag:
+                        loading: forloop.first | default: false,
+                        widths: '600, 800, 1000, 1200, 1600, 2000',
+                        sizes: '(min-width: 990px) 55vw, 100vw',
+                        class: 'hargx-product__gallery-image',
+                        alt: media.alt | escape
+                    }}
+
+                  {%- when 'video' -%}
+
+                    {{
+                      media
+                      | video_tag:
+                        controls: true,
+                        autoplay: false,
+                        loop: false,
+                        muted: false,
+                        class: 'hargx-product__gallery-video'
+                    }}
+
+                  {%- when 'external_video' -%}
+
+                    <div class="hargx-product__gallery-external-video">
+                      {{ media | external_video_tag }}
+                    </div>
+
+                  {%- when 'model' -%}
+
+                    <div class="hargx-product__gallery-model">
+                      {{ media | model_viewer_tag }}
+                    </div>
+
+                {%- endcase -%}
+
+              </div>
+
+            {%- endfor -%}
+
+          </div>
+
+
+          {%- comment -%}
+            Previous / Next buttons
+          {%- endcomment -%}
+
+          {%- if product.media.size > 1 -%}
+
+            <button
+              type="button"
+              class="hargx-product__gallery-button hargx-product__gallery-button--prev"
+              data-hargx-gallery-prev
+              aria-label="Previous product media"
             >
+              <span aria-hidden="true">←</span>
+            </button>
 
-              {%- case media.media_type -%}
+            <button
+              type="button"
+              class="hargx-product__gallery-button hargx-product__gallery-button--next"
+              data-hargx-gallery-next
+              aria-label="Next product media"
+            >
+              <span aria-hidden="true">→</span>
+            </button>
 
-                {%- when 'image' -%}
+          {%- endif -%}
+
+        </div>
+
+
+        {%- comment -%}
+          Thumbnail navigation
+        {%- endcomment -%}
+
+        {%- if product.media.size > 1 -%}
+
+          <div
+            class="hargx-product__gallery-thumbnails"
+            data-hargx-gallery-thumbnails
+          >
+
+            {%- for media in product.media -%}
+
+              <button
+                type="button"
+                class="hargx-product__gallery-thumbnail{% if forloop.first %} is-active{% endif %}"
+                data-hargx-gallery-thumbnail
+                data-media-index="{{ forloop.index0 }}"
+                data-media-id="{{ media.id }}"
+                aria-label="View product media {{ forloop.index }}"
+                aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+              >
+
+                {%- if media.preview_image -%}
 
                   {{
-                    media
-                    | image_url: width: 1600
+                    media.preview_image
+                    | image_url: width: 240
                     | image_tag:
                       loading: 'lazy',
-                      widths: '400, 600, 800, 1000, 1200, 1600',
-                      sizes: '(min-width: 990px) 50vw, 100vw',
-                      class: 'hargx-product__image',
+                      widths: '80, 120, 160, 240',
+                      sizes: '80px',
+                      class: 'hargx-product__gallery-thumbnail-image',
                       alt: media.alt | escape
                   }}
 
-                {%- when 'video' -%}
+                {%- endif -%}
 
-                  {{
-                    media
-                    | video_tag:
-                      controls: true,
-                      class: 'hargx-product__video'
-                  }}
+                {%- if media.media_type == 'video'
+                  or media.media_type == 'external_video'
+                -%}
 
-                {%- when 'external_video' -%}
+                  <span
+                    class="hargx-product__gallery-thumbnail-icon"
+                    aria-hidden="true"
+                  >
+                    ▶
+                  </span>
 
-                  {{ media | external_video_tag }}
+                {%- elsif media.media_type == 'model' -%}
 
-                {%- when 'model' -%}
+                  <span
+                    class="hargx-product__gallery-thumbnail-icon"
+                    aria-hidden="true"
+                  >
+                    3D
+                  </span>
 
-                  {{ media | model_viewer_tag }}
+                {%- endif -%}
 
-              {%- endcase -%}
+              </button>
 
-            </div>
+            {%- endfor -%}
 
-          {%- endfor -%}
+          </div>
 
-        </div>
+        {%- endif -%}
+
       </div>
 
 
