@@ -70,6 +70,7 @@
           "settings": {
             "heading": "Complete the look",
             "subheading": "<p>Pair it with these products.</p>",
+            "display_mode": "slider",
             "products": [
               "bilona-cow-ghee-500g",
               "care-three-product",
