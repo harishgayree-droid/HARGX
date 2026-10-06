@@ -58,6 +58,13 @@
           "type": "description",
           "settings": {}
         },
+        "collapsible_tab_nj8wYm": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Product information",
+            "content": "<p>Add your product information here.</p>"
+          }
+        },
         "trust_item_aX879d": {
           "type": "trust_item",
           "settings": {
@@ -93,6 +100,7 @@
         "variant_picker_xetgzf",
         "buy_buttons_dU9heg",
         "description_FQdaMF",
+        "collapsible_tab_nj8wYm",
         "trust_item_aX879d",
         "complementary_products_EfzC3A"
       ],
