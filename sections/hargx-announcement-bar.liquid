@@ -1,0 +1,726 @@
+{%- liquid
+  assign announcement_enabled = section.settings.enable_announcement
+  assign display_mode = section.settings.display_mode
+  assign announcement_blocks = section.blocks
+-%}
+
+{%- if announcement_enabled and announcement_blocks.size > 0 -%}
+
+  <div
+    id="HargxAnnouncementBar-{{ section.id }}"
+    class="hargx-announcement-bar hargx-announcement-bar--{{ display_mode }}"
+    data-hargx-announcement
+    data-section-id="{{ section.id }}"
+    data-display-mode="{{ display_mode }}"
+    data-autoplay="{{ section.settings.autoplay }}"
+    data-autoplay-speed="{{ section.settings.autoplay_speed }}"
+    style="
+      --hargx-announcement-bg: {{ section.settings.background_color }};
+      --hargx-announcement-text: {{ section.settings.text_color }};
+      --hargx-announcement-font-size: {{ section.settings.font_size }}px;
+      --hargx-announcement-padding-top: {{ section.settings.padding_top }}px;
+      --hargx-announcement-padding-bottom: {{ section.settings.padding_bottom }}px;
+    "
+  >
+
+    <div class="hargx-announcement-bar__inner">
+
+      {%- if display_mode == 'normal' -%}
+
+        {%- assign announcement = announcement_blocks.first -%}
+
+        <div
+          class="hargx-announcement-bar__item"
+          {{ announcement.shopify_attributes }}
+        >
+          {%- if announcement.settings.link != blank -%}
+
+            <a
+              href="{{ announcement.settings.link }}"
+              class="hargx-announcement-bar__link"
+              {% if announcement.settings.open_new_tab %}
+                target="_blank"
+                rel="noopener noreferrer"
+              {% endif %}
+            >
+          {%- else -%}
+
+            <div class="hargx-announcement-bar__link">
+
+          {%- endif -%}
+
+              {%- if announcement.settings.icon != 'none' -%}
+                <span
+                  class="hargx-announcement-bar__icon"
+                  aria-hidden="true"
+                >
+                  {%- case announcement.settings.icon -%}
+
+                    {%- when 'sparkle' -%}
+                      <svg viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M12 2L13.8 8.2L20 10L13.8 11.8L12 18L10.2 11.8L4 10L10.2 8.2L12 2Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+
+                    {%- when 'truck' -%}
+                      <svg viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M3 6H15V17H3V6Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M15 10H19L21 13V17H15V10Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linejoin="round"
+                        />
+                        <circle
+                          cx="7"
+                          cy="18"
+                          r="2"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="2"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                      </svg>
+
+                    {%- when 'gift' -%}
+                      <svg viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M4 10H20V21H4V10Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                        <path
+                          d="M12 10V21"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                        <path
+                          d="M3 7H21V10H3V7Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                        <path
+                          d="M12 7H8.5C7.12 7 6 5.88 6 4.5C6 3.67 6.67 3 7.5 3C9.99 3 12 7 12 7Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                        <path
+                          d="M12 7H15.5C16.88 7 18 5.88 18 4.5C18 3.67 17.33 3 16.5 3C14.01 3 12 7 12 7Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                      </svg>
+
+                    {%- when 'heart' -%}
+                      <svg viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M20.8 8.7C20.8 13.6 12 20 12 20S3.2 13.6 3.2 8.7C3.2 5.8 5.2 4 7.8 4C9.4 4 10.8 4.8 12 6.1C13.2 4.8 14.6 4 16.2 4C18.8 4 20.8 5.8 20.8 8.7Z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+
+                    {%- when 'none' -%}
+
+                  {%- endcase -%}
+                </span>
+              {%- endif -%}
+
+              <span class="hargx-announcement-bar__text">
+                {{ announcement.settings.text }}
+              </span>
+
+              {%- if announcement.settings.link != blank and announcement.settings.show_arrow -%}
+                <span
+                  class="hargx-announcement-bar__arrow"
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+              {%- endif -%}
+
+          {%- if announcement.settings.link != blank -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
+        </div>
+
+
+      {%- elsif display_mode == 'slider' -%}
+
+        <div
+          class="hargx-announcement-bar__slider"
+          data-hargx-announcement-slider
+        >
+
+          <button
+            type="button"
+            class="hargx-announcement-bar__nav hargx-announcement-bar__nav--prev"
+            data-hargx-announcement-prev
+            aria-label="Previous announcement"
+          >
+            <span aria-hidden="true">←</span>
+          </button>
+
+          <div
+            class="hargx-announcement-bar__slides"
+            data-hargx-announcement-slides
+          >
+
+            {%- for announcement in announcement_blocks -%}
+
+              <div
+                class="hargx-announcement-bar__slide{% if forloop.first %} is-active{% endif %}"
+                data-hargx-announcement-slide
+                data-slide-index="{{ forloop.index0 }}"
+                {{ announcement.shopify_attributes }}
+              >
+
+                {%- if announcement.settings.link != blank -%}
+
+                  <a
+                    href="{{ announcement.settings.link }}"
+                    class="hargx-announcement-bar__link"
+                    {% if announcement.settings.open_new_tab %}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    {% endif %}
+                  >
+
+                {%- else -%}
+
+                  <div class="hargx-announcement-bar__link">
+
+                {%- endif -%}
+
+                    {%- if announcement.settings.icon != 'none' -%}
+                      <span
+                        class="hargx-announcement-bar__icon"
+                        aria-hidden="true"
+                      >
+                        {%- case announcement.settings.icon -%}
+
+                          {%- when 'sparkle' -%}
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M12 2L13.8 8.2L20 10L13.8 11.8L12 18L10.2 11.8L4 10L10.2 8.2L12 2Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+
+                          {%- when 'truck' -%}
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M3 6H15V17H3V6Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <path
+                                d="M15 10H19L21 13V17H15V10Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <circle
+                                cx="7"
+                                cy="18"
+                                r="2"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <circle
+                                cx="18"
+                                cy="18"
+                                r="2"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                            </svg>
+
+                          {%- when 'gift' -%}
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 10H20V21H4V10Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <path
+                                d="M12 10V21"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <path
+                                d="M3 7H21V10H3V7Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <path
+                                d="M12 7H8.5C7.12 7 6 5.88 6 4.5C6 3.67 6.67 3 7.5 3C9.99 3 12 7 12 7Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <path
+                                d="M12 7H15.5C16.88 7 18 5.88 18 4.5 18 3.67 17.33 3 16.5 3 14.01 3 12 7 12 7Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                            </svg>
+
+                          {%- when 'heart' -%}
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M20.8 8.7C20.8 13.6 18.8 4 16.2 4C14.6 4 13.2 4.8 12 6.1C10.8 4.8 9.4 4 7.8 4C5.2 4 3.2 5.8 3.2 8.7C3.2 13.6 12 20 12 20S20.8 13.6 20.8 8.7Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                            </svg>
+
+                        {%- endcase -%}
+                      </span>
+                    {%- endif -%}
+
+                    <span class="hargx-announcement-bar__text">
+                      {{ announcement.settings.text }}
+                    </span>
+
+                    {%- if announcement.settings.link != blank and announcement.settings.show_arrow -%}
+                      <span
+                        class="hargx-announcement-bar__arrow"
+                        aria-hidden="true"
+                      >
+                        →
+                      </span>
+                    {%- endif -%}
+
+                {%- if announcement.settings.link != blank -%}
+                  </a>
+                {%- else -%}
+                  </div>
+                {%- endif -%}
+
+              </div>
+
+            {%- endfor -%}
+
+          </div>
+
+          <button
+            type="button"
+            class="hargx-announcement-bar__nav hargx-announcement-bar__nav--next"
+            data-hargx-announcement-next
+            aria-label="Next announcement"
+          >
+            <span aria-hidden="true">→</span>
+          </button>
+
+        </div>
+
+
+      {%- elsif display_mode == 'marquee' -%}
+
+        <div
+          class="hargx-announcement-bar__marquee"
+          data-hargx-announcement-marquee
+        >
+
+          <div
+            class="hargx-announcement-bar__marquee-track"
+            data-hargx-announcement-marquee-track
+          >
+
+            {%- for repeat in (1..2) -%}
+
+              {%- for announcement in announcement_blocks -%}
+
+                <div
+                  class="hargx-announcement-bar__marquee-item"
+                  {{ announcement.shopify_attributes }}
+                >
+
+                  {%- if announcement.settings.link != blank -%}
+
+                    <a
+                      href="{{ announcement.settings.link }}"
+                      class="hargx-announcement-bar__link"
+                      {% if announcement.settings.open_new_tab %}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      {% endif %}
+                    >
+
+                  {%- else -%}
+
+                    <span class="hargx-announcement-bar__link">
+
+                  {%- endif -%}
+
+                      {%- if announcement.settings.icon != 'none' -%}
+                        <span
+                          class="hargx-announcement-bar__icon"
+                          aria-hidden="true"
+                        >
+                          {%- case announcement.settings.icon -%}
+
+                            {%- when 'sparkle' -%}
+                              <svg viewBox="0 0 24 24" fill="none">
+                                <path
+                                  d="M12 2L13.8 8.2L20 10L13.8 11.8L12 18L10.2 11.8L4 10L10.2 8.2L12 2Z"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+
+                            {%- when 'truck' -%}
+                              <svg viewBox="0 0 24 24" fill="none">
+                                <path
+                                  d="M3 6H15V17H3V6Z"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                />
+                                <path
+                                  d="M15 10H19L21 13V17H15V10Z"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                />
+                                <circle
+                                  cx="7"
+                                  cy="18"
+                                  r="2"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                />
+                                <circle
+                                  cx="18"
+                                  cy="18"
+                                  r="2"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                />
+                              </svg>
+
+                            {%- when 'gift' -%}
+                              <svg viewBox="0 0 24 24" fill="none">
+                                <path
+                                  d="M4 10H20V21H4V10Z"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                />
+                                <path
+                                  d="M12 10V21"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                />
+                                <path
+                                  d="M3 7H21V10H3V7Z"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                />
+                              </svg>
+
+                            {%- when 'heart' -%}
+                              <svg viewBox="0 0 24 24" fill="none">
+                                <path
+                                  d="M20.8 8.7C20.8 13.6 12 20 12 20S3.2 13.6 3.2 8.7C3.2 5.8 5.2 4 7.8 4C9.4 4 10.8 4.8 12 6.1C13.2 4.8 14.6 4 16.2 4C18.8 4 20.8 5.8 20.8 8.7Z"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                />
+                              </svg>
+
+                          {%- endcase -%}
+                        </span>
+                      {%- endif -%}
+
+                      <span class="hargx-announcement-bar__text">
+                        {{ announcement.settings.text }}
+                      </span>
+
+                      {%- if announcement.settings.show_arrow -%}
+                        <span
+                          class="hargx-announcement-bar__arrow"
+                          aria-hidden="true"
+                        >
+                          →
+                        </span>
+                      {%- endif -%}
+
+                  {%- if announcement.settings.link != blank -%}
+                    </a>
+                  {%- else -%}
+                    </span>
+                  {%- endif -%}
+
+                </div>
+
+                <span
+                  class="hargx-announcement-bar__separator"
+                  aria-hidden="true"
+                >
+                  {{ section.settings.marquee_separator }}
+                </span>
+
+              {%- endfor -%}
+
+            {%- endfor -%}
+
+          </div>
+
+        </div>
+
+      {%- endif -%}
+
+
+      {%- if section.settings.show_close_button -%}
+
+        <button
+          type="button"
+          class="hargx-announcement-bar__close"
+          data-hargx-announcement-close
+          aria-label="Close announcement"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+
+      {%- endif -%}
+
+    </div>
+
+  </div>
+
+{%- endif -%}
+
+
+{% schema %}
+{
+  "name": "HARGX Announcement Bar",
+  "tag": "section",
+  "class": "hargx-announcement-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_announcement",
+      "label": "Enable announcement bar",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "display_mode",
+      "label": "Display mode",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        },
+        {
+          "value": "marquee",
+          "label": "Marquee"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay slider",
+      "default": true,
+      "info": "Applies to Slider mode."
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Slider speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 4,
+      "info": "Applies to Slider mode."
+    },
+    {
+      "type": "text",
+      "id": "marquee_separator",
+      "label": "Marquee separator",
+      "default": "✦"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase",
+      "label": "Uppercase text",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close_button",
+      "label": "Show close button",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "label": "Announcement text",
+          "default": "Free shipping on orders over $100"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_new_tab",
+          "label": "Open link in new tab",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "sparkle",
+              "label": "Sparkle"
+            },
+            {
+              "value": "truck",
+              "label": "Shipping"
+            },
+            {
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "value": "heart",
+              "label": "Heart"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_arrow",
+          "label": "Show link arrow",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Announcement Bar",
+      "blocks": [
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Free shipping on orders over $100",
+            "icon": "truck"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "New arrivals are here",
+            "icon": "sparkle"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
