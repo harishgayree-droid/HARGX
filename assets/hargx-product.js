@@ -822,3 +822,134 @@ function initHargxGallerySwipe(gallery) {
     { passive: true }
   );
 }
+
+/* =========================================================
+   HARGX — Complementary Products
+   ========================================================= */
+
+function initHargxComplementaryProducts() {
+  const containers = document.querySelectorAll(
+    '[data-hargx-complementary-products]'
+  );
+
+  if (!containers.length) return;
+
+  containers.forEach((container) => {
+    const addButtons = container.querySelectorAll(
+      '[data-complementary-add]'
+    );
+
+    addButtons.forEach((button) => {
+      if (button.dataset.hargxInitialized === 'true') {
+        return;
+      }
+
+      button.dataset.hargxInitialized = 'true';
+
+      button.addEventListener('click', async () => {
+        const variantId = button.dataset.variantId;
+
+        if (!variantId || button.classList.contains('is-loading')) {
+          return;
+        }
+
+        const originalText = button.textContent.trim();
+
+        button.classList.add('is-loading');
+        button.setAttribute('aria-disabled', 'true');
+        button.textContent = 'Adding...';
+
+        try {
+          const response = await fetch(
+            window.Shopify.routes.root + 'cart/add.js',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+              },
+              body: JSON.stringify({
+                items: [
+                  {
+                    id: Number(variantId),
+                    quantity: 1
+                  }
+                ]
+              })
+            }
+          );
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+
+            throw new Error(
+              errorData?.description ||
+              errorData?.message ||
+              'Unable to add product to cart.'
+            );
+          }
+
+          await response.json();
+
+          button.classList.remove('is-loading');
+          button.classList.add('is-added');
+
+          button.textContent = 'Added';
+
+          document.dispatchEvent(
+            new CustomEvent('hargx:cart-updated', {
+              bubbles: true
+            })
+          );
+
+          setTimeout(() => {
+            button.classList.remove('is-added');
+            button.removeAttribute('aria-disabled');
+            button.textContent = originalText;
+          }, 1800);
+
+        } catch (error) {
+          console.error(
+            'HARGX complementary product add failed:',
+            error
+          );
+
+          button.classList.remove('is-loading');
+          button.removeAttribute('aria-disabled');
+          button.textContent = 'Try again';
+
+          setTimeout(() => {
+            button.textContent = originalText;
+          }, 1800);
+        }
+      });
+    });
+  });
+}
+
+
+if (document.readyState === 'loading') {
+  document.addEventListener(
+    'DOMContentLoaded',
+    initHargxComplementaryProducts
+  );
+} else {
+  initHargxComplementaryProducts();
+}
+
+
+/*
+ * Shopify Theme Editor support
+ */
+document.addEventListener(
+  'shopify:section:load',
+  (event) => {
+    if (
+      event.target.querySelector(
+        '[data-hargx-complementary-products]'
+      )
+    ) {
+      initHargxComplementaryProducts();
+    }
+  }
+);
