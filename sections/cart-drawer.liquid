@@ -1,0 +1,891 @@
+{%- liquid
+  assign cart_drawer_enabled = section.settings.enable_cart_drawer
+-%}
+
+{%- if cart_drawer_enabled -%}
+
+  <aside
+    id="HargxCartDrawer"
+    class="hargx-cart-drawer"
+    data-hargx-cart-drawer
+    data-section-id="{{ section.id }}"
+    aria-hidden="true"
+  >
+
+    <div
+      class="hargx-cart-drawer__overlay"
+      data-hargx-cart-drawer-overlay
+    ></div>
+
+    <div
+      class="hargx-cart-drawer__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="HargxCartDrawerTitle-{{ section.id }}"
+    >
+
+      <!-- =====================================================
+           HEADER
+           ===================================================== -->
+
+      <header class="hargx-cart-drawer__header">
+
+        <div class="hargx-cart-drawer__header-content">
+
+          <h2
+            id="HargxCartDrawerTitle-{{ section.id }}"
+            class="hargx-cart-drawer__title"
+          >
+            {{ section.settings.heading | default: 'Your cart' }}
+          </h2>
+
+          <span
+            class="hargx-cart-drawer__count"
+            data-hargx-drawer-count
+          >
+            {{ cart.item_count }}
+          </span>
+
+        </div>
+
+        <button
+          type="button"
+          class="hargx-cart-drawer__close"
+          data-hargx-cart-drawer-close
+          aria-label="Close cart"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M5 5L19 19"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+            <path
+              d="M19 5L5 19"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+
+      </header>
+
+
+      <!-- =====================================================
+           DRAWER BODY
+           ===================================================== -->
+
+      <div class="hargx-cart-drawer__body">
+
+        {%- if cart.item_count > 0 -%}
+
+          <!-- FREE SHIPPING -->
+
+          {%- if section.settings.show_free_shipping -%}
+
+            {%- assign drawer_threshold = section.settings.free_shipping_threshold | times: 100 -%}
+            {%- assign drawer_remaining = drawer_threshold | minus: cart.total_price -%}
+
+            {%- if drawer_remaining > 0 -%}
+              {%- assign drawer_progress = cart.total_price | times: 100.0 | divided_by: drawer_threshold -%}
+            {%- else -%}
+              {%- assign drawer_progress = 100 -%}
+            {%- endif -%}
+
+            <div
+              class="hargx-cart-drawer__shipping"
+              data-hargx-drawer-shipping
+              data-threshold="{{ drawer_threshold }}"
+            >
+
+              <div class="hargx-cart-drawer__shipping-message">
+
+                {%- if drawer_remaining > 0 -%}
+
+                  You're
+                  <strong>{{ drawer_remaining | money }}</strong>
+                  away from free shipping.
+
+                {%- else -%}
+
+                  You've unlocked
+                  <strong>free shipping!</strong>
+
+                {%- endif -%}
+
+              </div>
+
+              <div
+                class="hargx-cart-drawer__shipping-track"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="{{ drawer_progress | round }}"
+              >
+                <span
+                  class="hargx-cart-drawer__shipping-fill"
+                  style="width: {{ drawer_progress | at_most: 100 }}%;"
+                ></span>
+              </div>
+
+            </div>
+
+          {%- endif -%}
+
+
+          <!-- CART ITEMS -->
+
+          <div
+            class="hargx-cart-drawer__items"
+            data-hargx-drawer-items
+          >
+
+            {%- for item in cart.items -%}
+
+              <article
+                class="hargx-cart-drawer-item"
+                data-hargx-drawer-item
+                data-line="{{ forloop.index }}"
+                data-key="{{ item.key }}"
+              >
+
+                <a
+                  href="{{ item.url }}"
+                  class="hargx-cart-drawer-item__image"
+                  aria-label="{{ item.product.title | escape }}"
+                >
+
+                  {%- if item.image != blank -%}
+
+                    {{
+                      item.image
+                      | image_url: width: 300
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '120,180,240,300',
+                        sizes: '96px',
+                        alt: item.product.title
+                    }}
+
+                  {%- else -%}
+
+                    {{ 'product-1' | placeholder_svg_tag }}
+
+                  {%- endif -%}
+
+                </a>
+
+
+                <div class="hargx-cart-drawer-item__content">
+
+                  <div class="hargx-cart-drawer-item__top">
+
+                    <a
+                      href="{{ item.url }}"
+                      class="hargx-cart-drawer-item__title"
+                    >
+                      {{ item.product.title }}
+                    </a>
+
+                    {%- unless item.product.has_only_default_variant -%}
+
+                      <span class="hargx-cart-drawer-item__variant">
+                        {{ item.variant.title }}
+                      </span>
+
+                    {%- endunless -%}
+
+
+                    {%- if item.properties != blank -%}
+
+                      <div class="hargx-cart-drawer-item__properties">
+
+                        {%- for property in item.properties -%}
+
+                          {%- assign property_first_char = property.first | slice: 0 -%}
+
+                          {%- unless property.last == blank or property_first_char == '_' -%}
+
+                            <span class="hargx-cart-drawer-item__property">
+                              {{ property.first }}:
+                              {{ property.last }}
+                            </span>
+
+                          {%- endunless -%}
+
+                        {%- endfor -%}
+
+                      </div>
+
+                    {%- endif -%}
+
+                  </div>
+
+
+                  <div class="hargx-cart-drawer-item__bottom">
+
+                    <div
+                      class="hargx-cart-drawer-item__quantity"
+                      data-hargx-drawer-quantity
+                    >
+
+                      <button
+                        type="button"
+                        class="hargx-cart-drawer-item__quantity-button"
+                        data-hargx-drawer-minus
+                        aria-label="Decrease quantity of {{ item.product.title | escape }}"
+                      >
+                        −
+                      </button>
+
+                      <input
+                        type="number"
+                        value="{{ item.quantity }}"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        class="hargx-cart-drawer-item__quantity-input"
+                        data-hargx-drawer-quantity-input
+                        aria-label="Quantity of {{ item.product.title | escape }}"
+                      >
+
+                      <button
+                        type="button"
+                        class="hargx-cart-drawer-item__quantity-button"
+                        data-hargx-drawer-plus
+                        aria-label="Increase quantity of {{ item.product.title | escape }}"
+                      >
+                        +
+                      </button>
+
+                    </div>
+
+
+                    <div class="hargx-cart-drawer-item__price">
+
+                      {%- if item.original_line_price > item.final_line_price -%}
+
+                        <span class="hargx-cart-drawer-item__price--sale">
+                          {{ item.final_line_price | money }}
+                        </span>
+
+                        <span class="hargx-cart-drawer-item__price--compare">
+                          {{ item.original_line_price | money }}
+                        </span>
+
+                      {%- else -%}
+
+                        <span>
+                          {{ item.final_line_price | money }}
+                        </span>
+
+                      {%- endif -%}
+
+                    </div>
+
+                  </div>
+
+
+                  <button
+                    type="button"
+                    class="hargx-cart-drawer-item__remove"
+                    data-hargx-drawer-remove
+                  >
+                    Remove
+                  </button>
+
+                </div>
+
+              </article>
+
+            {%- endfor -%}
+
+          </div>
+
+
+          <!-- CART NOTE -->
+
+          {%- if section.settings.show_order_note -%}
+
+            <div class="hargx-cart-drawer__note">
+
+              <button
+                type="button"
+                class="hargx-cart-drawer__note-toggle"
+                data-hargx-drawer-note-toggle
+                aria-expanded="false"
+              >
+                <span>
+                  Add a note to your order
+                </span>
+
+                <span
+                  class="hargx-cart-drawer__note-icon"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </button>
+
+              <div
+                class="hargx-cart-drawer__note-content"
+                data-hargx-drawer-note-content
+                hidden
+              >
+
+                <textarea
+                  class="hargx-cart-drawer__note-input"
+                  data-hargx-drawer-note
+                  maxlength="500"
+                  rows="3"
+                  placeholder="Add any special instructions..."
+                >{{ cart.note }}</textarea>
+
+                <div class="hargx-cart-drawer__note-footer">
+
+                  <span>
+                    <span data-hargx-drawer-note-count>
+                      {{ cart.note | size }}
+                    </span>/500
+                  </span>
+
+                  <button
+                    type="button"
+                    data-hargx-drawer-note-save
+                  >
+                    Save
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          {%- endif -%}
+
+
+          <!-- UPSELL -->
+
+          {%- if section.settings.show_upsell -%}
+
+            <div class="hargx-cart-drawer__upsell">
+
+              <div class="hargx-cart-drawer__upsell-heading">
+
+                <h3>
+                  {{ section.settings.upsell_heading }}
+                </h3>
+
+              </div>
+
+              <div
+                class="hargx-cart-drawer__upsell-products"
+                data-hargx-drawer-upsell
+              >
+
+                {%- for product in section.settings.upsell_products limit: section.settings.upsell_limit -%}
+
+                  {%- unless product.id == cart.items.first.product_id -%}
+
+                    <article
+                      class="hargx-cart-drawer__upsell-item"
+                      data-product-id="{{ product.id }}"
+                    >
+
+                      <a
+                        href="{{ product.url }}"
+                        class="hargx-cart-drawer__upsell-image"
+                      >
+
+                        {%- if product.featured_image != blank -%}
+
+                          {{
+                            product.featured_image
+                            | image_url: width: 180
+                            | image_tag:
+                              loading: 'lazy',
+                              alt: product.title
+                          }}
+
+                        {%- endif -%}
+
+                      </a>
+
+                      <div class="hargx-cart-drawer__upsell-content">
+
+                        <a
+                          href="{{ product.url }}"
+                          class="hargx-cart-drawer__upsell-title"
+                        >
+                          {{ product.title }}
+                        </a>
+
+                        <span class="hargx-cart-drawer__upsell-price">
+                          {{ product.price | money }}
+                        </span>
+
+                        <button
+                          type="button"
+                          class="hargx-cart-drawer__upsell-button"
+                          data-hargx-drawer-upsell-add
+                          data-product-id="{{ product.id }}"
+                          data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+                        >
+                          {{ section.settings.upsell_button_text }}
+                        </button>
+
+                      </div>
+
+                    </article>
+
+                  {%- endunless -%}
+
+                {%- endfor -%}
+
+              </div>
+
+            </div>
+
+          {%- endif -%}
+
+
+          <!-- TRUST BLOCKS -->
+
+          {%- if section.blocks.size > 0 -%}
+
+            <div class="hargx-cart-drawer__trust">
+
+              {%- for block in section.blocks -%}
+
+                {%- case block.type -%}
+
+                  {%- when 'trust_item' -%}
+
+                    <div
+                      class="hargx-cart-drawer__trust-item"
+                      {{ block.shopify_attributes }}
+                    >
+
+                      <span
+                        class="hargx-cart-drawer__trust-icon"
+                        aria-hidden="true"
+                      >
+
+                        {%- case block.settings.icon -%}
+
+                          {%- when 'check' -%}
+
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M5 12.5L10 17L19 7"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+
+                          {%- when 'shield' -%}
+
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M12 3L19 6V11C19 16 16 19.5 12 21C8 19.5 5 16 5 11V6L12 3Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+
+                          {%- when 'shipping' -%}
+
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M3 6H14V17H3V6Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <path
+                                d="M14 10H18L21 13V17H14V10Z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <circle
+                                cx="7"
+                                cy="18"
+                                r="2"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                              <circle
+                                cx="17"
+                                cy="18"
+                                r="2"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              />
+                            </svg>
+
+                          {%- when 'returns' -%}
+
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M9 7L5 11L9 15"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M5 11H14C17.314 11 20 13.686 20 17V18"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                              />
+                            </svg>
+
+                        {%- endcase -%}
+
+                      </span>
+
+                      <span class="hargx-cart-drawer__trust-content">
+
+                        {%- if block.settings.heading != blank -%}
+
+                          <strong>
+                            {{ block.settings.heading }}
+                          </strong>
+
+                        {%- endif -%}
+
+                        {%- if block.settings.text != blank -%}
+
+                          <span>
+                            {{ block.settings.text }}
+                          </span>
+
+                        {%- endif -%}
+
+                      </span>
+
+                    </div>
+
+                {%- endcase -%}
+
+              {%- endfor -%}
+
+            </div>
+
+          {%- endif -%}
+
+
+        {%- else -%}
+
+          <!-- EMPTY CART -->
+
+          <div class="hargx-cart-drawer__empty">
+
+            <div class="hargx-cart-drawer__empty-icon">
+              <svg
+                width="46"
+                height="46"
+                viewBox="0 0 48 48"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 14H38L35.5 39H12.5L10 14Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M17 18V11C17 7.686 19.686 5 23 5H25C28.314 5 31 7.686 31 11V18"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+            </div>
+
+            <h3>
+              {{ section.settings.empty_heading }}
+            </h3>
+
+            <p>
+              {{ section.settings.empty_text }}
+            </p>
+
+            <a
+              href="{{ routes.all_products_collection_url }}"
+              class="hargx-cart-drawer__empty-button"
+            >
+              {{ section.settings.empty_button_text }}
+            </a>
+
+          </div>
+
+        {%- endif -%}
+
+      </div>
+
+
+      <!-- =====================================================
+           FOOTER
+           ===================================================== -->
+
+      {%- if cart.item_count > 0 -%}
+
+        <footer class="hargx-cart-drawer__footer">
+
+          <div class="hargx-cart-drawer__subtotal">
+
+            <span>
+              Subtotal
+            </span>
+
+            <strong data-hargx-drawer-subtotal>
+              {{ cart.total_price | money }}
+            </strong>
+
+          </div>
+
+          <p class="hargx-cart-drawer__footer-note">
+            {{ section.settings.checkout_note }}
+          </p>
+
+          <a
+            href="{{ routes.cart_url }}"
+            class="hargx-cart-drawer__view-cart"
+          >
+            {{ section.settings.view_cart_text }}
+          </a>
+
+          <button
+            type="button"
+            class="hargx-cart-drawer__checkout"
+            data-hargx-drawer-checkout
+          >
+            {{ section.settings.checkout_text }}
+          </button>
+
+          {%- if section.settings.show_payment_icons and shop.enabled_payment_types != blank -%}
+
+            <div class="hargx-cart-drawer__payment">
+
+              <span class="hargx-cart-drawer__payment-label">
+                Secure payments
+              </span>
+
+              <div class="hargx-cart-drawer__payment-icons">
+
+                {%- for type in shop.enabled_payment_types -%}
+
+                  <span class="hargx-cart-drawer__payment-icon">
+                    {{ type | payment_type_svg_tag }}
+                  </span>
+
+                {%- endfor -%}
+
+              </div>
+
+            </div>
+
+          {%- endif -%}
+
+        </footer>
+
+      {%- endif -%}
+
+    </div>
+
+  </aside>
+
+{%- endif -%}
+
+
+{% schema %}
+{
+  "name": "HARGX Cart Drawer",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_cart_drawer",
+      "label": "Enable cart drawer",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your cart"
+    },
+    {
+      "type": "header",
+      "content": "Free shipping"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_free_shipping",
+      "label": "Show free shipping progress",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping threshold",
+      "default": 100,
+      "info": "Enter the amount in your store currency."
+    },
+    {
+      "type": "header",
+      "content": "Order note"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_order_note",
+      "label": "Show order note",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Upsell"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_upsell",
+      "label": "Show cart upsell",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "upsell_heading",
+      "label": "Upsell heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "product_list",
+      "id": "upsell_products",
+      "label": "Upsell products",
+      "limit": 4
+    },
+    {
+      "type": "range",
+      "id": "upsell_limit",
+      "label": "Products to show",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "text",
+      "id": "upsell_button_text",
+      "label": "Upsell button text",
+      "default": "Add"
+    },
+    {
+      "type": "header",
+      "content": "Checkout"
+    },
+    {
+      "type": "text",
+      "id": "checkout_note",
+      "label": "Checkout note",
+      "default": "Taxes and shipping calculated at checkout."
+    },
+    {
+      "type": "text",
+      "id": "view_cart_text",
+      "label": "View cart button text",
+      "default": "View cart"
+    },
+    {
+      "type": "text",
+      "id": "checkout_text",
+      "label": "Checkout button text",
+      "default": "Checkout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Empty cart"
+    },
+    {
+      "type": "text",
+      "id": "empty_heading",
+      "label": "Empty cart heading",
+      "default": "Your cart is empty"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_text",
+      "label": "Empty cart text",
+      "default": "Looks like you haven't added anything yet."
+    },
+    {
+      "type": "text",
+      "id": "empty_button_text",
+      "label": "Empty cart button text",
+      "default": "Continue shopping"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "check",
+              "label": "Check"
+            },
+            {
+              "value": "shield",
+              "label": "Security"
+            },
+            {
+              "value": "shipping",
+              "label": "Shipping"
+            },
+            {
+              "value": "returns",
+              "label": "Returns"
+            }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Secure checkout"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Your payment information is protected."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 3
+}
+{% endschema %}
