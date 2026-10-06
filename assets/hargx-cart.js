@@ -1,14 +1,23 @@
 (function () {
   'use strict';
 
+
+  /* =========================================================
+     Initialize HARGX Cart
+     ========================================================= */
+
   function initHargxCart() {
-    const cart = document.querySelector('[data-hargx-cart]');
+    const cart = document.querySelector(
+      '[data-hargx-cart]'
+    );
 
     if (!cart) {
       return;
     }
 
-    if (cart.dataset.hargxCartInitialized === 'true') {
+    if (
+      cart.dataset.hargxCartInitialized === 'true'
+    ) {
       return;
     }
 
@@ -37,7 +46,10 @@
 
     minusButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        const item = button.closest('[data-hargx-cart-item]');
+        const item = button.closest(
+          '[data-hargx-cart-item]'
+        );
+
         const input = item?.querySelector(
           '[data-hargx-quantity-input]'
         );
@@ -46,7 +58,8 @@
           return;
         }
 
-        const currentQuantity = parseInt(input.value, 10) || 0;
+        const currentQuantity =
+          parseInt(input.value, 10) || 0;
 
         const newQuantity = Math.max(
           currentQuantity - 1,
@@ -64,7 +77,10 @@
 
     plusButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        const item = button.closest('[data-hargx-cart-item]');
+        const item = button.closest(
+          '[data-hargx-cart-item]'
+        );
+
         const input = item?.querySelector(
           '[data-hargx-quantity-input]'
         );
@@ -73,9 +89,11 @@
           return;
         }
 
-        const currentQuantity = parseInt(input.value, 10) || 0;
+        const currentQuantity =
+          parseInt(input.value, 10) || 0;
 
-        const newQuantity = currentQuantity + 1;
+        const newQuantity =
+          currentQuantity + 1;
 
         updateCartLine(
           cart,
@@ -97,42 +115,53 @@
     );
 
     inputs.forEach((input) => {
-      input.addEventListener('change', () => {
-        const item = input.closest(
-          '[data-hargx-cart-item]'
-        );
 
-        if (!item) {
-          return;
+      input.addEventListener(
+        'change',
+        () => {
+          const item = input.closest(
+            '[data-hargx-cart-item]'
+          );
+
+          if (!item) {
+            return;
+          }
+
+          let quantity =
+            parseInt(input.value, 10);
+
+          if (Number.isNaN(quantity)) {
+            quantity = 1;
+          }
+
+          quantity = Math.max(
+            quantity,
+            0
+          );
+
+          input.value = quantity;
+
+          updateCartLine(
+            cart,
+            getLineNumber(item),
+            quantity
+          );
         }
+      );
 
-        let quantity = parseInt(input.value, 10);
 
-        if (Number.isNaN(quantity)) {
-          quantity = 1;
+      input.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key !== 'Enter') {
+            return;
+          }
+
+          event.preventDefault();
+
+          input.blur();
         }
-
-        quantity = Math.max(quantity, 0);
-
-        input.value = quantity;
-
-        updateCartLine(
-          cart,
-          getLineNumber(item),
-          quantity
-        );
-      });
-
-
-      input.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') {
-          return;
-        }
-
-        event.preventDefault();
-
-        input.blur();
-      });
+      );
     });
   }
 
@@ -147,28 +176,31 @@
     );
 
     removeButtons.forEach((button) => {
-      button.addEventListener('click', (event) => {
-        event.preventDefault();
+      button.addEventListener(
+        'click',
+        (event) => {
+          event.preventDefault();
 
-        const item = button.closest(
-          '[data-hargx-cart-item]'
-        );
+          const item = button.closest(
+            '[data-hargx-cart-item]'
+          );
 
-        if (!item) {
-          return;
+          if (!item) {
+            return;
+          }
+
+          updateCartLine(
+            cart,
+            getLineNumber(item),
+            0
+          );
         }
-
-        updateCartLine(
-          cart,
-          getLineNumber(item),
-          0
-        );
-      });
+      );
     });
   }
 
 
-    /* =========================================================
+  /* =========================================================
      Order Note
      ========================================================= */
 
@@ -217,7 +249,9 @@
     toggle.dataset.hargxInitialized = 'true';
 
 
-    /* Toggle */
+    /* ---------------------------------------------------------
+       Toggle
+       --------------------------------------------------------- */
 
     toggle.addEventListener(
       'click',
@@ -241,7 +275,9 @@
     );
 
 
-    /* Character count */
+    /* ---------------------------------------------------------
+       Character Count
+       --------------------------------------------------------- */
 
     const updateCount = () => {
       if (!count) {
@@ -252,6 +288,7 @@
         textarea.value.length;
     };
 
+
     textarea.addEventListener(
       'input',
       updateCount
@@ -260,11 +297,14 @@
     updateCount();
 
 
-    /* Save */
+    /* ---------------------------------------------------------
+       Save Order Note
+       --------------------------------------------------------- */
 
     saveButton.addEventListener(
       'click',
       async () => {
+
         if (
           saveButton.classList.contains(
             'is-loading'
@@ -273,8 +313,10 @@
           return;
         }
 
+
         const note =
           textarea.value.trim();
+
 
         saveButton.classList.add(
           'is-loading'
@@ -285,26 +327,32 @@
           'true'
         );
 
+
         const originalText =
           saveButton.textContent;
+
 
         saveButton.textContent =
           'Saving...';
 
 
         try {
+
           const response =
             await fetch(
               window.Shopify.routes.root +
               'cart/update.js',
               {
                 method: 'POST',
+
                 headers: {
                   'Content-Type':
                     'application/json',
+
                   Accept:
                     'application/json'
                 },
+
                 body: JSON.stringify({
                   note: note
                 })
@@ -313,12 +361,14 @@
 
 
           if (!response.ok) {
+
             const errorData =
               await response
                 .json()
                 .catch(
                   () => null
                 );
+
 
             throw new Error(
               errorData?.description ||
@@ -343,6 +393,7 @@
 
 
           setTimeout(() => {
+
             saveButton.textContent =
               originalText;
 
@@ -353,6 +404,7 @@
             saveButton.removeAttribute(
               'aria-disabled'
             );
+
           }, 1200);
 
 
@@ -375,6 +427,7 @@
           saveButton.textContent =
             'Try again';
 
+
           saveButton.classList.remove(
             'is-loading'
           );
@@ -394,6 +447,10 @@
   }
 
 
+  /* =========================================================
+     Order Note Status
+     ========================================================= */
+
   function showNoteStatus(
     status,
     message,
@@ -403,13 +460,16 @@
       return;
     }
 
+
     status.textContent =
       message;
+
 
     status.classList.remove(
       'is-success',
       'is-error'
     );
+
 
     status.classList.add(
       `is-${type}`,
@@ -423,6 +483,7 @@
       );
     }, 3000);
   }
+
 
   /* =========================================================
      Get Line Number
@@ -445,44 +506,70 @@
     line,
     quantity
   ) {
-    if (!line || Number.isNaN(line)) {
+    if (
+      !line ||
+      Number.isNaN(line)
+    ) {
       return;
     }
 
-    if (cart.dataset.hargxCartUpdating === 'true') {
+
+    if (
+      cart.dataset.hargxCartUpdating === 'true'
+    ) {
       return;
     }
 
-    cart.dataset.hargxCartUpdating = 'true';
+
+    cart.dataset.hargxCartUpdating =
+      'true';
+
 
     const item = cart.querySelector(
       `[data-line="${line}"]`
     );
 
-    setCartLoading(item, true);
+
+    setCartLoading(
+      item,
+      true
+    );
 
 
     try {
-      const response = await fetch(
-        window.Shopify.routes.root + 'cart/change.js',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-          },
-          body: JSON.stringify({
-            line: line,
-            quantity: quantity
-          })
-        }
-      );
+
+      const response =
+        await fetch(
+          window.Shopify.routes.root +
+          'cart/change.js',
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json',
+
+              Accept:
+                'application/json'
+            },
+
+            body: JSON.stringify({
+              line: line,
+              quantity: quantity
+            })
+          }
+        );
 
 
       if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => null);
+
+        const errorData =
+          await response
+            .json()
+            .catch(
+              () => null
+            );
+
 
         throw new Error(
           errorData?.description ||
@@ -492,20 +579,49 @@
       }
 
 
-      const updatedCart = await response.json();
+      const updatedCart =
+        await response.json();
+
+
+      /* -------------------------------------------------------
+         Update Header / Cart Count
+         ------------------------------------------------------- */
 
       updateCartItemCount(
         updatedCart.item_count
       );
+
+
+      /* -------------------------------------------------------
+         Update Subtotal
+         ------------------------------------------------------- */
 
       updateCartSubtotal(
         updatedCart.total_price
       );
 
 
+      /* -------------------------------------------------------
+         Update Free Shipping Progress
+         ------------------------------------------------------- */
+
+      updateFreeShippingProgress(
+        updatedCart
+      );
+
+
+      /* -------------------------------------------------------
+         Update / Remove Item
+         ------------------------------------------------------- */
+
       if (quantity === 0) {
-        removeCartItemFromDom(item);
+
+        removeCartItemFromDom(
+          item
+        );
+
       } else {
+
         updateCartLineDom(
           item,
           updatedCart,
@@ -514,16 +630,27 @@
       }
 
 
-      if (updatedCart.item_count === 0) {
+      /* -------------------------------------------------------
+         Empty Cart
+         ------------------------------------------------------- */
+
+      if (
+        updatedCart.item_count === 0
+      ) {
         renderEmptyCart(cart);
       }
 
+
+      /* -------------------------------------------------------
+         Cart Updated Event
+         ------------------------------------------------------- */
 
       document.dispatchEvent(
         new CustomEvent(
           'hargx:cart-updated',
           {
             bubbles: true,
+
             detail: {
               cart: updatedCart
             }
@@ -539,16 +666,23 @@
         error
       );
 
+
       showCartError(
         cart,
         error.message
       );
 
+
     } finally {
 
-      setCartLoading(item, false);
+      setCartLoading(
+        item,
+        false
+      );
 
-      cart.dataset.hargxCartUpdating = 'false';
+
+      cart.dataset.hargxCartUpdating =
+        'false';
     }
   }
 
@@ -566,16 +700,25 @@
       return;
     }
 
-    const cartItem = cartData.items[line - 1];
+
+    const cartItem =
+      cartData.items[line - 1];
+
 
     if (!cartItem) {
       return;
     }
 
 
-    const quantityInput = item.querySelector(
-      '[data-hargx-quantity-input]'
-    );
+    /* ---------------------------------------------------------
+       Quantity
+       --------------------------------------------------------- */
+
+    const quantityInput =
+      item.querySelector(
+        '[data-hargx-quantity-input]'
+      );
+
 
     if (quantityInput) {
       quantityInput.value =
@@ -583,23 +726,39 @@
     }
 
 
-    const desktopPrice = item.querySelector(
-      '.hargx-cart-item__price'
-    );
+    /* ---------------------------------------------------------
+       Desktop Price
+       --------------------------------------------------------- */
+
+    const desktopPrice =
+      item.querySelector(
+        '.hargx-cart-item__price'
+      );
+
 
     if (desktopPrice) {
       desktopPrice.innerHTML =
-        formatLinePrice(cartItem);
+        formatLinePrice(
+          cartItem
+        );
     }
 
 
-    const mobilePrice = item.querySelector(
-      '.hargx-cart-item__mobile-price'
-    );
+    /* ---------------------------------------------------------
+       Mobile Price
+       --------------------------------------------------------- */
+
+    const mobilePrice =
+      item.querySelector(
+        '.hargx-cart-item__mobile-price'
+      );
+
 
     if (mobilePrice) {
       mobilePrice.innerHTML =
-        formatMoney(cartItem.final_line_price);
+        formatMoney(
+          cartItem.final_line_price
+        );
     }
   }
 
@@ -613,13 +772,45 @@
       return;
     }
 
+
     item.classList.add(
       'hargx-cart-item--removing'
     );
 
+
     setTimeout(() => {
+
       item.remove();
+
+      /*
+       * Re-index remaining cart lines
+       * because Shopify cart/change.js uses
+       * line position rather than item ID.
+       */
+
+      reindexCartItems();
+
     }, 220);
+  }
+
+
+  /* =========================================================
+     Re-index Cart Items
+     ========================================================= */
+
+  function reindexCartItems() {
+    const items =
+      document.querySelectorAll(
+        '[data-hargx-cart-item]'
+      );
+
+
+    items.forEach(
+      (item, index) => {
+        item.dataset.line =
+          index + 1;
+      }
+    );
   }
 
 
@@ -628,13 +819,16 @@
      ========================================================= */
 
   function renderEmptyCart(cart) {
-    const container = cart.querySelector(
-      '.hargx-cart__container'
-    );
+    const container =
+      cart.querySelector(
+        '.hargx-cart__container'
+      );
+
 
     if (!container) {
       return;
     }
+
 
     container.innerHTML = `
       <div class="hargx-cart__empty">
@@ -645,6 +839,7 @@
             class="hargx-cart__empty-icon"
             aria-hidden="true"
           >
+
             <svg
               width="48"
               height="48"
@@ -652,6 +847,7 @@
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
+
               <path
                 d="M10 14H38L35.5 39H12.5L10 14Z"
                 stroke="currentColor"
@@ -663,16 +859,21 @@
                 stroke="currentColor"
                 stroke-width="1.5"
               />
+
             </svg>
+
           </span>
+
 
           <h1 class="hargx-cart__empty-title">
             Your cart is empty
           </h1>
 
+
           <p class="hargx-cart__empty-text">
             Looks like you haven't added anything yet.
           </p>
+
 
           <a
             href="${window.Shopify.routes.root}collections/all"
@@ -680,6 +881,7 @@
           >
             Continue shopping
           </a>
+
 
         </div>
 
@@ -692,25 +894,32 @@
      Cart Count
      ========================================================= */
 
-  function updateCartItemCount(itemCount) {
+  function updateCartItemCount(
+    itemCount
+  ) {
+
     const countElements =
       document.querySelectorAll(
         '.hargx-cart__count'
       );
 
-    countElements.forEach((element) => {
-      element.textContent =
-        `${itemCount} ${
-          itemCount === 1
-            ? 'item'
-            : 'items'
-        }`;
-    });
+
+    countElements.forEach(
+      (element) => {
+
+        element.textContent =
+          `${itemCount} ${
+            itemCount === 1
+              ? 'item'
+              : 'items'
+          }`;
+      }
+    );
 
 
     /*
-     * Also update common HARGX header
-     * cart count if it exists.
+     * Update HARGX header cart count
+     * if available.
      */
 
     const headerCount =
@@ -718,10 +927,13 @@
         '[data-hargx-cart-count]'
       );
 
-    headerCount.forEach((element) => {
-      element.textContent =
-        itemCount;
-    });
+
+    headerCount.forEach(
+      (element) => {
+        element.textContent =
+          itemCount;
+      }
+    );
   }
 
 
@@ -729,16 +941,151 @@
      Cart Subtotal
      ========================================================= */
 
-  function updateCartSubtotal(totalPrice) {
+  function updateCartSubtotal(
+    totalPrice
+  ) {
+
     const subtotalElements =
       document.querySelectorAll(
         '.hargx-cart__summary-row span:last-child'
       );
 
-    subtotalElements.forEach((element) => {
-      element.textContent =
-        formatMoney(totalPrice);
-    });
+
+    subtotalElements.forEach(
+      (element) => {
+
+        element.textContent =
+          formatMoney(
+            totalPrice
+          );
+      }
+    );
+  }
+
+
+  /* =========================================================
+     Free Shipping Progress
+     ========================================================= */
+
+  function updateFreeShippingProgress(
+    cartData
+  ) {
+
+    const progress =
+      document.querySelector(
+        '[data-hargx-shipping-progress]'
+      );
+
+
+    if (!progress) {
+      return;
+    }
+
+
+    const threshold =
+      Number(
+        progress.dataset.threshold
+      );
+
+
+    if (!threshold) {
+      return;
+    }
+
+
+    const total =
+      Number(
+        cartData.total_price || 0
+      );
+
+
+    const remaining =
+      Math.max(
+        threshold - total,
+        0
+      );
+
+
+    const percentage =
+      Math.min(
+        (total / threshold) * 100,
+        100
+      );
+
+
+    const message =
+      progress.querySelector(
+        '.hargx-cart__shipping-message'
+      );
+
+
+    const fill =
+      progress.querySelector(
+        '.hargx-cart__shipping-fill'
+      );
+
+
+    const track =
+      progress.querySelector(
+        '.hargx-cart__shipping-track'
+      );
+
+
+    /* ---------------------------------------------------------
+       Progress Bar
+       --------------------------------------------------------- */
+
+    if (fill) {
+      fill.style.width =
+        `${percentage}%`;
+    }
+
+
+    /* ---------------------------------------------------------
+       Accessibility
+       --------------------------------------------------------- */
+
+    if (track) {
+
+      track.setAttribute(
+        'aria-valuenow',
+        Math.round(
+          percentage
+        )
+      );
+    }
+
+
+    /* ---------------------------------------------------------
+       Message
+       --------------------------------------------------------- */
+
+    if (!message) {
+      return;
+    }
+
+
+    if (remaining > 0) {
+
+      message.innerHTML = `
+        <span>
+          You're
+          <strong>
+            ${formatMoney(remaining)}
+          </strong>
+          away from free shipping.
+        </span>
+      `;
+
+    } else {
+
+      message.innerHTML = `
+        <span>
+          You've unlocked
+          <strong>free shipping!</strong>
+        </span>
+      `;
+    }
   }
 
 
@@ -746,109 +1093,73 @@
      Money Formatting
      ========================================================= */
 
-  function formatMoney(cents) {
+  function formatMoney(
+    cents
+  ) {
+
     const amount =
       Number(cents) / 100;
+
 
     const currency =
       window.Shopify.currency?.active ||
       'USD';
 
+
     try {
+
       return new Intl.NumberFormat(
-        document.documentElement.lang || 'en',
+        document.documentElement.lang ||
+          'en',
         {
           style: 'currency',
           currency: currency
         }
       ).format(amount);
+
     } catch (error) {
-      return `${amount.toFixed(2)} ${currency}`;
+
+      return `${amount.toFixed(
+        2
+      )} ${currency}`;
     }
   }
 
-  function updateFreeShippingProgress(cartData) {
-    const progress = document.querySelector(
-        '[data-hargx-shipping-progress]'
-    );
 
-    if (!progress) return;
+  /* =========================================================
+     Line Price Formatting
+     ========================================================= */
 
-    const threshold = Number(progress.dataset.threshold);
+  function formatLinePrice(
+    item
+  ) {
 
-    if (!threshold) return;
-
-    const total = Number(cartData.total_price || 0);
-
-    const remaining = Math.max(threshold - total, 0);
-
-    const percentage = Math.min(
-        (total / threshold) * 100,
-        100
-    );
-
-    const message = progress.querySelector(
-        '.hargx-cart__shipping-message'
-    );
-
-    const fill = progress.querySelector(
-        '.hargx-cart__shipping-fill'
-    );
-
-    const track = progress.querySelector(
-        '.hargx-cart__shipping-track'
-    );
-
-    if (fill) {
-        fill.style.width = `${percentage}%`;
-    }
-
-    if (track) {
-        track.setAttribute(
-        'aria-valuenow',
-        Math.round(percentage)
-        );
-    }
-
-    if (!message) return;
-
-    if (remaining > 0) {
-        message.innerHTML = `
-        <span>
-            You're
-            <strong>${formatMoney(remaining)}</strong>
-            away from free shipping.
-        </span>
-        `;
-    } else {
-        message.innerHTML = `
-        <span>
-            You've unlocked <strong>free shipping!</strong>
-        </span>
-        `;
-    }
-    }
-
-
-  function formatLinePrice(item) {
     if (
       item.original_line_price >
       item.final_line_price
     ) {
+
       return `
         <span class="hargx-cart-item__price--sale">
-          ${formatMoney(item.final_line_price)}
+          ${formatMoney(
+            item.final_line_price
+          )}
         </span>
 
         <span class="hargx-cart-item__price--compare">
-          ${formatMoney(item.original_line_price)}
+          ${formatMoney(
+            item.original_line_price
+          )}
         </span>
       `;
     }
 
+
     return `
       <span>
-        ${formatMoney(item.final_line_price)}
+        ${formatMoney(
+          item.final_line_price
+        )}
       </span>
     `;
   }
@@ -862,9 +1173,11 @@
     item,
     loading
   ) {
+
     if (!item) {
       return;
     }
+
 
     item.classList.toggle(
       'is-loading',
@@ -877,67 +1190,91 @@
         'button, a, input'
       );
 
-    buttons.forEach((element) => {
-      if (loading) {
-        element.setAttribute(
-          'aria-disabled',
-          'true'
-        );
-      } else {
-        element.removeAttribute(
-          'aria-disabled'
-        );
+
+    buttons.forEach(
+      (element) => {
+
+        if (loading) {
+
+          element.setAttribute(
+            'aria-disabled',
+            'true'
+          );
+
+        } else {
+
+          element.removeAttribute(
+            'aria-disabled'
+          );
+        }
       }
-    });
+    );
   }
 
 
   /* =========================================================
-     Error
+     Cart Error
      ========================================================= */
 
   function showCartError(
     cart,
     message
   ) {
+
     let error =
       cart.querySelector(
         '[data-hargx-cart-error]'
       );
 
+
     if (!error) {
+
       error =
-        document.createElement('div');
+        document.createElement(
+          'div'
+        );
+
 
       error.className =
         'hargx-cart__error';
+
 
       error.setAttribute(
         'data-hargx-cart-error',
         ''
       );
 
+
       const container =
         cart.querySelector(
           '.hargx-cart__container'
         );
 
+
       if (container) {
-        container.prepend(error);
+        container.prepend(
+          error
+        );
       }
     }
+
 
     error.textContent =
       message ||
       'Something went wrong. Please try again.';
 
-    error.classList.add('is-visible');
+
+    error.classList.add(
+      'is-visible'
+    );
 
 
     setTimeout(() => {
+
       error.classList.remove(
         'is-visible'
       );
+
     }, 3500);
   }
 
@@ -950,11 +1287,14 @@
     document.readyState ===
     'loading'
   ) {
+
     document.addEventListener(
       'DOMContentLoaded',
       initHargxCart
     );
+
   } else {
+
     initHargxCart();
   }
 
@@ -966,11 +1306,13 @@
   document.addEventListener(
     'shopify:section:load',
     (event) => {
+
       if (
         event.target.querySelector(
           '[data-hargx-cart]'
         )
       ) {
+
         initHargxCart();
       }
     }
