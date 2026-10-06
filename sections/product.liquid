@@ -581,25 +581,31 @@
                   </div>
 
 
-                {%- when 'collapsible_tab' -%}
+               {%- when 'collapsible_tab' -%}
 
                   <details
                     class="hargx-product__block hargx-product__collapsible"
                     {{ block.shopify_attributes }}
                   >
 
-                    <summary>
-                      <span>
+                    <summary class="hargx-product__collapsible-summary">
+                      <span class="hargx-product__collapsible-heading">
                         {{ block.settings.heading }}
                       </span>
 
-                      <span aria-hidden="true">
-                        +
+                      <span
+                        class="hargx-product__collapsible-icon"
+                        aria-hidden="true"
+                      >
+                        <span></span>
+                        <span></span>
                       </span>
                     </summary>
 
                     <div class="hargx-product__collapsible-content rte">
-                      {{ block.settings.content }}
+                      <div class="hargx-product__collapsible-inner">
+                        {{ block.settings.content }}
+                      </div>
                     </div>
 
                   </details>

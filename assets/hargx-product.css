@@ -827,6 +827,196 @@
 }
 
 
+/* =========================================================
+   HARGX Product Accordion / Collapsible Tab
+   ========================================================= */
+
+.hargx-product__collapsible {
+  width: 100%;
+  margin: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.hargx-product__collapsible:last-child {
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Summary */
+
+.hargx-product__collapsible-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  width: 100%;
+  padding: 20px 0;
+
+  cursor: pointer;
+  list-style: none;
+
+  font-family: var(--font-primary--family);
+  font-style: var(--font-primary--style);
+  font-weight: 600;
+  color: var(--color-text);
+
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+/* Remove browser marker */
+
+.hargx-product__collapsible-summary::-webkit-details-marker {
+  display: none;
+}
+
+.hargx-product__collapsible-summary::marker {
+  display: none;
+}
+
+/* Heading */
+
+.hargx-product__collapsible-heading {
+  flex: 1;
+  min-width: 0;
+
+  font-size: 15px;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+/* Hover */
+
+.hargx-product__collapsible-summary:hover {
+  color: var(--color-primary);
+}
+
+/* Icon */
+
+.hargx-product__collapsible-icon {
+  position: relative;
+
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+
+  display: block;
+}
+
+/* Horizontal line */
+
+.hargx-product__collapsible-icon span:first-child {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+
+  width: 16px;
+  height: 1.5px;
+
+  background: currentColor;
+
+  transform: translateY(-50%);
+}
+
+/* Vertical line */
+
+.hargx-product__collapsible-icon span:last-child {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+
+  width: 1.5px;
+  height: 16px;
+
+  background: currentColor;
+
+  transform: translateX(-50%);
+
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+/* Open state */
+
+.hargx-product__collapsible[open]
+  .hargx-product__collapsible-icon span:last-child {
+  opacity: 0;
+  transform: translateX(-50%) rotate(90deg);
+}
+
+/* Content */
+
+.hargx-product__collapsible-content {
+  display: grid;
+  grid-template-rows: 0fr;
+
+  transition:
+    grid-template-rows 0.35s ease,
+    opacity 0.35s ease;
+
+  opacity: 0;
+}
+
+/* Inner wrapper */
+
+.hargx-product__collapsible-inner {
+  min-height: 0;
+  overflow: hidden;
+
+  padding-right: 40px;
+
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-muted-text);
+}
+
+/* Open animation */
+
+.hargx-product__collapsible[open]
+  .hargx-product__collapsible-content {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+/* Bottom spacing when open */
+
+.hargx-product__collapsible[open]
+  .hargx-product__collapsible-inner {
+  padding-bottom: 22px;
+}
+
+/* RTE cleanup */
+
+.hargx-product__collapsible-inner > * {
+  margin-top: 0;
+}
+
+.hargx-product__collapsible-inner > *:last-child {
+  margin-bottom: 0;
+}
+
+.hargx-product__collapsible-inner p {
+  margin-bottom: 12px;
+}
+
+.hargx-product__collapsible-inner p:last-child {
+  margin-bottom: 0;
+}
+
+.hargx-product__collapsible-inner ul,
+.hargx-product__collapsible-inner ol {
+  padding-left: 20px;
+}
+
+.hargx-product__collapsible-inner a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
 
 /* =========================================================
    TABLET
@@ -1039,6 +1229,25 @@
   .hargx-product__trust-item {
     min-height: 58px;
     font-size: 8px;
+  }
+
+  .hargx-product__collapsible-summary {
+    padding: 17px 0;
+  }
+
+  .hargx-product__collapsible-heading {
+    font-size: 14px;
+  }
+
+  .hargx-product__collapsible-inner {
+    padding-right: 28px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .hargx-product__collapsible[open]
+    .hargx-product__collapsible-inner {
+    padding-bottom: 18px;
   }
 
 }
