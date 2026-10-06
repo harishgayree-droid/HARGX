@@ -142,12 +142,19 @@
       src="{{ 'hargx-cart.js' | asset_url }}"
       defer="defer"
     ></script>
+
+    <script
+      src="{{ 'hargx-cart-drawer.js' | asset_url }}"
+      defer
+    ></script>
   </head>
 
   <body>
     {% sections 'header-group' %}
 
     {{ content_for_layout }}
+
+    {% section 'cart-drawer' %}
 
     {% sections 'footer-group' %}
   </body>
