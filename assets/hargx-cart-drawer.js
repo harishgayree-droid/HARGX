@@ -32,11 +32,15 @@
      ========================================================= */
 
   function initHargxCartDrawer() {
-    const drawer = document.querySelector(SELECTORS.drawer);
+    const drawer = document.querySelector(
+      SELECTORS.drawer
+    );
 
     if (!drawer) return;
 
-    if (drawer.dataset.hargxDrawerInitialized === 'true') {
+    if (
+      drawer.dataset.hargxDrawerInitialized === 'true'
+    ) {
       return;
     }
 
@@ -55,19 +59,30 @@
      ========================================================= */
 
   function bindDrawerControls(drawer) {
-    const overlay = drawer.querySelector(SELECTORS.overlay);
-    const closeButton = drawer.querySelector(SELECTORS.close);
+    const overlay = drawer.querySelector(
+      SELECTORS.overlay
+    );
+
+    const closeButton = drawer.querySelector(
+      SELECTORS.close
+    );
 
     if (overlay) {
-      overlay.addEventListener('click', function () {
-        closeDrawer(drawer);
-      });
+      overlay.addEventListener(
+        'click',
+        function () {
+          closeDrawer(drawer);
+        }
+      );
     }
 
     if (closeButton) {
-      closeButton.addEventListener('click', function () {
-        closeDrawer(drawer);
-      });
+      closeButton.addEventListener(
+        'click',
+        function () {
+          closeDrawer(drawer);
+        }
+      );
     }
   }
 
@@ -75,21 +90,37 @@
   function openDrawer(drawer) {
     if (!drawer) return;
 
-    lastFocusedElement = document.activeElement;
+    lastFocusedElement =
+      document.activeElement;
+
     activeDrawer = drawer;
 
     drawer.classList.add('is-open');
-    drawer.setAttribute('aria-hidden', 'false');
 
-    document.documentElement.classList.add('hargx-cart-drawer-open');
-    document.body.classList.add('hargx-cart-drawer-open');
+    drawer.setAttribute(
+      'aria-hidden',
+      'false'
+    );
 
-    const closeButton = drawer.querySelector(SELECTORS.close);
+    document.documentElement.classList.add(
+      'hargx-cart-drawer-open'
+    );
+
+    document.body.classList.add(
+      'hargx-cart-drawer-open'
+    );
+
+    const closeButton =
+      drawer.querySelector(
+        SELECTORS.close
+      );
 
     if (closeButton) {
-      requestAnimationFrame(function () {
-        closeButton.focus();
-      });
+      requestAnimationFrame(
+        function () {
+          closeButton.focus();
+        }
+      );
     }
   }
 
@@ -97,17 +128,29 @@
   function closeDrawer(drawer) {
     if (!drawer) return;
 
-    drawer.classList.remove('is-open');
-    drawer.setAttribute('aria-hidden', 'true');
+    drawer.classList.remove(
+      'is-open'
+    );
 
-    document.documentElement.classList.remove('hargx-cart-drawer-open');
-    document.body.classList.remove('hargx-cart-drawer-open');
+    drawer.setAttribute(
+      'aria-hidden',
+      'true'
+    );
+
+    document.documentElement.classList.remove(
+      'hargx-cart-drawer-open'
+    );
+
+    document.body.classList.remove(
+      'hargx-cart-drawer-open'
+    );
 
     activeDrawer = null;
 
     if (
       lastFocusedElement &&
-      typeof lastFocusedElement.focus === 'function'
+      typeof lastFocusedElement.focus ===
+        'function'
     ) {
       try {
         lastFocusedElement.focus();
@@ -121,52 +164,83 @@
 
 
   /* =========================================================
-     GLOBAL OPEN EVENT
+     GLOBAL OPEN EVENTS
      ========================================================= */
 
   function bindGlobalDrawerEvents() {
-    document.addEventListener('click', function (event) {
-      const openTrigger = event.target.closest(
-        '[data-hargx-cart-drawer-open]'
-      );
+    document.addEventListener(
+      'click',
+      function (event) {
+        const openTrigger =
+          event.target.closest(
+            '[data-hargx-cart-drawer-open]'
+          );
 
-      if (!openTrigger) return;
+        if (!openTrigger) return;
 
-      const drawer = document.querySelector(
-        SELECTORS.drawer
-      );
+        const drawer =
+          document.querySelector(
+            SELECTORS.drawer
+          );
 
-      if (!drawer) return;
+        if (!drawer) return;
 
-      event.preventDefault();
+        event.preventDefault();
 
-      openDrawer(drawer);
-    });
-
-
-    document.addEventListener('keydown', function (event) {
-      if (!activeDrawer) return;
-
-      if (event.key === 'Escape') {
-        closeDrawer(activeDrawer);
-        return;
+        openDrawer(drawer);
       }
+    );
 
-      if (event.key === 'Tab') {
-        trapFocus(activeDrawer, event);
+
+    document.addEventListener(
+      'keydown',
+      function (event) {
+        if (!activeDrawer) return;
+
+        if (event.key === 'Escape') {
+          closeDrawer(activeDrawer);
+          return;
+        }
+
+        if (event.key === 'Tab') {
+          trapFocus(
+            activeDrawer,
+            event
+          );
+        }
       }
-    });
+    );
 
 
     document.addEventListener(
       'hargx:open-cart-drawer',
       function () {
-        const drawer = document.querySelector(
-          SELECTORS.drawer
-        );
+        if (
+          window.HARGXCartDrawer &&
+          typeof window.HARGXCartDrawer.open ===
+            'function'
+        ) {
+          window.HARGXCartDrawer.open();
+        }
+      }
+    );
 
-        if (drawer) {
-          openDrawer(drawer);
+
+    /*
+     * Allows other HARGX scripts to notify
+     * the drawer after a successful add-to-cart.
+     */
+    document.addEventListener(
+      'hargx:cart-add-success',
+      function () {
+        if (
+          window.HARGXCartDrawer &&
+          typeof window.HARGXCartDrawer.open ===
+            'function'
+        ) {
+          window.HARGXCartDrawer.open({
+            openAfterRefresh: true
+          });
         }
       }
     );
@@ -177,25 +251,39 @@
      FOCUS TRAP
      ========================================================= */
 
-  function trapFocus(drawer, event) {
-    const focusableElements = drawer.querySelectorAll(
-      'button:not([disabled]), ' +
-      '[href], ' +
-      'input:not([disabled]), ' +
-      'textarea:not([disabled]), ' +
-      'select:not([disabled]), ' +
-      '[tabindex]:not([tabindex="-1"])'
-    );
+  function trapFocus(
+    drawer,
+    event
+  ) {
+    const focusableElements =
+      drawer.querySelectorAll(
+        'button:not([disabled]), ' +
+        '[href], ' +
+        'input:not([disabled]), ' +
+        'textarea:not([disabled]), ' +
+        'select:not([disabled]), ' +
+        '[tabindex]:not([tabindex="-1"])'
+      );
 
-    if (!focusableElements.length) return;
+    if (!focusableElements.length) {
+      return;
+    }
 
-    const firstElement = focusableElements[0];
+    const firstElement =
+      focusableElements[0];
+
     const lastElement =
-      focusableElements[focusableElements.length - 1];
+      focusableElements[
+        focusableElements.length - 1
+      ];
 
-    if (event.shiftKey && document.activeElement === firstElement) {
+    if (
+      event.shiftKey &&
+      document.activeElement === firstElement
+    ) {
       event.preventDefault();
       lastElement.focus();
+
     } else if (
       !event.shiftKey &&
       document.activeElement === lastElement
@@ -211,141 +299,190 @@
      ========================================================= */
 
   function bindCartItems(drawer) {
-    const minusButtons = drawer.querySelectorAll(
-      SELECTORS.minus
+    const minusButtons =
+      drawer.querySelectorAll(
+        SELECTORS.minus
+      );
+
+    const plusButtons =
+      drawer.querySelectorAll(
+        SELECTORS.plus
+      );
+
+    const quantityInputs =
+      drawer.querySelectorAll(
+        SELECTORS.quantityInput
+      );
+
+    const removeButtons =
+      drawer.querySelectorAll(
+        SELECTORS.remove
+      );
+
+
+    minusButtons.forEach(
+      function (button) {
+        button.addEventListener(
+          'click',
+          function () {
+            const item =
+              button.closest(
+                SELECTORS.item
+              );
+
+            if (!item) return;
+
+            const input =
+              item.querySelector(
+                SELECTORS.quantityInput
+              );
+
+            if (!input) return;
+
+            const currentQuantity =
+              parseInt(
+                input.value,
+                10
+              ) || 0;
+
+            const newQuantity =
+              Math.max(
+                currentQuantity - 1,
+                0
+              );
+
+            updateDrawerLine(
+              drawer,
+              getLineNumber(item),
+              newQuantity,
+              item
+            );
+          }
+        );
+      }
     );
 
-    const plusButtons = drawer.querySelectorAll(
-      SELECTORS.plus
+
+    plusButtons.forEach(
+      function (button) {
+        button.addEventListener(
+          'click',
+          function () {
+            const item =
+              button.closest(
+                SELECTORS.item
+              );
+
+            if (!item) return;
+
+            const input =
+              item.querySelector(
+                SELECTORS.quantityInput
+              );
+
+            if (!input) return;
+
+            const currentQuantity =
+              parseInt(
+                input.value,
+                10
+              ) || 0;
+
+            const newQuantity =
+              currentQuantity + 1;
+
+            updateDrawerLine(
+              drawer,
+              getLineNumber(item),
+              newQuantity,
+              item
+            );
+          }
+        );
+      }
     );
 
-    const quantityInputs = drawer.querySelectorAll(
-      SELECTORS.quantityInput
+
+    quantityInputs.forEach(
+      function (input) {
+        input.addEventListener(
+          'change',
+          function () {
+            const item =
+              input.closest(
+                SELECTORS.item
+              );
+
+            if (!item) return;
+
+            let quantity =
+              parseInt(
+                input.value,
+                10
+              );
+
+            if (Number.isNaN(quantity)) {
+              quantity = 1;
+            }
+
+            quantity = Math.max(
+              quantity,
+              0
+            );
+
+            input.value =
+              quantity;
+
+            updateDrawerLine(
+              drawer,
+              getLineNumber(item),
+              quantity,
+              item
+            );
+          }
+        );
+
+
+        input.addEventListener(
+          'keydown',
+          function (event) {
+            if (
+              event.key !== 'Enter'
+            ) {
+              return;
+            }
+
+            event.preventDefault();
+
+            input.blur();
+          }
+        );
+      }
     );
 
-    const removeButtons = drawer.querySelectorAll(
-      SELECTORS.remove
+
+    removeButtons.forEach(
+      function (button) {
+        button.addEventListener(
+          'click',
+          function () {
+            const item =
+              button.closest(
+                SELECTORS.item
+              );
+
+            if (!item) return;
+
+            updateDrawerLine(
+              drawer,
+              getLineNumber(item),
+              0,
+              item
+            );
+          }
+        );
+      }
     );
-
-
-    minusButtons.forEach(function (button) {
-      button.addEventListener('click', function () {
-        const item = button.closest(
-          SELECTORS.item
-        );
-
-        if (!item) return;
-
-        const input = item.querySelector(
-          SELECTORS.quantityInput
-        );
-
-        if (!input) return;
-
-        const currentQuantity =
-          parseInt(input.value, 10) || 0;
-
-        const newQuantity = Math.max(
-          currentQuantity - 1,
-          0
-        );
-
-        updateDrawerLine(
-          drawer,
-          getLineNumber(item),
-          newQuantity,
-          item
-        );
-      });
-    });
-
-
-    plusButtons.forEach(function (button) {
-      button.addEventListener('click', function () {
-        const item = button.closest(
-          SELECTORS.item
-        );
-
-        if (!item) return;
-
-        const input = item.querySelector(
-          SELECTORS.quantityInput
-        );
-
-        if (!input) return;
-
-        const currentQuantity =
-          parseInt(input.value, 10) || 0;
-
-        const newQuantity =
-          currentQuantity + 1;
-
-        updateDrawerLine(
-          drawer,
-          getLineNumber(item),
-          newQuantity,
-          item
-        );
-      });
-    });
-
-
-    quantityInputs.forEach(function (input) {
-      input.addEventListener('change', function () {
-        const item = input.closest(
-          SELECTORS.item
-        );
-
-        if (!item) return;
-
-        let quantity =
-          parseInt(input.value, 10);
-
-        if (Number.isNaN(quantity)) {
-          quantity = 1;
-        }
-
-        quantity = Math.max(
-          quantity,
-          0
-        );
-
-        input.value = quantity;
-
-        updateDrawerLine(
-          drawer,
-          getLineNumber(item),
-          quantity,
-          item
-        );
-      });
-
-
-      input.addEventListener('keydown', function (event) {
-        if (event.key !== 'Enter') return;
-
-        event.preventDefault();
-        input.blur();
-      });
-    });
-
-
-    removeButtons.forEach(function (button) {
-      button.addEventListener('click', function () {
-        const item = button.closest(
-          SELECTORS.item
-        );
-
-        if (!item) return;
-
-        updateDrawerLine(
-          drawer,
-          getLineNumber(item),
-          0,
-          item
-        );
-      });
-    });
   }
 
 
@@ -359,49 +496,62 @@
     quantity,
     item
   ) {
-    if (!line || Number.isNaN(line)) {
-      return;
-    }
-
     if (
-      drawer.dataset.hargxDrawerUpdating === 'true'
+      !line ||
+      Number.isNaN(line)
     ) {
       return;
     }
 
-    drawer.dataset.hargxDrawerUpdating = 'true';
+    if (
+      drawer.dataset.hargxDrawerUpdating ===
+      'true'
+    ) {
+      return;
+    }
 
-    setItemLoading(item, true);
+    drawer.dataset.hargxDrawerUpdating =
+      'true';
+
+    setItemLoading(
+      item,
+      true
+    );
 
     try {
-      const response = await fetch(
-        window.Shopify.routes.root +
-          'cart/change.js',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type':
-              'application/json',
-            Accept: 'application/json'
-          },
-          body: JSON.stringify({
-            line: line,
-            quantity: quantity
-          })
-        }
-      );
+      const response =
+        await fetch(
+          window.Shopify.routes.root +
+            'cart/change.js',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type':
+                'application/json',
+              Accept:
+                'application/json'
+            },
+            body: JSON.stringify({
+              line: line,
+              quantity: quantity
+            })
+          }
+        );
 
       if (!response.ok) {
         const errorData =
-          await response.json()
-            .catch(function () {
-              return null;
-            });
+          await response
+            .json()
+            .catch(
+              function () {
+                return null;
+              }
+            );
 
         throw new Error(
           errorData?.description ||
-          errorData?.message ||
-          'Unable to update cart.'
+            errorData?.message ||
+            'Unable to update cart.'
         );
       }
 
@@ -423,13 +573,21 @@
         cartData
       );
 
-      if (cartData.item_count === 0) {
-        renderDrawerEmptyState(drawer);
+      if (
+        cartData.item_count === 0
+      ) {
+        renderDrawerEmptyState(
+          drawer
+        );
       } else {
-        refreshDrawerIndexes(drawer);
+        refreshDrawerIndexes(
+          drawer
+        );
       }
 
-      dispatchCartUpdated(cartData);
+      dispatchCartUpdated(
+        cartData
+      );
 
     } catch (error) {
       console.error(
@@ -444,19 +602,24 @@
       );
 
       if (item) {
-        const input = item.querySelector(
-          SELECTORS.quantityInput
-        );
+        const input =
+          item.querySelector(
+            SELECTORS.quantityInput
+          );
 
         if (input) {
           input.value =
-            input.dataset.previousQuantity ||
+            input.dataset
+              .previousQuantity ||
             input.value;
         }
       }
 
     } finally {
-      setItemLoading(item, false);
+      setItemLoading(
+        item,
+        false
+      );
 
       drawer.dataset.hargxDrawerUpdating =
         'false';
@@ -476,7 +639,9 @@
     if (!item) return;
 
     const cartItem =
-      cartData.items[line - 1];
+      cartData.items[
+        line - 1
+      ];
 
     if (!cartItem) return;
 
@@ -497,7 +662,9 @@
 
     if (price) {
       price.innerHTML =
-        formatLinePrice(cartItem);
+        formatLinePrice(
+          cartItem
+        );
     }
   }
 
@@ -509,22 +676,32 @@
       'hargx-cart-drawer-item--removing'
     );
 
-    setTimeout(function () {
-      item.remove();
-    }, 220);
+    setTimeout(
+      function () {
+        item.remove();
+      },
+      220
+    );
   }
 
 
-  function refreshDrawerIndexes(drawer) {
+  function refreshDrawerIndexes(
+    drawer
+  ) {
     const items =
       drawer.querySelectorAll(
         SELECTORS.item
       );
 
-    items.forEach(function (item, index) {
-      item.dataset.line =
-        String(index + 1);
-    });
+    items.forEach(
+      function (
+        item,
+        index
+      ) {
+        item.dataset.line =
+          String(index + 1);
+      }
+    );
   }
 
 
@@ -556,16 +733,20 @@
   }
 
 
-  function updateDrawerCount(itemCount) {
+  function updateDrawerCount(
+    itemCount
+  ) {
     const elements =
       document.querySelectorAll(
         SELECTORS.count
       );
 
-    elements.forEach(function (element) {
-      element.textContent =
-        itemCount;
-    });
+    elements.forEach(
+      function (element) {
+        element.textContent =
+          itemCount;
+      }
+    );
   }
 
 
@@ -581,7 +762,9 @@
     if (!subtotal) return;
 
     subtotal.textContent =
-      formatMoney(totalPrice);
+      formatMoney(
+        totalPrice
+      );
   }
 
 
@@ -594,23 +777,25 @@
         '.hargx-cart__count'
       );
 
-    elements.forEach(function (element) {
-      if (
-        element.classList.contains(
-          'hargx-cart__count'
-        )
-      ) {
-        element.textContent =
-          `${itemCount} ${
-            itemCount === 1
-              ? 'item'
-              : 'items'
-          }`;
-      } else {
-        element.textContent =
-          itemCount;
+    elements.forEach(
+      function (element) {
+        if (
+          element.classList.contains(
+            'hargx-cart__count'
+          )
+        ) {
+          element.textContent =
+            `${itemCount} ${
+              itemCount === 1
+                ? 'item'
+                : 'items'
+            }`;
+        } else {
+          element.textContent =
+            itemCount;
+        }
       }
-    });
+    );
   }
 
 
@@ -676,7 +861,9 @@
     if (track) {
       track.setAttribute(
         'aria-valuenow',
-        Math.round(percentage)
+        Math.round(
+          percentage
+        )
       );
     }
 
@@ -686,7 +873,9 @@
       message.innerHTML = `
         You're
         <strong>
-          ${formatMoney(remaining)}
+          ${formatMoney(
+            remaining
+          )}
         </strong>
         away from free shipping.
       `;
@@ -705,7 +894,9 @@
      ORDER NOTE
      ========================================================= */
 
-  function bindOrderNote(drawer) {
+  function bindOrderNote(
+    drawer
+  ) {
     const toggle =
       drawer.querySelector(
         SELECTORS.noteToggle
@@ -800,7 +991,9 @@
           'is-loading'
         );
 
-        saveButton.disabled = true;
+        saveButton.disabled =
+          true;
+
         saveButton.textContent =
           'Saving...';
 
@@ -825,33 +1018,45 @@
 
           if (!response.ok) {
             const errorData =
-              await response.json()
-                .catch(function () {
-                  return null;
-                });
+              await response
+                .json()
+                .catch(
+                  function () {
+                    return null;
+                  }
+                );
 
             throw new Error(
               errorData?.description ||
-              errorData?.message ||
-              'Unable to save note.'
+                errorData?.message ||
+                'Unable to save note.'
             );
           }
 
-          await response.json();
+          const cartData =
+            await response.json();
 
           saveButton.textContent =
             'Saved';
 
-          setTimeout(function () {
-            saveButton.textContent =
-              originalText;
+          dispatchCartUpdated(
+            cartData
+          );
 
-            saveButton.classList.remove(
-              'is-loading'
-            );
+          setTimeout(
+            function () {
+              saveButton.textContent =
+                originalText;
 
-            saveButton.disabled = false;
-          }, 1200);
+              saveButton.classList.remove(
+                'is-loading'
+              );
+
+              saveButton.disabled =
+                false;
+            },
+            1200
+          );
 
         } catch (error) {
           console.error(
@@ -866,7 +1071,8 @@
             'is-loading'
           );
 
-          saveButton.disabled = false;
+          saveButton.disabled =
+            false;
         }
       }
     );
@@ -877,31 +1083,35 @@
      UPSELL
      ========================================================= */
 
-  function bindUpsells(drawer) {
+  function bindUpsells(
+    drawer
+  ) {
     const buttons =
       drawer.querySelectorAll(
         SELECTORS.upsellAdd
       );
 
-    buttons.forEach(function (button) {
-      button.addEventListener(
-        'click',
-        function () {
-          const variantId =
-            Number(
-              button.dataset.variantId
+    buttons.forEach(
+      function (button) {
+        button.addEventListener(
+          'click',
+          function () {
+            const variantId =
+              Number(
+                button.dataset.variantId
+              );
+
+            if (!variantId) return;
+
+            addUpsellProduct(
+              drawer,
+              button,
+              variantId
             );
-
-          if (!variantId) return;
-
-          addUpsellProduct(
-            drawer,
-            button,
-            variantId
-          );
-        }
-      );
-    });
+          }
+        );
+      }
+    );
   }
 
 
@@ -925,7 +1135,9 @@
       'is-loading'
     );
 
-    button.disabled = true;
+    button.disabled =
+      true;
+
     button.textContent =
       'Adding...';
 
@@ -955,15 +1167,18 @@
 
       if (!response.ok) {
         const errorData =
-          await response.json()
-            .catch(function () {
-              return null;
-            });
+          await response
+            .json()
+            .catch(
+              function () {
+                return null;
+              }
+            );
 
         throw new Error(
           errorData?.description ||
-          errorData?.message ||
-          'Unable to add product.'
+            errorData?.message ||
+            'Unable to add product.'
         );
       }
 
@@ -995,23 +1210,30 @@
 
       updateDrawerFromCart(
         drawer,
-        cartData
+        cartData,
+        {
+          openAfterRefresh: true
+        }
       );
 
       dispatchCartUpdated(
         cartData
       );
 
-      setTimeout(function () {
-        button.textContent =
-          originalText;
+      setTimeout(
+        function () {
+          button.textContent =
+            originalText;
 
-        button.classList.remove(
-          'is-loading'
-        );
+          button.classList.remove(
+            'is-loading'
+          );
 
-        button.disabled = false;
-      }, 900);
+          button.disabled =
+            false;
+        },
+        900
+      );
 
     } catch (error) {
       console.error(
@@ -1026,12 +1248,16 @@
         'is-loading'
       );
 
-      button.disabled = false;
+      button.disabled =
+        false;
 
-      setTimeout(function () {
-        button.textContent =
-          originalText;
-      }, 1800);
+      setTimeout(
+        function () {
+          button.textContent =
+            originalText;
+        },
+        1800
+      );
     }
   }
 
@@ -1040,7 +1266,9 @@
      CHECKOUT
      ========================================================= */
 
-  function bindCheckout(drawer) {
+  function bindCheckout(
+    drawer
+  ) {
     const checkoutButton =
       drawer.querySelector(
         SELECTORS.checkout
@@ -1065,8 +1293,14 @@
 
   function updateDrawerFromCart(
     drawer,
-    cartData
+    cartData,
+    options
   ) {
+    if (!drawer) return;
+
+    options =
+      options || {};
+
     updateDrawerCount(
       cartData.item_count
     );
@@ -1085,13 +1319,11 @@
       cartData.item_count
     );
 
-    /*
-     * We do not rebuild the complete drawer HTML here.
-     * Existing cart items remain intact.
-     * For newly-added upsell products, the safest approach
-     * is to refresh the cart drawer section from Shopify.
-     */
-    refreshDrawerSection(drawer);
+    refreshDrawerSection(
+      drawer,
+      options.openAfterRefresh ===
+        true
+    );
   }
 
 
@@ -1100,12 +1332,19 @@
      ========================================================= */
 
   async function refreshDrawerSection(
-    drawer
+    drawer,
+    openAfterRefresh
   ) {
     const sectionId =
       drawer.dataset.sectionId;
 
-    if (!sectionId) return;
+    if (!sectionId) {
+      if (openAfterRefresh) {
+        openDrawer(drawer);
+      }
+
+      return;
+    }
 
     try {
       const url =
@@ -1115,14 +1354,21 @@
         )}`;
 
       const response =
-        await fetch(url, {
-          headers: {
-            Accept:
-              'application/json'
+        await fetch(
+          url,
+          {
+            headers: {
+              Accept:
+                'application/json'
+            }
           }
-        });
+        );
 
-      if (!response.ok) return;
+      if (!response.ok) {
+        throw new Error(
+          'Unable to refresh cart drawer.'
+        );
+      }
 
       const sections =
         await response.json();
@@ -1130,7 +1376,13 @@
       const html =
         sections[sectionId];
 
-      if (!html) return;
+      if (!html) {
+        if (openAfterRefresh) {
+          openDrawer(drawer);
+        }
+
+        return;
+      }
 
       const parser =
         new DOMParser();
@@ -1146,34 +1398,184 @@
           SELECTORS.drawer
         );
 
-      if (!newDrawer) return;
+      if (!newDrawer) {
+        if (openAfterRefresh) {
+          openDrawer(drawer);
+        }
+
+        return;
+      }
+
+      const wasOpen =
+        drawer.classList.contains(
+          'is-open'
+        );
 
       drawer.innerHTML =
         newDrawer.innerHTML;
 
-      /*
-       * Re-bind controls after replacing
-       * the drawer contents.
-       */
       drawer.dataset.hargxDrawerInitialized =
         'false';
 
       drawer.dataset.hargxDrawerUpdating =
         'false';
 
-      bindDrawerControls(drawer);
-      bindCartItems(drawer);
-      bindOrderNote(drawer);
-      bindUpsells(drawer);
-      bindCheckout(drawer);
+      bindDrawerControls(
+        drawer
+      );
+
+      bindCartItems(
+        drawer
+      );
+
+      bindOrderNote(
+        drawer
+      );
+
+      bindUpsells(
+        drawer
+      );
+
+      bindCheckout(
+        drawer
+      );
+
+      if (
+        openAfterRefresh ||
+        wasOpen
+      ) {
+        openDrawer(drawer);
+      }
 
     } catch (error) {
       console.error(
         'HARGX drawer section refresh failed:',
         error
       );
+
+      if (openAfterRefresh) {
+        openDrawer(drawer);
+      }
     }
   }
+
+
+  /* =========================================================
+     PUBLIC CART DRAWER API
+     ========================================================= */
+
+  window.HARGXCartDrawer = {
+
+    async open(options) {
+      options =
+        options || {};
+
+      const drawer =
+        document.querySelector(
+          SELECTORS.drawer
+        );
+
+      if (!drawer) {
+        console.warn(
+          'HARGX Cart Drawer: drawer not found.'
+        );
+
+        return;
+      }
+
+      try {
+        const response =
+          await fetch(
+            window.Shopify.routes.root +
+              'cart.js',
+            {
+              headers: {
+                Accept:
+                  'application/json'
+              }
+            }
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            'Unable to load cart.'
+          );
+        }
+
+        const cartData =
+          await response.json();
+
+        updateDrawerCount(
+          cartData.item_count
+        );
+
+        updateDrawerSubtotal(
+          drawer,
+          cartData.total_price
+        );
+
+        updateDrawerShipping(
+          drawer,
+          cartData
+        );
+
+        updateMainCartCount(
+          cartData.item_count
+        );
+
+        await refreshDrawerSection(
+          drawer,
+          options.openAfterRefresh !==
+            false
+        );
+
+        dispatchCartUpdated(
+          cartData
+        );
+
+      } catch (error) {
+        console.error(
+          'HARGX Cart Drawer open failed:',
+          error
+        );
+
+        openDrawer(drawer);
+      }
+    },
+
+
+    close() {
+      const drawer =
+        document.querySelector(
+          SELECTORS.drawer
+        );
+
+      if (drawer) {
+        closeDrawer(drawer);
+      }
+    },
+
+
+    refresh(options) {
+      options =
+        options || {};
+
+      const drawer =
+        document.querySelector(
+          SELECTORS.drawer
+        );
+
+      if (!drawer) {
+        return Promise.resolve();
+      }
+
+      return refreshDrawerSection(
+        drawer,
+        options.openAfterRefresh ===
+          true
+      );
+    }
+  };
 
 
   /* =========================================================
@@ -1253,6 +1655,18 @@
   ) {
     if (!item) return;
 
+    if (loading) {
+      const input =
+        item.querySelector(
+          SELECTORS.quantityInput
+        );
+
+      if (input) {
+        input.dataset.previousQuantity =
+          input.value;
+      }
+    }
+
     item.classList.toggle(
       'is-loading',
       loading
@@ -1263,10 +1677,12 @@
         'button, input'
       );
 
-    controls.forEach(function (element) {
-      element.disabled =
-        loading;
-    });
+    controls.forEach(
+      function (element) {
+        element.disabled =
+          loading;
+      }
+    );
   }
 
 
@@ -1314,7 +1730,9 @@
         );
 
       if (panel) {
-        panel.appendChild(error);
+        panel.appendChild(
+          error
+        );
       }
     }
 
@@ -1326,11 +1744,14 @@
       'is-visible'
     );
 
-    setTimeout(function () {
-      error.classList.remove(
-        'is-visible'
-      );
-    }, 3500);
+    setTimeout(
+      function () {
+        error.classList.remove(
+          'is-visible'
+        );
+      },
+      3500
+    );
   }
 
 
@@ -1338,7 +1759,9 @@
      HELPERS
      ========================================================= */
 
-  function getLineNumber(item) {
+  function getLineNumber(
+    item
+  ) {
     return parseInt(
       item?.dataset?.line,
       10
@@ -1346,7 +1769,9 @@
   }
 
 
-  function formatMoney(cents) {
+  function formatMoney(
+    cents
+  ) {
     const amount =
       Number(cents) / 100;
 
@@ -1372,7 +1797,9 @@
   }
 
 
-  function formatLinePrice(item) {
+  function formatLinePrice(
+    item
+  ) {
     if (
       item.original_line_price >
       item.final_line_price
