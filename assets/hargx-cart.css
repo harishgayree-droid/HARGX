@@ -975,3 +975,252 @@
 
   transition: width 0.45s ease;
 }
+
+/* =========================================================
+   Cart Order Note
+   ========================================================= */
+
+.hargx-cart__order-note {
+  margin-top: 20px;
+
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+
+/* Toggle */
+
+.hargx-cart__order-note-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  padding: 17px 0;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--color-text);
+
+  font-family: var(--font-primary--family);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.hargx-cart__order-note-toggle:hover {
+  color: var(--color-primary);
+}
+
+
+/* Icon */
+
+.hargx-cart__order-note-icon {
+  display: grid;
+  place-items: center;
+
+  width: 22px;
+  height: 22px;
+
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease;
+}
+
+.hargx-cart__order-note-toggle[aria-expanded="true"]
+  .hargx-cart__order-note-icon {
+  transform: rotate(45deg);
+}
+
+
+/* Content */
+
+.hargx-cart__order-note-content {
+  padding-bottom: 18px;
+}
+
+.hargx-cart__order-note-content[hidden] {
+  display: none;
+}
+
+
+/* Label */
+
+.hargx-cart__order-note-label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  color: var(--color-muted-text);
+}
+
+
+/* Textarea */
+
+.hargx-cart__order-note-input {
+  display: block;
+
+  width: 100%;
+  min-height: 100px;
+
+  padding: 12px;
+
+  resize: vertical;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--button-radius);
+
+  background: var(--color-white);
+  color: var(--color-text);
+
+  font-family: var(--font-primary--family);
+  font-size: 13px;
+  line-height: 1.55;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hargx-cart__order-note-input::placeholder {
+  color: var(--color-muted-text);
+  opacity: 0.7;
+}
+
+.hargx-cart__order-note-input:focus {
+  border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 1px var(--color-primary);
+}
+
+
+/* Footer */
+
+.hargx-cart__order-note-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-top: 10px;
+}
+
+
+/* Character count */
+
+.hargx-cart__order-note-count {
+  font-size: 11px;
+  line-height: 1.4;
+
+  color: var(--color-muted-text);
+}
+
+
+/* Save */
+
+.hargx-cart__order-note-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 36px;
+
+  padding: 8px 15px;
+
+  border: 1px solid var(--color-black);
+  border-radius: var(--button-radius);
+
+  background: var(--color-black);
+  color: var(--color-white);
+
+  font-family: var(--font-primary--family);
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.hargx-cart__order-note-save:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.hargx-cart__order-note-save.is-loading {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+
+/* Status */
+
+.hargx-cart__order-note-status {
+  min-height: 0;
+
+  margin: 8px 0 0;
+
+  font-size: 11px;
+  line-height: 1.5;
+
+  color: var(--color-muted-text);
+
+  opacity: 0;
+
+  transition: opacity 0.2s ease;
+}
+
+.hargx-cart__order-note-status.is-visible {
+  opacity: 1;
+}
+
+.hargx-cart__order-note-status.is-success {
+  color: #26734d;
+}
+
+.hargx-cart__order-note-status.is-error {
+  color: var(--color-primary);
+}
+
+
+/* Mobile */
+
+@media screen and (max-width: 749px) {
+
+  .hargx-cart__order-note-toggle {
+    padding-block: 15px;
+  }
+
+  .hargx-cart__order-note-content {
+    padding-bottom: 16px;
+  }
+
+  .hargx-cart__order-note-input {
+    min-height: 90px;
+    font-size: 12px;
+  }
+
+}

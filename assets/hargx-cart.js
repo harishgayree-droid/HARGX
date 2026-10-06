@@ -17,6 +17,7 @@
     bindQuantityButtons(cart);
     bindQuantityInputs(cart);
     bindRemoveButtons(cart);
+    initOrderNote(cart);
   }
 
 
@@ -166,6 +167,262 @@
     });
   }
 
+
+    /* =========================================================
+     Order Note
+     ========================================================= */
+
+  function initOrderNote(cart) {
+    const toggle = cart.querySelector(
+      '[data-hargx-note-toggle]'
+    );
+
+    const content = cart.querySelector(
+      '[data-hargx-note-content]'
+    );
+
+    const textarea = cart.querySelector(
+      '[data-hargx-cart-note]'
+    );
+
+    const saveButton = cart.querySelector(
+      '[data-hargx-note-save]'
+    );
+
+    const count = cart.querySelector(
+      '[data-hargx-note-count]'
+    );
+
+    const status = cart.querySelector(
+      '[data-hargx-note-status]'
+    );
+
+
+    if (
+      !toggle ||
+      !content ||
+      !textarea ||
+      !saveButton
+    ) {
+      return;
+    }
+
+
+    if (
+      toggle.dataset.hargxInitialized === 'true'
+    ) {
+      return;
+    }
+
+    toggle.dataset.hargxInitialized = 'true';
+
+
+    /* Toggle */
+
+    toggle.addEventListener(
+      'click',
+      () => {
+        const expanded =
+          toggle.getAttribute(
+            'aria-expanded'
+          ) === 'true';
+
+        toggle.setAttribute(
+          'aria-expanded',
+          String(!expanded)
+        );
+
+        content.hidden = expanded;
+
+        if (!expanded) {
+          textarea.focus();
+        }
+      }
+    );
+
+
+    /* Character count */
+
+    const updateCount = () => {
+      if (!count) {
+        return;
+      }
+
+      count.textContent =
+        textarea.value.length;
+    };
+
+    textarea.addEventListener(
+      'input',
+      updateCount
+    );
+
+    updateCount();
+
+
+    /* Save */
+
+    saveButton.addEventListener(
+      'click',
+      async () => {
+        if (
+          saveButton.classList.contains(
+            'is-loading'
+          )
+        ) {
+          return;
+        }
+
+        const note =
+          textarea.value.trim();
+
+        saveButton.classList.add(
+          'is-loading'
+        );
+
+        saveButton.setAttribute(
+          'aria-disabled',
+          'true'
+        );
+
+        const originalText =
+          saveButton.textContent;
+
+        saveButton.textContent =
+          'Saving...';
+
+
+        try {
+          const response =
+            await fetch(
+              window.Shopify.routes.root +
+              'cart/update.js',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type':
+                    'application/json',
+                  Accept:
+                    'application/json'
+                },
+                body: JSON.stringify({
+                  note: note
+                })
+              }
+            );
+
+
+          if (!response.ok) {
+            const errorData =
+              await response
+                .json()
+                .catch(
+                  () => null
+                );
+
+            throw new Error(
+              errorData?.description ||
+              errorData?.message ||
+              'Unable to save order note.'
+            );
+          }
+
+
+          await response.json();
+
+
+          showNoteStatus(
+            status,
+            'Order note saved.',
+            'success'
+          );
+
+
+          saveButton.textContent =
+            'Saved';
+
+
+          setTimeout(() => {
+            saveButton.textContent =
+              originalText;
+
+            saveButton.classList.remove(
+              'is-loading'
+            );
+
+            saveButton.removeAttribute(
+              'aria-disabled'
+            );
+          }, 1200);
+
+
+        } catch (error) {
+
+          console.error(
+            'HARGX order note save failed:',
+            error
+          );
+
+
+          showNoteStatus(
+            status,
+            error.message ||
+              'Unable to save order note.',
+            'error'
+          );
+
+
+          saveButton.textContent =
+            'Try again';
+
+          saveButton.classList.remove(
+            'is-loading'
+          );
+
+          saveButton.removeAttribute(
+            'aria-disabled'
+          );
+
+
+          setTimeout(() => {
+            saveButton.textContent =
+              originalText;
+          }, 1800);
+        }
+      }
+    );
+  }
+
+
+  function showNoteStatus(
+    status,
+    message,
+    type
+  ) {
+    if (!status) {
+      return;
+    }
+
+    status.textContent =
+      message;
+
+    status.classList.remove(
+      'is-success',
+      'is-error'
+    );
+
+    status.classList.add(
+      `is-${type}`,
+      'is-visible'
+    );
+
+
+    setTimeout(() => {
+      status.classList.remove(
+        'is-visible'
+      );
+    }, 3000);
+  }
 
   /* =========================================================
      Get Line Number
