@@ -591,6 +591,83 @@
               {%- endif -%}
 
 
+
+
+              {%- if section.settings.show_payment_reassurance -%}
+
+                <div class="hargx-cart__payment-reassurance">
+
+                  <div class="hargx-cart__payment-heading">
+
+                    <span
+                      class="hargx-cart__payment-icon"
+                      aria-hidden="true"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6 10V8C6 4.686 8.686 2 12 2C15.314 2 18 4.686 18 8V10"
+                          stroke="currentColor"
+                          stroke-width="1.6"
+                          stroke-linecap="round"
+                        />
+                        <rect
+                          x="4"
+                          y="10"
+                          width="16"
+                          height="12"
+                          rx="2"
+                          stroke="currentColor"
+                          stroke-width="1.6"
+                        />
+                        <path
+                          d="M12 14V18"
+                          stroke="currentColor"
+                          stroke-width="1.6"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </span>
+
+                    <div>
+                      <strong class="hargx-cart__payment-title">
+                        Secure checkout
+                      </strong>
+
+                      <p class="hargx-cart__payment-text">
+                        Your payment information is protected and securely processed.
+                      </p>
+                    </div>
+
+                  </div>
+
+
+                  {%- if shop.enabled_payment_types != blank -%}
+
+                    <div class="hargx-cart__payment-icons">
+
+                      {%- for type in shop.enabled_payment_types -%}
+
+                        <span class="hargx-cart__payment-icon-item">
+                          {{ type | payment_type_svg_tag }}
+                        </span>
+
+                      {%- endfor -%}
+
+                    </div>
+
+                  {%- endif -%}
+
+                </div>
+
+              {%- endif -%}
+
+
               <a
                 href="{{ routes.all_products_collection_url }}"
                 class="hargx-cart__continue-summary"
@@ -684,6 +761,12 @@
       "type": "checkbox",
       "id": "show_order_note",
       "label": "Show order note",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_reassurance",
+      "label": "Show payment reassurance",
       "default": true
     }
   ],
