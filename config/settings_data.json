@@ -8,5 +8,34 @@
  * ------------------------------------------------------------
  */
 {
-  "current": {}
+  "current": {
+    "sections": {
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {
+          "enable_cart_drawer": true,
+          "heading": "Your cart",
+          "show_free_shipping": true,
+          "free_shipping_threshold": 100,
+          "show_order_note": true,
+          "show_upsell": true,
+          "upsell_heading": "You may also like",
+          "upsell_products": [
+            "bilona-cow-ghee-500g",
+            "care-three-product"
+          ],
+          "upsell_limit": 2,
+          "upsell_button_text": "Add",
+          "checkout_note": "Taxes and shipping calculated at checkout.",
+          "view_cart_text": "View cart",
+          "checkout_text": "Checkout",
+          "show_payment_icons": true,
+          "empty_heading": "Your cart is empty",
+          "empty_text": "Looks like you haven't added anything yet.",
+          "empty_button_text": "Continue shopping"
+        }
+      }
+    },
+    "content_for_index": []
+  }
 }
