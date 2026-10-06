@@ -922,3 +922,56 @@
 
   opacity: 1;
 }
+
+/* =========================================================
+   Free Shipping Progress
+   ========================================================= */
+
+.hargx-cart__shipping-progress {
+  margin-top: 22px;
+  padding: 16px;
+
+  background: var(--color-white);
+
+  border: 1px solid var(--color-border);
+}
+
+.hargx-cart__shipping-message {
+  margin-bottom: 11px;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  color: var(--color-muted-text);
+}
+
+.hargx-cart__shipping-message strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.hargx-cart__shipping-track {
+  position: relative;
+
+  width: 100%;
+  height: 5px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: var(--color-border);
+}
+
+.hargx-cart__shipping-fill {
+  display: block;
+
+  width: 0;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: var(--color-primary);
+
+  transition: width 0.45s ease;
+}

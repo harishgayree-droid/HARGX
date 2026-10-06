@@ -294,7 +294,64 @@
 
               </div>
 
+              {%- if section.settings.show_free_shipping_bar -%}
 
+                {%- assign shipping_threshold = section.settings.free_shipping_threshold | times: 100 -%}
+                {%- assign shipping_remaining = shipping_threshold | minus: cart.total_price -%}
+
+                {%- if shipping_remaining > 0 -%}
+                  {%- assign shipping_progress = cart.total_price | times: 100.0 | divided_by: shipping_threshold -%}
+                {%- else -%}
+                  {%- assign shipping_progress = 100 -%}
+                {%- endif -%}
+
+                <div
+                  class="hargx-cart__shipping-progress"
+                  data-hargx-shipping-progress
+                  data-threshold="{{ shipping_threshold }}"
+                >
+
+                  <div class="hargx-cart__shipping-message">
+
+                    {%- if shipping_remaining > 0 -%}
+
+                      <span>
+                        You're
+                        <strong>
+                          {{ shipping_remaining | money }}
+                        </strong>
+                        away from free shipping.
+                      </span>
+
+                    {%- else -%}
+
+                      <span>
+                        You've unlocked
+                        <strong>free shipping!</strong>
+                      </span>
+
+                    {%- endif -%}
+
+                  </div>
+
+                  <div
+                    class="hargx-cart__shipping-track"
+                    role="progressbar"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="{{ shipping_progress | round }}"
+                  >
+                    <span
+                      class="hargx-cart__shipping-fill"
+                      style="width: {{ shipping_progress | at_most: 100 }}%;"
+                    ></span>
+                  </div>
+
+                </div>
+
+              {%- endif -%}
+
+              
               <div class="hargx-cart__summary-note">
                 Taxes and shipping calculated at checkout.
               </div>
@@ -383,6 +440,20 @@
 {% schema %}
 {
   "name": "HARGX Cart",
-  "settings": []
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_free_shipping_bar",
+      "label": "Show free shipping progress",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping threshold",
+      "default": 100,
+      "info": "Enter the amount in your store currency."
+    }
+  ]
 }
 {% endschema %}
