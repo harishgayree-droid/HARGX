@@ -510,6 +510,191 @@
   font-size: 13px;
 }
 
+/* =========================================================
+   HARGX — Complementary Products
+   ========================================================= */
+
+.hargx-complementary-products {
+  width: 100%;
+  margin-top: 8px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background: var(--color-white);
+}
+
+.hargx-complementary-products__header {
+  margin-bottom: 16px;
+}
+
+.hargx-complementary-products__heading {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading--family);
+  font-style: var(--font-heading--style);
+  font-weight: var(--font-heading--weight);
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.hargx-complementary-products__subheading {
+  margin-top: 5px;
+  color: var(--color-muted-text);
+  font-family: var(--font-primary--family);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.hargx-complementary-products__subheading p {
+  margin: 0;
+}
+
+.hargx-complementary-products__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hargx-complementary-product {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: max(4px, calc(var(--border-radius) * 0.75));
+  background: var(--color-white);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hargx-complementary-product:hover {
+  border-color: var(--color-black);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.hargx-complementary-product__image-link {
+  display: block;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border-radius: max(3px, calc(var(--border-radius) * 0.6));
+  background: var(--color-warm-background);
+}
+
+.hargx-complementary-product__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hargx-complementary-product__image--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hargx-complementary-product__image--placeholder svg {
+  width: 60%;
+  height: 60%;
+}
+
+.hargx-complementary-product__info {
+  min-width: 0;
+}
+
+.hargx-complementary-product__title {
+  display: block;
+  margin-bottom: 5px;
+  overflow: hidden;
+  color: var(--color-text);
+  font-family: var(--font-primary--family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hargx-complementary-product__title:hover {
+  color: var(--color-primary);
+}
+
+.hargx-complementary-product__price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 8px;
+  color: var(--color-text);
+  font-family: var(--font-primary--family);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.hargx-complementary-product__price--sale {
+  font-weight: 600;
+}
+
+.hargx-complementary-product__price--compare {
+  color: var(--color-muted-text);
+  text-decoration: line-through;
+}
+
+.hargx-complementary-product__add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-black);
+  border-radius: var(--button-radius);
+  background: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-primary--family);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.hargx-complementary-product__add:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.hargx-complementary-product__add.is-loading {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.hargx-complementary-product__add.is-added {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.hargx-complementary-product__sold-out {
+  display: inline-block;
+  color: var(--color-muted-text);
+  font-family: var(--font-primary--family);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+
 
 /* =========================================================
    TABLET
@@ -542,6 +727,31 @@
    ========================================================= */
 
 @media screen and (max-width: 749px) {
+
+   .hargx-complementary-products {
+    padding: 16px;
+  }
+
+  .hargx-complementary-product {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 10px;
+    padding: 8px;
+  }
+
+  .hargx-complementary-product__image-link {
+    width: 64px;
+    height: 64px;
+  }
+
+  .hargx-complementary-product__title {
+    font-size: 13px;
+  }
+
+  .hargx-complementary-product__add {
+    min-height: 30px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
 
   .hargx-product {
     padding: 0 0 60px;
