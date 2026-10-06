@@ -11,16 +11,6 @@
   "type": "header",
   "name": "t:general.header",
   "sections": {
-    "header": {
-      "type": "header",
-      "settings": {
-        "header_layout": "classic",
-        "logo_width": 150,
-        "menu": "main-menu",
-        "sticky_header": false,
-        "customer_account_menu": "customer-account-main-menu"
-      }
-    },
     "hargx_announcement_bar_BUKjx4": {
       "type": "hargx-announcement-bar",
       "blocks": {
@@ -57,13 +47,23 @@
         "autoplay_speed": 4,
         "marquee_separator": "✦",
         "background_color": "#000000",
-        "text_color": "#FFFFFF",
+        "text_color": "#ffffff",
         "font_size": 13,
         "text_alignment": "center",
         "uppercase": false,
         "padding_top": 9,
         "padding_bottom": 9,
-        "show_close_button": false
+        "show_close_button": true
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "header_layout": "classic",
+        "logo_width": 150,
+        "menu": "main-menu",
+        "sticky_header": false,
+        "customer_account_menu": "customer-account-main-menu"
       }
     }
   },
