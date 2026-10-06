@@ -823,6 +823,7 @@ function initHargxGallerySwipe(gallery) {
   );
 }
 
+
 /* =========================================================
    HARGX — Complementary Products
    ========================================================= */
@@ -835,98 +836,214 @@ function initHargxComplementaryProducts() {
   if (!containers.length) return;
 
   containers.forEach((container) => {
-    const addButtons = container.querySelectorAll(
-      '[data-complementary-add]'
-    );
+    initHargxComplementaryAddButtons(container);
+    initHargxComplementarySlider(container);
+  });
+}
 
-    addButtons.forEach((button) => {
-      if (button.dataset.hargxInitialized === 'true') {
+
+/* =========================================================
+   ADD TO CART
+   ========================================================= */
+
+function initHargxComplementaryAddButtons(container) {
+  const addButtons = container.querySelectorAll(
+    '[data-complementary-add]'
+  );
+
+  addButtons.forEach((button) => {
+    if (button.dataset.hargxInitialized === 'true') {
+      return;
+    }
+
+    button.dataset.hargxInitialized = 'true';
+
+    button.addEventListener('click', async () => {
+      const variantId = button.dataset.variantId;
+
+      if (
+        !variantId ||
+        button.classList.contains('is-loading')
+      ) {
         return;
       }
 
-      button.dataset.hargxInitialized = 'true';
+      const originalText = button.textContent.trim();
 
-      button.addEventListener('click', async () => {
-        const variantId = button.dataset.variantId;
+      button.classList.add('is-loading');
+      button.setAttribute('aria-disabled', 'true');
+      button.textContent = 'Adding...';
 
-        if (!variantId || button.classList.contains('is-loading')) {
-          return;
-        }
-
-        const originalText = button.textContent.trim();
-
-        button.classList.add('is-loading');
-        button.setAttribute('aria-disabled', 'true');
-        button.textContent = 'Adding...';
-
-        try {
-          const response = await fetch(
-            window.Shopify.routes.root + 'cart/add.js',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-              },
-              body: JSON.stringify({
-                items: [
-                  {
-                    id: Number(variantId),
-                    quantity: 1
-                  }
-                ]
-              })
-            }
-          );
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-
-            throw new Error(
-              errorData?.description ||
-              errorData?.message ||
-              'Unable to add product to cart.'
-            );
-          }
-
-          await response.json();
-
-          button.classList.remove('is-loading');
-          button.classList.add('is-added');
-
-          button.textContent = 'Added';
-
-          document.dispatchEvent(
-            new CustomEvent('hargx:cart-updated', {
-              bubbles: true
+      try {
+        const response = await fetch(
+          window.Shopify.routes.root + 'cart/add.js',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json'
+            },
+            body: JSON.stringify({
+              items: [
+                {
+                  id: Number(variantId),
+                  quantity: 1
+                }
+              ]
             })
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response
+            .json()
+            .catch(() => null);
+
+          throw new Error(
+            errorData?.description ||
+            errorData?.message ||
+            'Unable to add product to cart.'
           );
-
-          setTimeout(() => {
-            button.classList.remove('is-added');
-            button.removeAttribute('aria-disabled');
-            button.textContent = originalText;
-          }, 1800);
-
-        } catch (error) {
-          console.error(
-            'HARGX complementary product add failed:',
-            error
-          );
-
-          button.classList.remove('is-loading');
-          button.removeAttribute('aria-disabled');
-          button.textContent = 'Try again';
-
-          setTimeout(() => {
-            button.textContent = originalText;
-          }, 1800);
         }
-      });
+
+        await response.json();
+
+        button.classList.remove('is-loading');
+        button.classList.add('is-added');
+
+        button.textContent = 'Added';
+
+        document.dispatchEvent(
+          new CustomEvent('hargx:cart-updated', {
+            bubbles: true
+          })
+        );
+
+        setTimeout(() => {
+          button.classList.remove('is-added');
+          button.removeAttribute('aria-disabled');
+          button.textContent = originalText;
+        }, 1800);
+
+      } catch (error) {
+        console.error(
+          'HARGX complementary product add failed:',
+          error
+        );
+
+        button.classList.remove('is-loading');
+        button.removeAttribute('aria-disabled');
+        button.textContent = 'Try again';
+
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 1800);
+      }
     });
   });
 }
 
+
+/* =========================================================
+   SLIDER
+   ========================================================= */
+
+function initHargxComplementarySlider(container) {
+  const displayMode = container.dataset.displayMode;
+
+  if (displayMode !== 'slider') {
+    return;
+  }
+
+  const list = container.querySelector(
+    '[data-hargx-complementary-list]'
+  );
+
+  const previousButton = container.querySelector(
+    '[data-complementary-prev]'
+  );
+
+  const nextButton = container.querySelector(
+    '[data-complementary-next]'
+  );
+
+  if (!list || !previousButton || !nextButton) {
+    return;
+  }
+
+  if (list.dataset.sliderInitialized === 'true') {
+    return;
+  }
+
+  list.dataset.sliderInitialized = 'true';
+
+
+  const getScrollAmount = () => {
+    const card = list.querySelector(
+      '[data-complementary-product]'
+    );
+
+    if (!card) {
+      return list.clientWidth;
+    }
+
+    const cardWidth = card.getBoundingClientRect().width;
+    const gap = parseFloat(
+      window.getComputedStyle(list).gap
+    ) || 0;
+
+    return cardWidth + gap;
+  };
+
+
+  const updateArrowState = () => {
+    const maxScrollLeft =
+      list.scrollWidth - list.clientWidth;
+
+    previousButton.disabled =
+      list.scrollLeft <= 1;
+
+    nextButton.disabled =
+      list.scrollLeft >= maxScrollLeft - 1;
+  };
+
+
+  previousButton.addEventListener('click', () => {
+    list.scrollBy({
+      left: -getScrollAmount(),
+      behavior: 'smooth'
+    });
+  });
+
+
+  nextButton.addEventListener('click', () => {
+    list.scrollBy({
+      left: getScrollAmount(),
+      behavior: 'smooth'
+    });
+  });
+
+
+  list.addEventListener(
+    'scroll',
+    updateArrowState,
+    { passive: true }
+  );
+
+
+  window.addEventListener(
+    'resize',
+    updateArrowState
+  );
+
+
+  updateArrowState();
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+   ========================================================= */
 
 if (document.readyState === 'loading') {
   document.addEventListener(
@@ -938,9 +1055,10 @@ if (document.readyState === 'loading') {
 }
 
 
-/*
- * Shopify Theme Editor support
- */
+/* =========================================================
+   SHOPIFY THEME EDITOR
+   ========================================================= */
+
 document.addEventListener(
   'shopify:section:load',
   (event) => {

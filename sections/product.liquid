@@ -638,32 +638,57 @@
 
                   {%- when 'complementary_products' -%}
 
-                    {%- assign complementary_products = block.settings.products -%}
+                  {%- assign complementary_products = block.settings.products -%}
 
-                    {%- if complementary_products != blank -%}
-                      <div
-                        class="hargx-complementary-products"
-                        data-hargx-complementary-products
-                        {{ block.shopify_attributes }}
-                      >
-                        {%- if block.settings.heading != blank -%}
-                          <div class="hargx-complementary-products__header">
+                  {%- if complementary_products != blank -%}
+
+                    <div
+                      class="hargx-complementary-products hargx-complementary-products--{{ block.settings.display_mode }}"
+                      data-hargx-complementary-products
+                      data-display-mode="{{ block.settings.display_mode }}"
+                      {{ block.shopify_attributes }}
+                    >
+
+                      {%- if block.settings.heading != blank or block.settings.subheading != blank -%}
+                        <div class="hargx-complementary-products__header">
+
+                          {%- if block.settings.heading != blank -%}
                             <h3 class="hargx-complementary-products__heading">
                               {{ block.settings.heading }}
                             </h3>
+                          {%- endif -%}
 
-                            {%- if block.settings.subheading != blank -%}
-                              <div class="hargx-complementary-products__subheading">
-                                {{ block.settings.subheading }}
-                              </div>
-                            {%- endif -%}
-                          </div>
+                          {%- if block.settings.subheading != blank -%}
+                            <div class="hargx-complementary-products__subheading">
+                              {{ block.settings.subheading }}
+                            </div>
+                          {%- endif -%}
+
+                        </div>
+                      {%- endif -%}
+
+
+                      <div class="hargx-complementary-products__body">
+
+                        {%- if block.settings.display_mode == 'slider' -%}
+
+                          <button
+                            type="button"
+                            class="hargx-complementary-products__arrow hargx-complementary-products__arrow--prev"
+                            data-complementary-prev
+                            aria-label="Previous products"
+                          >
+                            <span aria-hidden="true">←</span>
+                          </button>
+
                         {%- endif -%}
+
 
                         <div
                           class="hargx-complementary-products__list"
                           data-hargx-complementary-list
                         >
+
                           {%- for complementary_product in complementary_products -%}
 
                             {%- if complementary_product.id != product.id -%}
@@ -679,22 +704,29 @@
                                   class="hargx-complementary-product__image-link"
                                   aria-label="{{ complementary_product.title | escape }}"
                                 >
+
                                   {%- if complementary_product.featured_image != blank -%}
+
                                     {{
                                       complementary_product.featured_image
-                                      | image_url: width: 300
+                                      | image_url: width: 400
                                       | image_tag:
                                         loading: 'lazy',
-                                        widths: '120,180,240,300',
-                                        sizes: '90px',
+                                        widths: '120,180,240,300,400',
+                                        sizes: '(min-width: 750px) 120px, 90px',
                                         class: 'hargx-complementary-product__image'
                                     }}
+
                                   {%- else -%}
+
                                     <div class="hargx-complementary-product__image hargx-complementary-product__image--placeholder">
                                       {{ 'product-1' | placeholder_svg_tag }}
                                     </div>
+
                                   {%- endif -%}
+
                                 </a>
+
 
                                 <div class="hargx-complementary-product__info">
 
@@ -705,9 +737,13 @@
                                     {{ complementary_product.title }}
                                   </a>
 
+
                                   {%- if block.settings.show_price -%}
+
                                     <div class="hargx-complementary-product__price">
+
                                       {%- if complementary_product.compare_at_price > complementary_product.price -%}
+
                                         <span class="hargx-complementary-product__price--sale">
                                           {{ complementary_product.price | money }}
                                         </span>
@@ -715,13 +751,19 @@
                                         <span class="hargx-complementary-product__price--compare">
                                           {{ complementary_product.compare_at_price | money }}
                                         </span>
+
                                       {%- else -%}
+
                                         <span>
                                           {{ complementary_product.price | money }}
                                         </span>
+
                                       {%- endif -%}
+
                                     </div>
+
                                   {%- endif -%}
+
 
                                   {%- if complementary_product.available -%}
 
@@ -763,9 +805,28 @@
                             {%- endif -%}
 
                           {%- endfor -%}
+
                         </div>
+
+
+                        {%- if block.settings.display_mode == 'slider' -%}
+
+                          <button
+                            type="button"
+                            class="hargx-complementary-products__arrow hargx-complementary-products__arrow--next"
+                            data-complementary-next
+                            aria-label="Next products"
+                          >
+                            <span aria-hidden="true">→</span>
+                          </button>
+
+                        {%- endif -%}
+
                       </div>
-                    {%- endif -%}
+
+                    </div>
+
+                  {%- endif -%}
 
               {%- endcase -%}
 
@@ -1007,6 +1068,26 @@
           "id": "subheading",
           "label": "Subheading",
           "default": "<p>Pair it with these products.</p>"
+        },
+        {
+          "type": "select",
+          "id": "display_mode",
+          "label": "Display style",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal"
+            },
+            {
+              "value": "grid",
+              "label": "Grid"
+            },
+            {
+              "value": "slider",
+              "label": "Slider"
+            }
+          ],
+          "default": "normal"
         },
         {
           "type": "product_list",
