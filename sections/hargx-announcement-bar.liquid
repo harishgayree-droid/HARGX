@@ -1,3 +1,5 @@
+{{ 'hargx-announcement-bar.css' | asset_url | stylesheet_tag }}
+
 {%- liquid
   assign announcement_enabled = section.settings.enable_announcement
   assign display_mode = section.settings.display_mode
@@ -14,6 +16,8 @@
     data-display-mode="{{ display_mode }}"
     data-autoplay="{{ section.settings.autoplay }}"
     data-autoplay-speed="{{ section.settings.autoplay_speed }}"
+    data-text-alignment="{{ section.settings.text_alignment }}"
+    data-uppercase="{{ section.settings.uppercase }}"
     style="
       --hargx-announcement-bg: {{ section.settings.background_color }};
       --hargx-announcement-text: {{ section.settings.text_color }};
