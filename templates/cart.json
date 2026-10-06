@@ -27,7 +27,8 @@
       "settings": {
         "show_free_shipping_bar": true,
         "free_shipping_threshold": 100,
-        "show_order_note": true
+        "show_order_note": true,
+        "show_payment_reassurance": false
       }
     }
   },
