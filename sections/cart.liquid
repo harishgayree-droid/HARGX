@@ -1,37 +1,388 @@
 {% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
+  HARGX Cart
+  Main cart section for the /cart page.
 {% endcomment %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+<div
+  class="hargx-cart"
+  data-hargx-cart
+>
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+  <div class="hargx-cart__container">
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+    {%- if cart.item_count > 0 -%}
+
+      <!-- Cart Header -->
+
+      <header class="hargx-cart__header">
+
+        <div class="hargx-cart__header-content">
+
+          <h1 class="hargx-cart__title">
+            {{ 'cart.title' | t }}
+          </h1>
+
+          <span class="hargx-cart__count">
+            {{ cart.item_count }}
+            {% if cart.item_count == 1 %}
+              item
+            {% else %}
+              items
+            {% endif %}
+          </span>
+
+        </div>
+
+      </header>
+
+
+      <!-- Cart Form -->
+
+      <form
+        action="{{ routes.cart_url }}"
+        method="post"
+        id="HargxCartForm"
+        class="hargx-cart__form"
+      >
+
+        <div class="hargx-cart__layout">
+
+
+          <!-- Cart Items -->
+
+          <div class="hargx-cart__items">
+
+            <div class="hargx-cart__items-header">
+
+              <span>
+                Products
+              </span>
+
+              <span>
+                Total
+              </span>
+
+            </div>
+
+
+            <div class="hargx-cart__items-list">
+
+              {%- for item in cart.items -%}
+
+                <article
+                  class="hargx-cart-item"
+                  data-hargx-cart-item
+                  data-line="{{ forloop.index }}"
+                >
+
+                  <!-- Product Image -->
+
+                  <a
+                    href="{{ item.url }}"
+                    class="hargx-cart-item__image"
+                    aria-label="{{ item.product.title | escape }}"
+                  >
+
+                    {%- if item.image != blank -%}
+
+                      {{
+                        item.image
+                        | image_url: width: 500
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '180,250,350,500',
+                          sizes: '(min-width: 990px) 180px, 120px',
+                          alt: item.product.title
+                      }}
+
+                    {%- else -%}
+
+                      {{ 'product-1' | placeholder_svg_tag }}
+
+                    {%- endif -%}
+
+                  </a>
+
+
+                  <!-- Product Information -->
+
+                  <div class="hargx-cart-item__content">
+
+                    <div class="hargx-cart-item__details">
+
+                      <a
+                        href="{{ item.url }}"
+                        class="hargx-cart-item__title"
+                      >
+                        {{ item.product.title }}
+                      </a>
+
+
+                      {%- unless item.product.has_only_default_variant -%}
+
+                        <div class="hargx-cart-item__variant">
+                          {{ item.variant.title }}
+                        </div>
+
+                      {%- endunless -%}
+
+
+                      {%- if item.properties != blank -%}
+
+                        <div class="hargx-cart-item__properties">
+
+                          {%- for property in item.properties -%}
+
+                            {%- assign property_first_char = property.first | slice: 0 -%}
+
+                            {%- unless property.last == blank or property_first_char == '_' -%}
+
+                              <div class="hargx-cart-item__property">
+
+                                <span class="hargx-cart-item__property-name">
+                                  {{ property.first }}:
+                                </span>
+
+                                <span class="hargx-cart-item__property-value">
+                                  {{ property.last }}
+                                </span>
+
+                              </div>
+
+                            {%- endunless -%}
+
+                          {%- endfor -%}
+
+                        </div>
+
+                      {%- endif -%}
+
+
+                      <!-- Mobile Price -->
+
+                      <div class="hargx-cart-item__mobile-price">
+
+                        {{ item.final_line_price | money }}
+
+                      </div>
+
+                    </div>
+
+
+                    <!-- Quantity + Remove -->
+
+                    <div class="hargx-cart-item__actions">
+
+                      <div
+                        class="hargx-cart-item__quantity"
+                        data-hargx-quantity
+                      >
+
+                        <button
+                          type="button"
+                          class="hargx-cart-item__quantity-button"
+                          data-hargx-quantity-minus
+                          aria-label="Decrease quantity of {{ item.product.title | escape }}"
+                        >
+                          −
+                        </button>
+
+                        <input
+                          type="number"
+                          name="updates[]"
+                          value="{{ item.quantity }}"
+                          min="0"
+                          step="1"
+                          class="hargx-cart-item__quantity-input"
+                          data-hargx-quantity-input
+                          aria-label="Quantity of {{ item.product.title | escape }}"
+                        >
+
+                        <button
+                          type="button"
+                          class="hargx-cart-item__quantity-button"
+                          data-hargx-quantity-plus
+                          aria-label="Increase quantity of {{ item.product.title | escape }}"
+                        >
+                          +
+                        </button>
+
+                      </div>
+
+
+                      <a
+                        href="{{ item.url_to_remove }}"
+                        class="hargx-cart-item__remove"
+                        data-hargx-remove
+                      >
+                        Remove
+                      </a>
+
+                    </div>
+
+                  </div>
+
+
+                  <!-- Desktop Line Price -->
+
+                  <div class="hargx-cart-item__price">
+
+                    {%- if item.original_line_price > item.final_line_price -%}
+
+                      <span class="hargx-cart-item__price--sale">
+                        {{ item.final_line_price | money }}
+                      </span>
+
+                      <span class="hargx-cart-item__price--compare">
+                        {{ item.original_line_price | money }}
+                      </span>
+
+                    {%- else -%}
+
+                      <span>
+                        {{ item.final_line_price | money }}
+                      </span>
+
+                    {%- endif -%}
+
+                  </div>
+
+                </article>
+
+              {%- endfor -%}
+
+            </div>
+
+
+            <!-- Continue Shopping -->
+
+            <div class="hargx-cart__continue">
+
+              <a
+                href="{{ routes.all_products_collection_url }}"
+                class="hargx-cart__continue-link"
+              >
+                <span aria-hidden="true">←</span>
+                Continue shopping
+              </a>
+
+            </div>
+
+          </div>
+
+
+          <!-- Cart Summary -->
+
+          <aside class="hargx-cart__summary">
+
+            <div class="hargx-cart__summary-inner">
+
+              <h2 class="hargx-cart__summary-title">
+                Order summary
+              </h2>
+
+
+              <div class="hargx-cart__summary-row">
+
+                <span>
+                  Subtotal
+                </span>
+
+                <span>
+                  {{ cart.total_price | money }}
+                </span>
+
+              </div>
+
+
+              <div class="hargx-cart__summary-note">
+                Taxes and shipping calculated at checkout.
+              </div>
+
+
+              <button
+                type="submit"
+                name="checkout"
+                class="hargx-cart__checkout"
+              >
+                Checkout
+              </button>
+
+
+              <a
+                href="{{ routes.all_products_collection_url }}"
+                class="hargx-cart__continue-summary"
+              >
+                Continue shopping
+              </a>
+
+            </div>
+
+          </aside>
+
+        </div>
+
+      </form>
+
+
+    {%- else -%}
+
+      <!-- Empty Cart -->
+
+      <div class="hargx-cart__empty">
+
+        <div class="hargx-cart__empty-content">
+
+          <span class="hargx-cart__empty-icon" aria-hidden="true">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 14H38L35.5 39H12.5L10 14Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M17 18V11C17 7.68629 19.6863 5 23 5H25C28.3137 5 31 7.68629 31 11V18"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+            </svg>
+          </span>
+
+          <h1 class="hargx-cart__empty-title">
+            Your cart is empty
+          </h1>
+
+          <p class="hargx-cart__empty-text">
+            Looks like you haven't added anything yet.
+          </p>
+
+          <a
+            href="{{ routes.all_products_collection_url }}"
+            class="hargx-cart__empty-button"
+          >
+            Continue shopping
+          </a>
+
+        </div>
+
+      </div>
+
+    {%- endif -%}
+
+  </div>
+
+</div>
+
 
 {% schema %}
 {
-  "name": "t:general.cart",
+  "name": "HARGX Cart",
   "settings": []
 }
 {% endschema %}
