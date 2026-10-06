@@ -351,10 +351,87 @@
 
               {%- endif -%}
 
-              
+
               <div class="hargx-cart__summary-note">
                 Taxes and shipping calculated at checkout.
               </div>
+
+              {%- if section.settings.show_order_note -%}
+
+                <div class="hargx-cart__order-note">
+
+                  <button
+                    type="button"
+                    class="hargx-cart__order-note-toggle"
+                    data-hargx-note-toggle
+                    aria-expanded="false"
+                    aria-controls="HargxCartOrderNote-{{ section.id }}"
+                  >
+                    <span>
+                      Add a note to your order
+                    </span>
+
+                    <span
+                      class="hargx-cart__order-note-icon"
+                      aria-hidden="true"
+                    >
+                      +
+                    </span>
+                  </button>
+
+                  <div
+                    id="HargxCartOrderNote-{{ section.id }}"
+                    class="hargx-cart__order-note-content"
+                    data-hargx-note-content
+                    hidden
+                  >
+
+                    <label
+                      for="HargxCartNote-{{ section.id }}"
+                      class="hargx-cart__order-note-label"
+                    >
+                      Order note
+                    </label>
+
+                    <textarea
+                      id="HargxCartNote-{{ section.id }}"
+                      class="hargx-cart__order-note-input"
+                      name="note"
+                      rows="4"
+                      placeholder="Add any special instructions for your order..."
+                      maxlength="500"
+                      data-hargx-cart-note
+                    >{{ cart.note }}</textarea>
+
+                    <div class="hargx-cart__order-note-footer">
+
+                      <span class="hargx-cart__order-note-count">
+                        <span data-hargx-note-count>
+                          {{ cart.note | size }}
+                        </span>/500
+                      </span>
+
+                      <button
+                        type="button"
+                        class="hargx-cart__order-note-save"
+                        data-hargx-note-save
+                      >
+                        Save note
+                      </button>
+
+                    </div>
+
+                    <p
+                      class="hargx-cart__order-note-status"
+                      data-hargx-note-status
+                      aria-live="polite"
+                    ></p>
+
+                  </div>
+
+                </div>
+
+              {%- endif -%}
 
 
               <button
@@ -453,6 +530,12 @@
       "label": "Free shipping threshold",
       "default": 100,
       "info": "Enter the amount in your store currency."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_order_note",
+      "label": "Show order note",
+      "default": true
     }
   ]
 }
