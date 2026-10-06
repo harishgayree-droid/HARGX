@@ -42,7 +42,7 @@
       "name": "HARGX Announcement Bar",
       "settings": {
         "enable_announcement": true,
-        "display_mode": "normal",
+        "display_mode": "slider",
         "autoplay": true,
         "autoplay_speed": 4,
         "marquee_separator": "✦",
