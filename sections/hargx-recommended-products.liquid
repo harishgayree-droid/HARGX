@@ -1,3 +1,5 @@
+{{ 'hargx-recommended-products.css' | asset_url | stylesheet_tag }}
+
 {%- liquid
   assign products_to_show = section.settings.products_to_show
   assign desktop_columns = section.settings.desktop_columns
