@@ -636,3 +636,70 @@ a {
   }
 
 }
+
+.hargx-announcement-bar.is-dismissed {
+  display: none;
+}
+
+.hargx-announcement-bar__close {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 50%;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hargx-announcement-bar__close:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.hargx-announcement-bar__close:active {
+  transform: scale(0.94);
+}
+
+.hargx-announcement-bar__close:focus-visible,
+.hargx-announcement-bar__nav:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+@media screen and (max-width: 749px) {
+  .hargx-announcement-bar__close {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hargx-announcement-bar__close {
+    transition: none;
+  }
+}
+
+.hargx-announcement-bar__nav[hidden],
+.hargx-announcement-bar__close[hidden] {
+  display: none !important;
+}
+
+.hargx-announcement-bar__nav {
+  flex: 0 0 auto;
+}
+
+.hargx-announcement-bar__nav svg,
+.hargx-announcement-bar__close svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
