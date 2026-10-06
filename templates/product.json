@@ -64,6 +64,21 @@
             "icon": "✓",
             "text": "Secure checkout"
           }
+        },
+        "complementary_products_EfzC3A": {
+          "type": "complementary_products",
+          "settings": {
+            "heading": "Complete the look",
+            "subheading": "<p>Pair it with these products.</p>",
+            "products": [
+              "bilona-cow-ghee-500g",
+              "care-three-product",
+              "fresh-buffalo-milk-1-litre"
+            ],
+            "show_price": true,
+            "button_text": "Add",
+            "select_options_text": "Select options"
+          }
         }
       },
       "block_order": [
@@ -76,7 +91,8 @@
         "variant_picker_xetgzf",
         "buy_buttons_dU9heg",
         "description_FQdaMF",
-        "trust_item_aX879d"
+        "trust_item_aX879d",
+        "complementary_products_EfzC3A"
       ],
       "settings": {}
     },
