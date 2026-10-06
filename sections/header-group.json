@@ -20,9 +20,55 @@
         "sticky_header": false,
         "customer_account_menu": "customer-account-main-menu"
       }
+    },
+    "hargx_announcement_bar_BUKjx4": {
+      "type": "hargx-announcement-bar",
+      "blocks": {
+        "announcement_mK7QLk": {
+          "type": "announcement",
+          "settings": {
+            "text": "Free shipping on orders over $100",
+            "link": "",
+            "open_new_tab": false,
+            "icon": "truck",
+            "show_arrow": true
+          }
+        },
+        "announcement_VA9XfH": {
+          "type": "announcement",
+          "settings": {
+            "text": "New arrivals are here",
+            "link": "",
+            "open_new_tab": false,
+            "icon": "sparkle",
+            "show_arrow": true
+          }
+        }
+      },
+      "block_order": [
+        "announcement_mK7QLk",
+        "announcement_VA9XfH"
+      ],
+      "name": "HARGX Announcement Bar",
+      "settings": {
+        "enable_announcement": true,
+        "display_mode": "normal",
+        "autoplay": true,
+        "autoplay_speed": 4,
+        "marquee_separator": "✦",
+        "background_color": "#000000",
+        "text_color": "#FFFFFF",
+        "font_size": 13,
+        "text_alignment": "center",
+        "uppercase": false,
+        "padding_top": 9,
+        "padding_bottom": 9,
+        "show_close_button": false
+      }
     }
   },
   "order": [
+    "hargx_announcement_bar_BUKjx4",
     "header"
   ]
 }
