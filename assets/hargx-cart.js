@@ -767,6 +767,68 @@
     }
   }
 
+  function updateFreeShippingProgress(cartData) {
+    const progress = document.querySelector(
+        '[data-hargx-shipping-progress]'
+    );
+
+    if (!progress) return;
+
+    const threshold = Number(progress.dataset.threshold);
+
+    if (!threshold) return;
+
+    const total = Number(cartData.total_price || 0);
+
+    const remaining = Math.max(threshold - total, 0);
+
+    const percentage = Math.min(
+        (total / threshold) * 100,
+        100
+    );
+
+    const message = progress.querySelector(
+        '.hargx-cart__shipping-message'
+    );
+
+    const fill = progress.querySelector(
+        '.hargx-cart__shipping-fill'
+    );
+
+    const track = progress.querySelector(
+        '.hargx-cart__shipping-track'
+    );
+
+    if (fill) {
+        fill.style.width = `${percentage}%`;
+    }
+
+    if (track) {
+        track.setAttribute(
+        'aria-valuenow',
+        Math.round(percentage)
+        );
+    }
+
+    if (!message) return;
+
+    if (remaining > 0) {
+        message.innerHTML = `
+        <span>
+            You're
+            <strong>${formatMoney(remaining)}</strong>
+            away from free shipping.
+        </span>
+        `;
+    } else {
+        message.innerHTML = `
+        <span>
+            You've unlocked <strong>free shipping!</strong>
+        </span>
+        `;
+    }
+    }
+
 
   function formatLinePrice(item) {
     if (

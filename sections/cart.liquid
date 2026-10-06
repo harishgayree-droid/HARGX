@@ -442,6 +442,154 @@
                 Checkout
               </button>
 
+              {%- if section.blocks.size > 0 -%}
+
+                <div class="hargx-cart__trust">
+
+                  {%- for block in section.blocks -%}
+
+                    {%- case block.type -%}
+
+                      {%- when 'trust_item' -%}
+
+                        <div
+                          class="hargx-cart__trust-item"
+                          {{ block.shopify_attributes }}
+                        >
+
+                          <div class="hargx-cart__trust-icon" aria-hidden="true">
+
+                            {%- case block.settings.icon -%}
+
+                              {%- when 'check' -%}
+
+                                <svg
+                                  width="22"
+                                  height="22"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 12.5L9.5 17L19 7.5"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  />
+                                </svg>
+
+                              {%- when 'shield' -%}
+
+                                <svg
+                                  width="22"
+                                  height="22"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M12 3L19 6V11C19 15.5 16.2 18.8 12 21C7.8 18.8 5 15.5 5 11V6L12 3Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                    stroke-linejoin="round"
+                                  />
+                                  <path
+                                    d="M8.5 12L10.8 14.3L15.5 9.6"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  />
+                                </svg>
+
+                              {%- when 'shipping' -%}
+
+                                <svg
+                                  width="22"
+                                  height="22"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M3 6H14V16H3V6Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                    stroke-linejoin="round"
+                                  />
+                                  <path
+                                    d="M14 9H18L21 12V16H14V9Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                    stroke-linejoin="round"
+                                  />
+                                  <path
+                                    d="M7 19C8.1 19 9 18.1 9 17C9 15.9 8.1 15 7 15C5.9 15 5 15.9 5 17C5 18.1 5.9 19 7 19Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                  />
+                                  <path
+                                    d="M17 19C18.1 19 19 18.1 19 17C19 15.9 18.1 15 17 15C15.9 15 15 15.9 15 17C15 18.1 15.9 19 17 19Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                  />
+                                </svg>
+
+                              {%- when 'returns' -%}
+
+                                <svg
+                                  width="22"
+                                  height="22"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M9 7H5L8 4"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  />
+                                  <path
+                                    d="M5 7C7 5.5 9.2 5 11.5 5C16.2 5 20 8.4 20 13C20 17.4 16.5 20 12 20C8.7 20 6 18.4 5 16"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                    stroke-linecap="round"
+                                  />
+                                </svg>
+
+                            {%- endcase -%}
+
+                          </div>
+
+                          <div class="hargx-cart__trust-content">
+
+                            {%- if block.settings.heading != blank -%}
+                              <strong class="hargx-cart__trust-heading">
+                                {{ block.settings.heading }}
+                              </strong>
+                            {%- endif -%}
+
+                            {%- if block.settings.text != blank -%}
+                              <span class="hargx-cart__trust-text">
+                                {{ block.settings.text }}
+                              </span>
+                            {%- endif -%}
+
+                          </div>
+
+                        </div>
+
+                    {%- endcase -%}
+
+                  {%- endfor -%}
+
+                </div>
+
+              {%- endif -%}
+
 
               <a
                 href="{{ routes.all_products_collection_url }}"
@@ -517,6 +665,7 @@
 {% schema %}
 {
   "name": "HARGX Cart",
+
   "settings": [
     {
       "type": "checkbox",
@@ -537,6 +686,53 @@
       "label": "Show order note",
       "default": true
     }
-  ]
+  ],
+
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "check",
+              "label": "Check"
+            },
+            {
+              "value": "shield",
+              "label": "Security"
+            },
+            {
+              "value": "shipping",
+              "label": "Shipping"
+            },
+            {
+              "value": "returns",
+              "label": "Returns"
+            }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Secure checkout"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Your payment information is protected."
+        }
+      ]
+    }
+  ],
+
+  "max_blocks": 3
 }
 {% endschema %}
