@@ -1,0 +1,638 @@
+/* =========================================================
+   HARGX — Announcement Bar
+   ========================================================= */
+
+.hargx-announcement-bar {
+  --hargx-announcement-bg: #000000;
+  --hargx-announcement-text: #ffffff;
+  --hargx-announcement-font-size: 13px;
+  --hargx-announcement-padding-top: 9px;
+  --hargx-announcement-padding-bottom: 9px;
+
+  position: relative;
+  z-index: 90;
+
+  width: 100%;
+  background: var(--hargx-announcement-bg);
+  color: var(--hargx-announcement-text);
+
+  font-size: var(--hargx-announcement-font-size);
+  line-height: 1.35;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   INNER
+   ========================================================= */
+
+.hargx-announcement-bar__inner {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 38px;
+
+  padding-top: var(--hargx-announcement-padding-top);
+  padding-bottom: var(--hargx-announcement-padding-bottom);
+
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+
+/* =========================================================
+   LINK
+   ========================================================= */
+
+.hargx-announcement-bar__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  color: inherit;
+  text-decoration: none;
+
+  text-align: center;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+a.hargx-announcement-bar__link:hover {
+  opacity: 0.82;
+}
+
+
+/* =========================================================
+   TEXT
+   ========================================================= */
+
+.hargx-announcement-bar__text {
+  display: inline-block;
+
+  color: inherit;
+
+  font-size: inherit;
+  line-height: inherit;
+
+  font-weight: 500;
+}
+
+.hargx-announcement-bar--normal
+.hargx-announcement-bar__text {
+  white-space: normal;
+}
+
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.hargx-announcement-bar__icon {
+  display: inline-flex;
+
+  flex: 0 0 auto;
+
+  width: 16px;
+  height: 16px;
+
+  color: currentColor;
+}
+
+.hargx-announcement-bar__icon svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.hargx-announcement-bar__arrow {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  font-size: 15px;
+  line-height: 1;
+
+  transition:
+    transform 0.2s ease;
+}
+
+a.hargx-announcement-bar__link:hover
+.hargx-announcement-bar__arrow {
+  transform: translateX(3px);
+}
+
+
+/* =========================================================
+   NORMAL MODE
+   ========================================================= */
+
+.hargx-announcement-bar--normal
+.hargx-announcement-bar__inner {
+  text-align: center;
+}
+
+.hargx-announcement-bar--normal
+.hargx-announcement-bar__item {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   SLIDER
+   ========================================================= */
+
+.hargx-announcement-bar__slider {
+  display: grid;
+
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
+
+  align-items: center;
+
+  width: min(100%, 900px);
+
+  margin: 0 auto;
+}
+
+
+.hargx-announcement-bar__slides {
+  position: relative;
+
+  display: grid;
+  align-items: center;
+
+  min-width: 0;
+}
+
+
+.hargx-announcement-bar__slide {
+  grid-area: 1 / 1;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateY(5px);
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    visibility 0.35s ease;
+}
+
+
+.hargx-announcement-bar__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translateY(0);
+
+  pointer-events: auto;
+}
+
+
+.hargx-announcement-bar__nav {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: transparent;
+  color: currentColor;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  line-height: 1;
+
+  opacity: 0.7;
+
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.hargx-announcement-bar__nav:hover {
+  opacity: 1;
+
+  background: rgb(255 255 255 / 10%);
+}
+
+
+.hargx-announcement-bar__nav:active {
+  transform: scale(0.92);
+}
+
+
+.hargx-announcement-bar__nav:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   MARQUEE
+   ========================================================= */
+
+.hargx-announcement-bar--marquee
+.hargx-announcement-bar__inner {
+  display: block;
+
+  padding-left: 0;
+  padding-right: 0;
+}
+
+
+.hargx-announcement-bar__marquee {
+  display: flex;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 5%,
+    #000 95%,
+    transparent 100%
+  );
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 5%,
+    #000 95%,
+    transparent 100%
+  );
+}
+
+
+.hargx-announcement-bar__marquee-track {
+  display: flex;
+
+  align-items: center;
+
+  width: max-content;
+
+  flex-shrink: 0;
+
+  animation:
+    hargxAnnouncementMarquee
+    28s
+    linear
+    infinite;
+}
+
+
+.hargx-announcement-bar__marquee-item {
+  display: flex;
+
+  align-items: center;
+
+  flex: 0 0 auto;
+
+  white-space: nowrap;
+}
+
+
+.hargx-announcement-bar__marquee-item
+.hargx-announcement-bar__link {
+  white-space: nowrap;
+}
+
+
+.hargx-announcement-bar__separator {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  margin: 0 28px;
+
+  color: currentColor;
+
+  font-size: 12px;
+
+  opacity: 0.65;
+}
+
+
+@keyframes hargxAnnouncementMarquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.hargx-announcement-bar__close {
+  position: absolute;
+
+  top: 50%;
+  right: 12px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: transparent;
+  color: currentColor;
+
+  cursor: pointer;
+
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1;
+
+  transform: translateY(-50%);
+
+  opacity: 0.72;
+
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.hargx-announcement-bar__close:hover {
+  opacity: 1;
+
+  background: rgb(255 255 255 / 10%);
+}
+
+
+.hargx-announcement-bar__close:active {
+  transform:
+    translateY(-50%)
+    scale(0.92);
+}
+
+
+.hargx-announcement-bar__close:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   TEXT ALIGNMENT
+   ========================================================= */
+
+.hargx-announcement-bar[data-text-alignment='left']
+.hargx-announcement-bar__item,
+.hargx-announcement-bar[data-text-alignment='left']
+.hargx-announcement-bar__slide {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+
+.hargx-announcement-bar[data-text-alignment='right']
+.hargx-announcement-bar__item,
+.hargx-announcement-bar[data-text-alignment='right']
+.hargx-announcement-bar__slide {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+
+/* =========================================================
+   UPPERCASE
+   ========================================================= */
+
+.hargx-announcement-bar[data-uppercase='true']
+.hargx-announcement-bar__text {
+  text-transform: uppercase;
+
+  letter-spacing: 0.04em;
+}
+
+
+/* =========================================================
+   HOVER ACCESSIBILITY
+   ========================================================= */
+
+.hargx-announcement-bar
+button,
+.hargx-announcement-bar
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 989px) {
+
+  .hargx-announcement-bar__inner {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .hargx-announcement-bar__slider {
+    width: min(100%, 760px);
+  }
+
+  .hargx-announcement-bar__separator {
+    margin-left: 22px;
+    margin-right: 22px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 749px) {
+
+  .hargx-announcement-bar {
+    --hargx-announcement-font-size: 12px;
+  }
+
+
+  .hargx-announcement-bar__inner {
+    min-height: 36px;
+
+    padding-left: 38px;
+    padding-right: 38px;
+  }
+
+
+  .hargx-announcement-bar__link {
+    gap: 6px;
+  }
+
+
+  .hargx-announcement-bar__icon {
+    width: 14px;
+    height: 14px;
+  }
+
+
+  .hargx-announcement-bar__arrow {
+    font-size: 14px;
+  }
+
+
+  /* -----------------------------------------
+     Slider
+     ----------------------------------------- */
+
+  .hargx-announcement-bar__slider {
+    grid-template-columns: 26px minmax(0, 1fr) 26px;
+
+    width: 100%;
+  }
+
+
+  .hargx-announcement-bar__nav {
+    width: 24px;
+    height: 24px;
+
+    font-size: 12px;
+  }
+
+
+  /* -----------------------------------------
+     Marquee
+     ----------------------------------------- */
+
+  .hargx-announcement-bar__marquee-track {
+    animation-duration: 22s;
+  }
+
+
+  .hargx-announcement-bar__separator {
+    margin-left: 18px;
+    margin-right: 18px;
+  }
+
+
+  /* -----------------------------------------
+     Close
+     ----------------------------------------- */
+
+  .hargx-announcement-bar__close {
+    right: 6px;
+
+    width: 26px;
+    height: 26px;
+
+    font-size: 18px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 480px) {
+
+  .hargx-announcement-bar__inner {
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+
+
+  .hargx-announcement-bar__text {
+    max-width: 100%;
+  }
+
+
+  .hargx-announcement-bar__separator {
+    margin-left: 14px;
+    margin-right: 14px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .hargx-announcement-bar *,
+  .hargx-announcement-bar *::before,
+  .hargx-announcement-bar *::after {
+    scroll-behavior: auto !important;
+
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .hargx-announcement-bar__marquee-track {
+    animation: none;
+  }
+
+}
