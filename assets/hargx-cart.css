@@ -867,3 +867,58 @@
   }
 
 }
+
+/* =========================================================
+   Cart AJAX Loading
+   ========================================================= */
+
+.hargx-cart-item {
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.hargx-cart-item.is-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hargx-cart-item--removing {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.hargx-cart__error {
+  max-height: 0;
+  overflow: hidden;
+
+  margin-bottom: 0;
+  padding: 0 16px;
+
+  border: 1px solid transparent;
+
+  background: #fff1ed;
+  color: var(--color-text);
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  opacity: 0;
+
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease,
+    margin 0.3s ease,
+    padding 0.3s ease;
+}
+
+.hargx-cart__error.is-visible {
+  max-height: 100px;
+
+  margin-bottom: 20px;
+  padding-block: 12px;
+
+  border-color: var(--color-primary);
+
+  opacity: 1;
+}
