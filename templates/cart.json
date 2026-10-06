@@ -11,7 +11,24 @@
   "sections": {
     "main": {
       "type": "cart",
-      "settings": {}
+      "blocks": {
+        "trust_item_VkKqdx": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "check",
+            "heading": "Secure checkout",
+            "text": "Your payment information is protected."
+          }
+        }
+      },
+      "block_order": [
+        "trust_item_VkKqdx"
+      ],
+      "settings": {
+        "show_free_shipping_bar": true,
+        "free_shipping_threshold": 100,
+        "show_order_note": true
+      }
     }
   },
   "order": [
