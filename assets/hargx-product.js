@@ -138,47 +138,23 @@ function initHargxProduct(section) {
    * Money
    * ------------------------------------------------------------
    */
+    function formatMoney(cents) {
+      const amount = Number(cents || 0);
 
-  function formatMoney(cents) {
-    const amount = Number(cents || 0);
+      if (window.Shopify?.formatMoney) {
+        const moneyFormat =
+          section.dataset.moneyFormat ||
+          window.Shopify.money_format ||
+          '${{amount}}';
 
-    if (window.Shopify?.formatMoney) {
-      const moneyFormat =
-        section.dataset.moneyFormat ||
-        window.Shopify?.money_format ||
-        '${{amount}}';
-
-      let formatted =
-        window.Shopify.formatMoney(
+        return window.Shopify.formatMoney(
           amount,
           moneyFormat
         );
-
-      /*
-      * If Shopify format does not include
-      * the currency symbol, append the
-      * active currency code.
-      */
-      const currency =
-        section.dataset.currency;
-
-      if (
-        currency &&
-        !formatted.includes(currency)
-      ) {
-        formatted =
-          `${currency} ${formatted}`;
       }
 
-      return formatted;
+      return (amount / 100).toFixed(2);
     }
-
-    const currency =
-      section.dataset.currency || '';
-
-    return `${currency} ${(amount / 100).toFixed(2)}`.trim();
-  }
-
 
   /*
    * ------------------------------------------------------------
