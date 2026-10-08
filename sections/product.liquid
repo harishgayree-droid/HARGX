@@ -314,12 +314,12 @@
                     {{ block.shopify_attributes }}
                   >
 
-                    <span
-                      class="hargx-product__price-current"
-                      data-hargx-current-price
-                    >
-                      {{ current_variant.price | money_with_currency }}
-                    </span>
+                 <span
+  class="hargx-product__price-current"
+  data-hargx-current-price
+>
+  TEST PRICE — {{ current_variant.price }}
+</span>
 
                     {%- if current_variant.compare_at_price > current_variant.price -%}
 

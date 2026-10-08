@@ -819,7 +819,7 @@ function initHargxProduct(section) {
    * ------------------------------------------------------------
    */
 
-  updateVariant();
+  // updateVariant();
 }
 
 
