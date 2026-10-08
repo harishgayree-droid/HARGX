@@ -70,10 +70,60 @@
         "success_text": "Thanks for reaching out. We'll get back to you soon.",
         "error_heading": "Something went wrong"
       }
+    },
+    "hargx_contact_faq_rzyHMj": {
+      "type": "hargx-contact-faq",
+      "blocks": {
+        "faq_iwPxzN": {
+          "type": "faq",
+          "settings": {
+            "question": "How quickly will I receive a response?",
+            "answer": "<p>We usually respond to enquiries within one business day.</p>",
+            "open_by_default": false
+          }
+        },
+        "faq_LRPfKE": {
+          "type": "faq",
+          "settings": {
+            "question": "What information should I include in my enquiry?",
+            "answer": "<p>Tell us what you need help with and include any relevant order, product, or project details so we can assist you faster.</p>",
+            "open_by_default": false
+          }
+        },
+        "faq_kFMQYr": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I contact you about an existing order?",
+            "answer": "<p>Yes. Please include your order number in your message so our team can locate the relevant information.</p>",
+            "open_by_default": false
+          }
+        },
+        "faq_xbfJU9": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you offer help before placing an order?",
+            "answer": "<p>Absolutely. If you have questions about a product, sizing, availability, or anything else, feel free to contact us before ordering.</p>",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "faq_iwPxzN",
+        "faq_LRPfKE",
+        "faq_kFMQYr",
+        "faq_xbfJU9"
+      ],
+      "name": "HARGX Contact FAQ",
+      "settings": {
+        "eyebrow": "Frequently Asked Questions",
+        "heading": "Have a question?",
+        "text": "<p>Find quick answers to the questions we hear most often.</p>"
+      }
     }
   },
   "order": [
     "main",
-    "main_contact_hbfKVV"
+    "main_contact_hbfKVV",
+    "hargx_contact_faq_rzyHMj"
   ]
 }
