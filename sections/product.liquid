@@ -11,6 +11,7 @@
   data-section-id="{{ section.id }}"
   data-product-id="{{ product.id }}"
   data-money-format="{{ shop.money_format | escape }}"
+  data-currency="{{ cart.currency.iso_code }}"
 >
   <div class="hargx-product__container page-width">
 
@@ -318,7 +319,7 @@
                       class="hargx-product__price-current"
                       data-hargx-current-price
                     >
-                      {{ current_variant.price | money }}
+                      {{ current_variant.price | money_with_currency }}
                     </span>
 
                     {%- if current_variant.compare_at_price > current_variant.price -%}
@@ -327,7 +328,7 @@
                         class="hargx-product__price-compare"
                         data-hargx-compare-price
                       >
-                        {{ current_variant.compare_at_price | money }}
+                        {{ current_variant.compare_at_price | money_with_currency }}
                       </span>
 
                       <span
