@@ -212,44 +212,28 @@ function initHargxProduct(section) {
    */
 
   function updatePrice(variant) {
-    if (!variant) {
-      return;
-    }
+    if (!variant) return;
 
     if (priceCurrent) {
-      priceCurrent.textContent =
-        formatMoney(variant.price);
+      priceCurrent.textContent = variant.price_formatted || '';
     }
 
-    const compareAtPrice =
-      Number(variant.compare_at_price || 0);
+    const currentPrice = Number(variant.price || 0);
+    const compareAtPrice = Number(variant.compare_at_price || 0);
 
-    const currentPrice =
-      Number(variant.price || 0);
-
-    if (
-      priceCompare &&
-      saleBadge
-    ) {
-      if (
-        compareAtPrice >
-        currentPrice
-      ) {
+    if (priceCompare) {
+      if (compareAtPrice > currentPrice) {
         priceCompare.hidden = false;
-
         priceCompare.textContent =
-          formatMoney(
-            compareAtPrice
-          );
-
-        saleBadge.hidden = false;
-
+          variant.compare_at_price_formatted || '';
       } else {
         priceCompare.hidden = true;
         priceCompare.textContent = '';
-
-        saleBadge.hidden = true;
       }
+    }
+
+    if (saleBadge) {
+      saleBadge.hidden = !(compareAtPrice > currentPrice);
     }
   }
 
