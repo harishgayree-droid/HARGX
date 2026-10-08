@@ -140,19 +140,21 @@ function initHargxProduct(section) {
    */
 
   function formatMoney(cents) {
-    if (window.Shopify?.formatMoney) {
-      const moneyFormat =
-        window.Shopify.money_format ||
-        window.theme?.moneyFormat ||
-        '${{amount}}';
+    const amount = Number(cents || 0);
 
+    const moneyFormat =
+      section.dataset.moneyFormat ||
+      window.Shopify?.money_format ||
+      '${{amount}}';
+
+    if (window.Shopify?.formatMoney) {
       return window.Shopify.formatMoney(
-        cents,
+        amount,
         moneyFormat
       );
     }
 
-    return `${(Number(cents) / 100).toFixed(2)}`;
+    return `${(amount / 100).toFixed(2)}`;
   }
 
 
