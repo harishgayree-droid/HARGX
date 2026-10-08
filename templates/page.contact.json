@@ -12,9 +12,67 @@
     "main": {
       "type": "page",
       "settings": {}
+    },
+    "main_contact_hbfKVV": {
+      "type": "main-contact",
+      "blocks": {
+        "contact_detail_VbR7wB": {
+          "type": "contact_detail",
+          "settings": {
+            "icon": "email",
+            "heading": "Email us",
+            "text": "<p>hello@example.com</p>",
+            "link_text": "Send an email",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "contact_detail_dLDAdA": {
+          "type": "contact_detail",
+          "settings": {
+            "icon": "phone",
+            "heading": "Call us",
+            "text": "<p>+1 (000) 000-0000</p>",
+            "link_text": "Give us a call",
+            "link": "",
+            "open_new_tab": false
+          }
+        },
+        "contact_detail_wYV4fK": {
+          "type": "contact_detail",
+          "settings": {
+            "icon": "clock",
+            "heading": "Business hours",
+            "text": "<p>Monday – Friday<br>9:00 AM – 6:00 PM</p>",
+            "link_text": "Send an email",
+            "link": "",
+            "open_new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "contact_detail_VbR7wB",
+        "contact_detail_dLDAdA",
+        "contact_detail_wYV4fK"
+      ],
+      "name": "HARGX Contact",
+      "settings": {
+        "eyebrow": "WE'D LOVE TO HEAR FROM YOU",
+        "heading": "How can we help?",
+        "intro": "<p>Have a question about an order, product, or anything else? Send us a message and our team will get back to you.</p>",
+        "info_heading": "Let's talk",
+        "info_text": "<p>We're here to help with questions, product information, orders, and anything else you need.</p>",
+        "form_heading": "Send us a message",
+        "form_text": "<p>Fill out the form below and we'll get back to you as soon as possible.</p>",
+        "submit_text": "Send message",
+        "success_heading": "Message sent",
+        "success_text": "Thanks for reaching out. We'll get back to you soon.",
+        "error_heading": "Something went wrong"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "main_contact_hbfKVV"
   ]
 }
