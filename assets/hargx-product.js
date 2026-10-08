@@ -138,23 +138,23 @@ function initHargxProduct(section) {
    * Money
    * ------------------------------------------------------------
    */
-    function formatMoney(cents) {
-      const amount = Number(cents || 0);
 
-      if (window.Shopify?.formatMoney) {
-        const moneyFormat =
-          section.dataset.moneyFormat ||
-          window.Shopify.money_format ||
-          '${{amount}}';
+  function formatMoney(cents) {
+    if (window.Shopify?.formatMoney) {
+      const moneyFormat =
+        window.Shopify.money_format ||
+        window.theme?.moneyFormat ||
+        '${{amount}}';
 
-        return window.Shopify.formatMoney(
-          amount,
-          moneyFormat
-        );
-      }
-
-      return (amount / 100).toFixed(2);
+      return window.Shopify.formatMoney(
+        cents,
+        moneyFormat
+      );
     }
+
+    return `${(Number(cents) / 100).toFixed(2)}`;
+  }
+
 
   /*
    * ------------------------------------------------------------
@@ -217,30 +217,39 @@ function initHargxProduct(section) {
     }
 
     if (priceCurrent) {
-      priceCurrent.textContent = variant.price;
+      priceCurrent.textContent =
+        formatMoney(variant.price);
     }
 
-    const currentPrice = Number(
-      variant.price || 0
-    );
+    const compareAtPrice =
+      Number(variant.compare_at_price || 0);
 
-    const compareAtPrice = Number(
-      variant.compare_at_price || 0
-    );
+    const currentPrice =
+      Number(variant.price || 0);
 
-    if (priceCompare) {
-      if (compareAtPrice > currentPrice) {
+    if (
+      priceCompare &&
+      saleBadge
+    ) {
+      if (
+        compareAtPrice >
+        currentPrice
+      ) {
         priceCompare.hidden = false;
-        priceCompare.textContent = compareAtPrice;
+
+        priceCompare.textContent =
+          formatMoney(
+            compareAtPrice
+          );
+
+        saleBadge.hidden = false;
+
       } else {
         priceCompare.hidden = true;
         priceCompare.textContent = '';
-      }
-    }
 
-    if (saleBadge) {
-      saleBadge.hidden =
-        !(compareAtPrice > currentPrice);
+        saleBadge.hidden = true;
+      }
     }
   }
 
@@ -813,7 +822,7 @@ function initHargxProduct(section) {
    * ------------------------------------------------------------
    */
 
-  // updateVariant();
+  updateVariant();
 }
 
 
