@@ -36,15 +36,15 @@
             "out_of_stock_text": "Out of stock"
           }
         },
+        "variant_picker_xetgzf": {
+          "type": "variant_picker",
+          "settings": {}
+        },
         "quantity_cprgyK": {
           "type": "quantity",
           "settings": {
             "label": "Quantity"
           }
-        },
-        "variant_picker_xetgzf": {
-          "type": "variant_picker",
-          "settings": {}
         },
         "buy_buttons_dU9heg": {
           "type": "buy_buttons",
@@ -96,8 +96,8 @@
         "rating_dB4P8h",
         "price_Cg8niP",
         "inventory_status_xQt6U8",
-        "quantity_cprgyK",
         "variant_picker_xetgzf",
+        "quantity_cprgyK",
         "buy_buttons_dU9heg",
         "description_FQdaMF",
         "collapsible_tab_nj8wYm",
