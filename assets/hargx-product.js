@@ -212,32 +212,26 @@ function initHargxProduct(section) {
    */
 
   function updatePrice(variant) {
-    if (!variant) return;
+    if (!variant) {
+      return;
+    }
 
-    /*
-    * Keep the Liquid-rendered price.
-    * Shopify Liquid is responsible for
-    * currency and market formatting.
-    */
+    if (priceCurrent) {
+      priceCurrent.textContent = variant.price;
+    }
 
-    const currentPrice =
-      Number(variant.price || 0);
+    const currentPrice = Number(
+      variant.price || 0
+    );
 
-    const compareAtPrice =
-      Number(variant.compare_at_price || 0);
-
-    /*
-    * Compare-at price / sale state
-    */
+    const compareAtPrice = Number(
+      variant.compare_at_price || 0
+    );
 
     if (priceCompare) {
       if (compareAtPrice > currentPrice) {
         priceCompare.hidden = false;
-
-        /*
-        * We do not overwrite the
-        * Liquid formatted price here.
-        */
+        priceCompare.textContent = compareAtPrice;
       } else {
         priceCompare.hidden = true;
         priceCompare.textContent = '';
