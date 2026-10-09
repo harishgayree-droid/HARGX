@@ -139,21 +139,44 @@ function initHargxProduct(section) {
    * ------------------------------------------------------------
    */
 
-  function formatMoney(cents) {
-    if (window.Shopify?.formatMoney) {
+  
+    function formatMoney(cents) {
       const moneyFormat =
-        window.Shopify.money_format ||
+        section.dataset.moneyFormat ||
+        window.Shopify?.money_format ||
         window.theme?.moneyFormat ||
         '${{amount}}';
 
-      return window.Shopify.formatMoney(
-        cents,
-        moneyFormat
+      const amountInCents = Number(cents);
+
+      if (!Number.isFinite(amountInCents)) {
+        return '';
+      }
+
+      if (typeof window.Shopify?.formatMoney === 'function') {
+        return window.Shopify.formatMoney(
+          amountInCents,
+          moneyFormat
+        );
+      }
+
+      // Fallback: preserve the currency and amount format
+      const amount = (amountInCents / 100).toFixed(2);
+
+      return moneyFormat.replace(
+        /\{\{\s*(amount|amount_no_decimals)\s*\}\}/,
+        (placeholder, formatType) => {
+          const value = amountInCents / 100;
+
+          return formatType === 'amount_no_decimals'
+            ? Math.round(value).toLocaleString('en-US')
+            : value.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              });
+        }
       );
     }
-
-    return `${(Number(cents) / 100).toFixed(2)}`;
-  }
 
 
   /*
