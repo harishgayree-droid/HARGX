@@ -157,20 +157,27 @@
 
     <div class="hargx-collection__toolbar">
 
-      <button
-        type="button"
-        class="hargx-filter-trigger"
-        data-hargx-filter-open
-        aria-controls="HargxFilterDrawer-{{ section.id }}"
-      >
-        Filter
-      </button>
+      <div class="hargx-collection__toolbar-count-wrap">
 
-      <div class="hargx-collection__toolbar-count">
-        {{ collection.products_count }}
-        {{ collection.products_count | pluralize: 'product', 'products' }}
+        {%- if collection.filters.size > 0 and desktop_filter_layout == 'drawer' -%}
+
+          <button
+            type="button"
+            class="hargx-filter-trigger"
+            data-hargx-filter-open
+            aria-controls="HargxFilterDrawer-{{ section.id }}"
+          >
+            Filter
+          </button>
+
+        {%- endif -%}
+
+        <div class="hargx-collection__toolbar-count">
+          {{ collection.products_count }}
+          {{ collection.products_count | pluralize: 'product', 'products' }}
+        </div>
+
       </div>
-
 
       <div class="hargx-collection__toolbar-sort">
 
