@@ -6,10 +6,19 @@
 {%- liquid
   assign section_id = 'HargxBenefits-' | append: section.id
 -%}
+{{ 'benefits.css' | asset_url | stylesheet_tag }}
 
 <section
   id="{{ section_id }}"
   class="hargx-benefits hargx-benefits--{{ section.settings.layout_style }}"
+  style="
+    --hargx-benefits-background-setting: {{ section.settings.background_color }};
+    --hargx-benefits-text-setting: {{ section.settings.text_color }};
+    --hargx-benefits-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-benefits-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --hargx-benefits-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --hargx-benefits-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
 >
   <div class="hargx-benefits__container page-width">
 
