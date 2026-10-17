@@ -350,6 +350,7 @@
         "eyebrow": "Loved by customers",
         "heading": "Real people. Real experiences.",
         "description": "<p>See why customers choose HARGX for products they love.</p>",
+        "display_mode": "slider",
         "card_style": "bordered",
         "card_gap": 20,
         "card_radius": 18,
