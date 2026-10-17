@@ -6,7 +6,8 @@
 
 <section
   id="HargxTestimonials-{{ section.id }}"
-  class="hargx-testimonials hargx-testimonials--{{ section.settings.card_style }}"
+  class="hargx-testimonials hargx-testimonials--{{ section.settings.card_style }} hargx-testimonials--{{ section.settings.display_mode }}"
+  data-hargx-testimonials
   style="
     --hargx-testimonials-bg: {{ section.settings.background_color }};
     --hargx-testimonials-text: {{ section.settings.text_color }};
@@ -49,7 +50,15 @@
 
     {%- if section.blocks.size > 0 -%}
 
-      <div class="hargx-testimonials__grid">
+      <div
+        class="hargx-testimonials__grid"
+        {% if section.settings.display_mode == 'slider' %}
+          data-hargx-testimonials-track
+          role="region"
+          tabindex="0"
+          aria-label="Customer testimonials"
+        {% endif %}
+      >
 
         {%- for block in section.blocks -%}
           <article
@@ -150,11 +159,34 @@
 
       </div>
 
+      {%- if section.settings.display_mode == 'slider' and section.blocks.size > 1 -%}
+        <div class="hargx-testimonials__controls">
+          <button
+            type="button"
+            class="hargx-testimonials__control"
+            data-hargx-testimonials-prev
+            aria-label="Previous testimonials"
+            disabled
+          >
+            <span aria-hidden="true">←</span>
+          </button>
+          <button
+            type="button"
+            class="hargx-testimonials__control"
+            data-hargx-testimonials-next
+            aria-label="Next testimonials"
+          >
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      {%- endif -%}
+
     {%- endif -%}
 
   </div>
 </section>
 
+<<<<<<< HEAD
 <style>
   #HargxTestimonials-{{ section.id }} {
     background: var(--hargx-testimonials-bg);
@@ -163,6 +195,111 @@
     padding-bottom: var(--hargx-testimonials-padding-bottom);
     overflow: hidden;
   }
+=======
+{% javascript %}
+  (() => {
+    const initSlider = (section) => {
+      if (
+        !section.matches('[data-hargx-testimonials]') ||
+        section.dataset.sliderInitialized === 'true'
+      ) {
+        return;
+      }
+
+      const track = section.querySelector(
+        '[data-hargx-testimonials-track]'
+      );
+      const previousButton = section.querySelector(
+        '[data-hargx-testimonials-prev]'
+      );
+      const nextButton = section.querySelector(
+        '[data-hargx-testimonials-next]'
+      );
+
+      if (!track || !previousButton || !nextButton) {
+        return;
+      }
+
+      section.dataset.sliderInitialized = 'true';
+
+      const getStep = () => {
+        const card = track.querySelector('.hargx-testimonial-card');
+
+        if (!card) {
+          return track.clientWidth;
+        }
+
+        const styles = window.getComputedStyle(track);
+        const gap = parseFloat(styles.columnGap || styles.gap) || 0;
+
+        return card.getBoundingClientRect().width + gap;
+      };
+
+      const updateButtons = () => {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        previousButton.disabled = track.scrollLeft <= 2;
+        nextButton.disabled = track.scrollLeft >= maxScroll - 2;
+      };
+
+      previousButton.addEventListener('click', () => {
+        track.scrollBy({
+          left: -getStep(),
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ? 'auto'
+            : 'smooth'
+        });
+      });
+
+      nextButton.addEventListener('click', () => {
+        track.scrollBy({
+          left: getStep(),
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ? 'auto'
+            : 'smooth'
+        });
+      });
+
+      let ticking = false;
+      track.addEventListener(
+        'scroll',
+        () => {
+          if (ticking) {
+            return;
+          }
+
+          window.requestAnimationFrame(() => {
+            updateButtons();
+            ticking = false;
+          });
+          ticking = true;
+        },
+        { passive: true }
+      );
+
+      window.addEventListener('resize', updateButtons, { passive: true });
+      updateButtons();
+    };
+
+    const initAll = (root = document) => {
+      if (root.matches?.('[data-hargx-testimonials]')) {
+        initSlider(root);
+      }
+
+      root.querySelectorAll?.('[data-hargx-testimonials]').forEach(initSlider);
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => initAll(), { once: true });
+    } else {
+      initAll();
+    }
+
+    document.addEventListener('shopify:section:load', (event) => {
+      initAll(event.target);
+    });
+  })();
+{% endjavascript %}
+>>>>>>> 6c8f838 (modified css and liquids)
 
   #HargxTestimonials-{{ section.id }} .hargx-testimonials__container {
     width: 100%;
@@ -454,6 +591,22 @@
     {
       "type": "header",
       "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "display_mode",
+      "label": "Display mode",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        }
+      ],
+      "default": "grid"
     },
     {
       "type": "select",

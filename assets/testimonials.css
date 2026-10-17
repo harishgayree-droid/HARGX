@@ -56,6 +56,63 @@
   gap: var(--hargx-testimonials-gap);
 }
 
+.hargx-testimonials--slider .hargx-testimonials__grid {
+  display: flex;
+  overflow-x: auto;
+  gap: var(--hargx-testimonials-gap);
+  padding: 4px 2px 14px;
+  margin: -4px -2px -14px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hargx-testimonials--slider .hargx-testimonials__grid::-webkit-scrollbar {
+  display: none;
+}
+
+.hargx-testimonials--slider .hargx-testimonial-card {
+  flex: 0 0 calc((100% - var(--hargx-testimonials-gap) * 2) / 3);
+  scroll-snap-align: start;
+}
+
+.hargx-testimonials__controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.hargx-testimonials__control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--hargx-testimonials-text);
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.hargx-testimonials__control:hover:not(:disabled) {
+  background: var(--hargx-testimonials-text);
+  color: var(--hargx-testimonials-bg);
+}
+
+.hargx-testimonials__control:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 /* Card */
 .hargx-testimonials .hargx-testimonial-card {
   position: relative;
@@ -218,6 +275,10 @@
   .hargx-testimonials .hargx-testimonials__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .hargx-testimonials--slider .hargx-testimonial-card {
+    flex-basis: calc((100% - var(--hargx-testimonials-gap)) / 2);
+  }
 }
 
 /* Mobile */
@@ -244,11 +305,26 @@
     gap: 16px;
   }
 
+  .hargx-testimonials--slider .hargx-testimonials__grid {
+    gap: 16px;
+  }
+
+  .hargx-testimonials--slider .hargx-testimonial-card {
+    flex-basis: 100%;
+  }
+
   .hargx-testimonials .hargx-testimonial-card {
     padding: 24px;
   }
 
   .hargx-testimonials .hargx-testimonial-card__quote {
     font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hargx-testimonials .hargx-testimonial-card,
+  .hargx-testimonials__control {
+    transition: none;
   }
 }
