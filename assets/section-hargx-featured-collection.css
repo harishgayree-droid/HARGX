@@ -305,6 +305,15 @@
   margin: 0;
 }
 
+.hargx-product-card__media > .hargx-product-card__quick-add {
+  position: absolute;
+  z-index: 4;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  width: auto;
+}
+
 .hargx-product-card__quick-add {
   display: flex;
   align-items: center;
@@ -668,6 +677,12 @@
   }
 
   .hargx-product-card__quick-add-form {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+  }
+
+  .hargx-product-card__media > .hargx-product-card__quick-add {
     right: 8px;
     bottom: 8px;
     left: 8px;

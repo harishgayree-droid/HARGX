@@ -60,6 +60,102 @@
   min-width: 0;
 }
 
+.hargx-recommended-products__grid .hargx-product-card__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: var(--color-warm-background);
+}
+
+.hargx-recommended-products__grid .hargx-product-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s ease, transform 0.5s ease;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__image--secondary {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__link:hover
+  .hargx-product-card__image--primary {
+  transform: scale(1.02);
+}
+
+.hargx-recommended-products__grid .hargx-product-card__link:hover
+  .hargx-product-card__image--secondary {
+  opacity: 1;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--color-white);
+  color: var(--color-text);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__badge--sold-out {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+.hargx-recommended-products__grid .hargx-product-card__badge--sale {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.hargx-recommended-products__grid .hargx-product-card__content {
+  padding-top: 14px;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__title {
+  margin: 0 0 7px;
+  color: var(--color-text);
+  font-family: var(--font-primary--family);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text);
+  font-family: var(--font-primary--family);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.hargx-recommended-products__grid .hargx-product-card__price-compare {
+  color: var(--color-muted-text);
+  text-decoration: line-through;
+}
+
 .hargx-recommended-products__footer {
   display: flex;
   justify-content: center;
