@@ -977,8 +977,16 @@ function initHargxGallery(
       '[data-hargx-gallery-next]'
     );
 
+  const galleryLayout = gallery.dataset.galleryLayout;
+  const isGridLayout =
+    galleryLayout === 'stacked' ||
+    galleryLayout === 'two-column';
 
   if (!slides.length) {
+    return;
+  }
+
+  if (isGridLayout) {
     return;
   }
 

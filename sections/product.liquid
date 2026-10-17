@@ -1,6 +1,7 @@
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
   assign product_form_id = 'HargxProductForm-' | append: section.id
+  assign media_layout = section.settings.media_layout
 -%}
 
 {{ 'hargx-product.css' | asset_url | stylesheet_tag }}
@@ -22,8 +23,9 @@
       {%- endcomment -%}
 
       <div
-        class="hargx-product__media"
+        class="hargx-product__media{% if product.media.size > 1 or media_layout == 'stacked' or media_layout == 'two-column' %} hargx-product__media--{{ media_layout }}{% endif %}"
         data-hargx-gallery
+        data-gallery-layout="{{ media_layout }}"
       >
 
         <div class="hargx-product__gallery">
@@ -882,7 +884,32 @@
 {% schema %}
 {
   "name": "HARGX Product",
-  "settings": [],
+  "settings": [
+    {
+      "type": "select",
+      "id": "media_layout",
+      "label": "Product media layout",
+      "options": [
+        {
+          "value": "thumbnail-slider",
+          "label": "Thumbnail slider"
+        },
+        {
+          "value": "thumbnail-left",
+          "label": "Thumbnail left"
+        },
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "two-column",
+          "label": "Two columns"
+        }
+      ],
+      "default": "thumbnail-slider"
+    }
+  ],
   "blocks": [
     {
       "type": "vendor",
