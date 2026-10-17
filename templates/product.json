@@ -104,7 +104,10 @@
         "trust_item_aX879d",
         "complementary_products_EfzC3A"
       ],
-      "settings": {}
+      "settings": {
+        "media_layout": "thumbnail-slider",
+        "enable_info_scroll": false
+      }
     },
     "hargx_recommended_products_F4H7zN": {
       "type": "hargx-recommended-products",
