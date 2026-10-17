@@ -12,6 +12,7 @@
   data-section-id="{{ section.id }}"
   data-product-id="{{ product.id }}"
   data-money-format="{{ shop.money_format | escape }}"
+  data-info-scroll="{{ section.settings.enable_info_scroll }}"
 >
   <div class="hargx-product__container page-width">
 
@@ -200,7 +201,7 @@
 
       <div class="hargx-product__info">
 
-        <div class="hargx-product__info-inner">
+        <div class="hargx-product__info-inner{% if section.settings.enable_info_scroll %} hargx-product__info-inner--scroll{% endif %}">
 
           {%- form 'product',
             product,
@@ -908,6 +909,12 @@
         }
       ],
       "default": "thumbnail-slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_info_scroll",
+      "label": "Enable product information panel scroll",
+      "default": true
     }
   ],
   "blocks": [

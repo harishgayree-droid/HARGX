@@ -25,7 +25,10 @@ function initHargxProduct(section) {
   }
 
   section.dataset.hargxInitialized = 'true';
-  initProductInfoOverflow(section);
+
+  if (section.dataset.infoScroll === 'true') {
+    initProductInfoOverflow(section);
+  }
 
   const productForm = section.querySelector('.hargx-product-form');
 
@@ -886,7 +889,10 @@ function initProductInfoOverflow(section) {
   if ('ResizeObserver' in window) {
     const resizeObserver = new ResizeObserver(scheduleUpdate);
     resizeObserver.observe(media);
-    resizeObserver.observe(info);
+
+    if (info.firstElementChild) {
+      resizeObserver.observe(info.firstElementChild);
+    }
   }
 
   window.addEventListener('resize', scheduleUpdate, { passive: true });
