@@ -3,6 +3,7 @@
   Theme Store ready testimonial section
 {% endcomment %}
 {{ 'testimonials.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'hargx-testimonials.js' | asset_url }}" defer="defer"></script>
 
 <section
   id="HargxTestimonials-{{ section.id }}"
@@ -186,7 +187,6 @@
   </div>
 </section>
 
-<<<<<<< HEAD
 <style>
   #HargxTestimonials-{{ section.id }} {
     background: var(--hargx-testimonials-bg);
@@ -195,112 +195,6 @@
     padding-bottom: var(--hargx-testimonials-padding-bottom);
     overflow: hidden;
   }
-=======
-{% javascript %}
-  (() => {
-    const initSlider = (section) => {
-      if (
-        !section.matches('[data-hargx-testimonials]') ||
-        section.dataset.sliderInitialized === 'true'
-      ) {
-        return;
-      }
-
-      const track = section.querySelector(
-        '[data-hargx-testimonials-track]'
-      );
-      const previousButton = section.querySelector(
-        '[data-hargx-testimonials-prev]'
-      );
-      const nextButton = section.querySelector(
-        '[data-hargx-testimonials-next]'
-      );
-
-      if (!track || !previousButton || !nextButton) {
-        return;
-      }
-
-      section.dataset.sliderInitialized = 'true';
-
-      const getStep = () => {
-        const card = track.querySelector('.hargx-testimonial-card');
-
-        if (!card) {
-          return track.clientWidth;
-        }
-
-        const styles = window.getComputedStyle(track);
-        const gap = parseFloat(styles.columnGap || styles.gap) || 0;
-
-        return card.getBoundingClientRect().width + gap;
-      };
-
-      const updateButtons = () => {
-        const maxScroll = track.scrollWidth - track.clientWidth;
-        previousButton.disabled = track.scrollLeft <= 2;
-        nextButton.disabled = track.scrollLeft >= maxScroll - 2;
-      };
-
-      previousButton.addEventListener('click', () => {
-        track.scrollBy({
-          left: -getStep(),
-          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-            ? 'auto'
-            : 'smooth'
-        });
-      });
-
-      nextButton.addEventListener('click', () => {
-        track.scrollBy({
-          left: getStep(),
-          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-            ? 'auto'
-            : 'smooth'
-        });
-      });
-
-      let ticking = false;
-      track.addEventListener(
-        'scroll',
-        () => {
-          if (ticking) {
-            return;
-          }
-
-          window.requestAnimationFrame(() => {
-            updateButtons();
-            ticking = false;
-          });
-          ticking = true;
-        },
-        { passive: true }
-      );
-
-      window.addEventListener('resize', updateButtons, { passive: true });
-      updateButtons();
-    };
-
-    const initAll = (root = document) => {
-      if (root.matches?.('[data-hargx-testimonials]')) {
-        initSlider(root);
-      }
-
-      root.querySelectorAll?.('[data-hargx-testimonials]').forEach(initSlider);
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => initAll(), { once: true });
-    } else {
-      initAll();
-    }
-
-    document.addEventListener('shopify:section:load', (event) => {
-      initAll(event.target);
-    });
-  })();
-{% endjavascript %}
->>>>>>> 6c8f838 (modified css and liquids)
-
   #HargxTestimonials-{{ section.id }} .hargx-testimonials__container {
     width: 100%;
   }
@@ -556,6 +450,48 @@
 
     #HargxTestimonials-{{ section.id }} .hargx-testimonial-card__quote {
       font-size: 16px;
+    }
+  }
+
+  #HargxTestimonials-{{ section.id }}.hargx-testimonials--slider
+    .hargx-testimonials__grid {
+    display: flex;
+    flex-flow: row nowrap;
+    overflow-x: auto;
+    gap: var(--hargx-testimonials-gap);
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #HargxTestimonials-{{ section.id }}.hargx-testimonials--slider
+    .hargx-testimonials__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  #HargxTestimonials-{{ section.id }}.hargx-testimonials--slider
+    .hargx-testimonial-card {
+    flex: 0 0 calc((100% - var(--hargx-testimonials-gap) * 2) / 3);
+    scroll-snap-align: start;
+  }
+
+  @media screen and (max-width: 989px) {
+    #HargxTestimonials-{{ section.id }}.hargx-testimonials--slider
+      .hargx-testimonial-card {
+      flex-basis: calc((100% - var(--hargx-testimonials-gap)) / 2);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #HargxTestimonials-{{ section.id }}.hargx-testimonials--slider
+      .hargx-testimonials__grid {
+      gap: 16px;
+    }
+
+    #HargxTestimonials-{{ section.id }}.hargx-testimonials--slider
+      .hargx-testimonial-card {
+      flex-basis: 100%;
     }
   }
 </style>
