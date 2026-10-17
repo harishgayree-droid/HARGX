@@ -1,10 +1,21 @@
 {% comment %}
   HARGX Editorial Section
 {% endcomment %}
+{{ 'editorial.css' | asset_url | stylesheet_tag }}
 
 <section
   id="HargxEditorial-{{ section.id }}"
   class="hargx-editorial"
+  style="
+    --hargx-editorial-background: {{ section.settings.background_color }};
+    --hargx-editorial-text: {{ section.settings.text_color }};
+    --hargx-editorial-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-editorial-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --hargx-editorial-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --hargx-editorial-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --hargx-editorial-column-gap: {{ section.settings.column_gap }}px;
+    --hargx-editorial-image-ratio: {{ section.settings.image_ratio }};
+  "
 >
   <div class="page-width hargx-editorial__container">
 
