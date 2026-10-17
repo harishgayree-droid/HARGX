@@ -312,6 +312,8 @@
 
   border: 1px solid rgba(0, 0, 0, 0.18);
   background: #FFFFFF;
+  gap: 1rem;
+  width: max-content;
 }
 
 .hargx-product__quantity-label {
@@ -327,6 +329,7 @@
   display: flex;
   align-items: center;
   height: 100%;
+  border-left: 1px solid rgba(0, 0, 0, .18);
 }
 
 .hargx-product__quantity-button {
