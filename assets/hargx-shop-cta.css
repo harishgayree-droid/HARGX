@@ -1,0 +1,278 @@
+
+/* HARGX Shop CTA */
+
+[id^="HargxShopCta-"] {
+  background: var(--hargx-cta-bg);
+  color: var(--hargx-cta-text);
+  padding-top: var(--hargx-cta-padding-top);
+  padding-bottom: var(--hargx-cta-padding-bottom);
+  overflow: hidden;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__container {
+  width: 100%;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--hargx-cta-gap);
+}
+
+/* Media */
+
+[id^="HargxShopCta-"] .hargx-shop-cta__media {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--hargx-cta-radius);
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__image-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #eeeeee;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__media:hover .hargx-shop-cta__image {
+  transform: scale(1.04);
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #eeeeee;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__placeholder svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Content */
+
+[id^="HargxShopCta-"] .hargx-shop-cta__content {
+  max-width: 590px;
+  padding: 20px 0;
+}
+
+[id^="HargxShopCta-"].hargx-shop-cta--right .hargx-shop-cta__grid {
+  direction: rtl;
+}
+
+[id^="HargxShopCta-"].hargx-shop-cta--right .hargx-shop-cta__content {
+  direction: ltr;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__eyebrow {
+  margin-bottom: 13px;
+  color: var(--hargx-cta-accent);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__heading {
+  max-width: 580px;
+  margin: 0;
+  color: var(--hargx-cta-text);
+  font-size: clamp(34px, 4.5vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__description {
+  max-width: 530px;
+  margin-top: 20px;
+  color: var(--hargx-cta-text);
+  opacity: 0.7;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__description p {
+  margin: 0;
+}
+
+/* Features */
+
+[id^="HargxShopCta-"] .hargx-shop-cta__features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 22px;
+  margin-top: 30px;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 50%;
+  background: rgba(254, 116, 66, 0.1);
+  color: var(--hargx-cta-accent);
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__feature-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__feature-content {
+  min-width: 0;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__feature-title {
+  color: var(--hargx-cta-text);
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__feature-text {
+  margin-top: 3px;
+  color: var(--hargx-cta-text);
+  opacity: 0.58;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Button */
+
+[id^="HargxShopCta-"] .hargx-shop-cta__button-wrap {
+  margin-top: 34px;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  min-height: 54px;
+  padding: 0 25px;
+  border: 1px solid var(--hargx-cta-accent);
+  border-radius: 999px;
+  background: var(--hargx-cta-accent);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 700;
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__button:hover {
+  transform: translateY(-3px);
+  background: #000000;
+  border-color: #000000;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__button-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+[id^="HargxShopCta-"] .hargx-shop-cta__button:hover .hargx-shop-cta__button-icon {
+  transform: translateX(4px);
+}
+
+/* Card style */
+
+[id^="HargxShopCta-"].hargx-shop-cta--card .hargx-shop-cta__grid {
+  padding: 50px;
+  border-radius: 28px;
+  background: var(--hargx-cta-card);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.07);
+}
+
+/* Tablet */
+
+@media screen and (max-width: 989px) {
+  [id^="HargxShopCta-"] .hargx-shop-cta__grid {
+    gap: 38px;
+  }
+
+  [id^="HargxShopCta-"] .hargx-shop-cta__heading {
+    font-size: 42px;
+  }
+
+  [id^="HargxShopCta-"].hargx-shop-cta--card .hargx-shop-cta__grid {
+    padding: 30px;
+  }
+}
+
+/* Mobile */
+
+@media screen and (max-width: 749px) {
+  [id^="HargxShopCta-"] {
+    padding-top: calc(var(--hargx-cta-padding-top) * 0.75);
+    padding-bottom: calc(var(--hargx-cta-padding-bottom) * 0.75);
+  }
+
+  [id^="HargxShopCta-"] .hargx-shop-cta__grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  [id^="HargxShopCta-"].hargx-shop-cta--right .hargx-shop-cta__grid {
+    direction: ltr;
+  }
+
+  [id^="HargxShopCta-"] .hargx-shop-cta__content {
+    max-width: none;
+    padding: 0;
+  }
+
+  [id^="HargxShopCta-"] .hargx-shop-cta__heading {
+    font-size: 34px;
+  }
+
+  [id^="HargxShopCta-"] .hargx-shop-cta__description {
+    margin-top: 16px;
+    font-size: 15px;
+  }
+
+  [id^="HargxShopCta-"] .hargx-shop-cta__features {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 24px;
+  }
+
+  [id^="HargxShopCta-"] .hargx-shop-cta__button-wrap {
+    margin-top: 28px;
+  }
+
+  [id^="HargxShopCta-"] .hargx-shop-cta__button {
+    width: 100%;
+  }
+
+  [id^="HargxShopCta-"].hargx-shop-cta--card .hargx-shop-cta__grid {
+    padding: 22px;
+    border-radius: 20px;
+  }
+}
