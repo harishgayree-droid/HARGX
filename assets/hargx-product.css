@@ -98,11 +98,20 @@
 
 .hargx-product__info {
   min-width: 0;
+  min-height: 0;
+  align-self: stretch;
 }
 
 .hargx-product__info-inner {
   position: sticky;
   top: 32px;
+  max-height: min(
+    var(--hargx-product-info-max-height, 100vh),
+    calc(100vh - 64px)
+  );
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
 }
 
 .hargx-product__vendor {
@@ -1039,6 +1048,10 @@
 
   .hargx-product__info-inner {
     top: 20px;
+    max-height: min(
+      var(--hargx-product-info-max-height, 100vh),
+      calc(100vh - 40px)
+    );
   }
 
 }
@@ -1160,6 +1173,8 @@
 
   .hargx-product__info-inner {
     position: static;
+    max-height: none;
+    overflow: visible;
   }
 
   .hargx-product__vendor {

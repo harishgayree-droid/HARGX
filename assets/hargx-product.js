@@ -25,6 +25,7 @@ function initHargxProduct(section) {
   }
 
   section.dataset.hargxInitialized = 'true';
+  initProductInfoOverflow(section);
 
   const productForm = section.querySelector('.hargx-product-form');
 
@@ -846,6 +847,49 @@ function initHargxProduct(section) {
    */
 
   updateVariant();
+}
+
+function initProductInfoOverflow(section) {
+  const media = section.querySelector('.hargx-product__media');
+  const info = section.querySelector('.hargx-product__info-inner');
+
+  if (!media || !info) {
+    return;
+  }
+
+  const updateInfoHeight = () => {
+    info.style.removeProperty('--hargx-product-info-max-height');
+
+    if (window.matchMedia('(max-width: 749px)').matches) {
+      return;
+    }
+
+    const mediaHeight = media.getBoundingClientRect().height;
+
+    if (mediaHeight > 0 && info.scrollHeight > mediaHeight + 1) {
+      info.style.setProperty(
+        '--hargx-product-info-max-height',
+        `${mediaHeight}px`
+      );
+    }
+  };
+
+  let resizeFrame = 0;
+
+  const scheduleUpdate = () => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(updateInfoHeight);
+  };
+
+  scheduleUpdate();
+
+  if ('ResizeObserver' in window) {
+    const resizeObserver = new ResizeObserver(scheduleUpdate);
+    resizeObserver.observe(media);
+    resizeObserver.observe(info);
+  }
+
+  window.addEventListener('resize', scheduleUpdate, { passive: true });
 }
 
 
