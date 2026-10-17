@@ -1,70 +1,501 @@
-{% comment %}
-  This section is used in the search template to render search results for
-  products, articles, and pages.
+<section class="hargx-search">
+  <div class="hargx-search__container">
+    <header class="hargx-search__header">
+      <p class="hargx-search__eyebrow">{{ shop.name | escape }}</p>
+      <h1 class="hargx-search__title">{{ 'search.title' | t }}</h1>
+      <p class="hargx-search__intro">
+        Find products, articles, and pages across our store.
+      </p>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/search
-{% endcomment %}
+      <form
+        action="{{ routes.search_url }}"
+        method="get"
+        class="hargx-search__form"
+        role="search"
+      >
+        <label class="visually-hidden" for="HargxSearchInput-{{ section.id }}">
+          {{ 'search.placeholder' | t }}
+        </label>
+        <input
+          id="HargxSearchInput-{{ section.id }}"
+          class="hargx-search__input"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          autocomplete="off"
+        >
+        <input type="hidden" name="type" value="product,article,page">
+        <button class="hargx-search__submit" type="submit">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/>
+            <path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>{{ 'search.submit' | t }}</span>
+        </button>
+      </form>
+    </header>
 
-<h1>{{ 'search.title' | t }}</h1>
-
-<form action="{{ routes.search_url }}" method="get" role="search">
-  <input
-    type="search"
-    size="50"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="{{ 'search.placeholder' | t }}"
-  >
-  <button type="submit">{{ 'search.submit' | t }}</button>
-</form>
-
-{% if search.performed %}
-  {% if search.results_count == 0 %}
-    <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
-  {% else %}
-    <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
-
-    <div class="search-results">
-      {% paginate search.results by 20 %}
-        {% # Search result items may be an article, a page, or a product. %}
-        {% for result in search.results %}
-          <div class="search-result">
-            {% assign featured_image = result.featured_image | default: result.image %}
-            {% if featured_image %}
-              {% render 'image', class: 'search-result__image', image: featured_image, url: result.url, width: 400 %}
+    {% if search.performed %}
+      {% paginate search.results by section.settings.results_per_page %}
+        <div class="hargx-search__results-header" aria-live="polite">
+          <h2 class="hargx-search__results-title">
+            {% if search.results_count == 0 %}
+              No results found
+            {% else %}
+              Search results
             {% endif %}
-            <div class="search-result__content">
-              <p>
-                {{ result.title | link_to: result.url }}
-                {% if result.price %}
-                  {{ result.price | money_with_currency }}
-                {% endif %}
-              </p>
-            </div>
-          </div>
-        {% endfor %}
+          </h2>
+          {% if search.results_count > 0 %}
+            <p class="hargx-search__count">
+              {{ search.results_count }}
+              {% if search.results_count == 1 %}result{% else %}results{% endif %}
+              for “{{ search.terms | escape }}”
+            </p>
+          {% endif %}
+        </div>
 
-        {{ paginate | default_pagination }}
+        {% if search.results_count == 0 %}
+          <div class="hargx-search__empty">
+            <span class="hargx-search__empty-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+                <circle cx="21" cy="21" r="13" stroke="currentColor" stroke-width="1.5"/>
+                <path d="m31 31 9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <h3>We couldn’t find a match</h3>
+            <p>Try checking the spelling or using a different search term.</p>
+          </div>
+        {% else %}
+          <div class="hargx-search__grid">
+            {% for result in search.results %}
+              {% assign result_image = result.featured_image | default: result.image %}
+              <article class="hargx-search-card">
+                <a class="hargx-search-card__image-link" href="{{ result.url }}">
+                  {% if result_image != blank %}
+                    {{
+                      result_image
+                      | image_url: width: 720
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '240, 360, 540, 720',
+                        sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+                        class: 'hargx-search-card__image',
+                        alt: result_image.alt | default: result.title
+                    }}
+                  {% else %}
+                    <span class="hargx-search-card__placeholder" aria-hidden="true">
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    </span>
+                  {% endif %}
+                </a>
+
+                <div class="hargx-search-card__details">
+                  <p class="hargx-search-card__type">
+                    {% case result.object_type %}
+                      {% when 'product' %}Product
+                      {% when 'article' %}Article
+                      {% when 'page' %}Page
+                      {% else %}{{ result.object_type | capitalize }}
+                    {% endcase %}
+                  </p>
+                  <h3 class="hargx-search-card__title">
+                    <a href="{{ result.url }}">{{ result.title | escape }}</a>
+                  </h3>
+                  {% if result.object_type == 'product' and result.price %}
+                    <p class="hargx-search-card__price">{{ result.price | money }}</p>
+                  {% elsif result.content != blank %}
+                    <p class="hargx-search-card__excerpt">
+                      {{ result.content | strip_html | truncate: 110 }}
+                    </p>
+                  {% endif %}
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+
+          {% if paginate.pages > 1 %}
+            <nav class="hargx-search__pagination" aria-label="Search results pages">
+              {% if paginate.previous %}
+                <a class="hargx-search__page-link" href="{{ paginate.previous.url }}">
+                  Previous
+                </a>
+              {% endif %}
+
+              <div class="hargx-search__page-numbers">
+                {% for part in paginate.parts %}
+                  {% if part.is_link %}
+                    <a class="hargx-search__page-link" href="{{ part.url }}">
+                      {{ part.title }}
+                    </a>
+                  {% else %}
+                    <span
+                      class="hargx-search__page-link{% if part.title == paginate.current_page %} is-current{% endif %}"
+                      {% if part.title == paginate.current_page %}aria-current="page"{% endif %}
+                    >
+                      {{ part.title }}
+                    </span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+
+              {% if paginate.next %}
+                <a class="hargx-search__page-link" href="{{ paginate.next.url }}">
+                  Next
+                </a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        {% endif %}
       {% endpaginate %}
-    </div>
-  {% endif %}
-{% endif %}
+    {% endif %}
+  </div>
+</section>
 
 {% stylesheet %}
-  .search-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  .hargx-search {
+    padding: clamp(48px, 7vw, 96px) 0 88px;
+    color: var(--color-text);
+    background: var(--color-background);
   }
-  .search-results .prev,
-  .search-results .page,
-  .search-results .next {
-    grid-column: 1 / -1;
+
+  .hargx-search__container {
+    width: min(
+      calc(var(--page-width) - var(--page-margin) * 2),
+      calc(100% - var(--page-margin) * 2)
+    );
+    margin-inline: auto;
+  }
+
+  .hargx-search__header {
+    max-width: 760px;
+    margin: 0 auto 64px;
+    text-align: center;
+  }
+
+  .hargx-search__eyebrow {
+    margin: 0 0 12px;
+    color: var(--color-primary);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .hargx-search__title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-size: clamp(38px, 6vw, 68px);
+    font-weight: var(--font-heading--weight);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+  }
+
+  .hargx-search__intro {
+    margin: 16px 0 0;
+    color: var(--color-muted-text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .hargx-search__form {
+    display: flex;
+    align-items: center;
+    max-width: 640px;
+    min-height: 58px;
+    margin: 32px auto 0;
+    padding: 5px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-white);
+    text-align: left;
+  }
+
+  .hargx-search__input {
+    flex: 1;
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 16px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-size: 15px;
+  }
+
+  .hargx-search__input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  .hargx-search__submit {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 46px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: calc(var(--border-radius) * 0.7);
+    background: var(--color-black);
+    color: var(--color-white);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .hargx-search__submit:hover {
+    background: var(--color-primary);
+  }
+
+  .hargx-search__submit svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .hargx-search__results-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hargx-search__results-title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-size: 24px;
+    font-weight: var(--font-heading--weight);
+  }
+
+  .hargx-search__count {
+    margin: 0;
+    color: var(--color-muted-text);
+    font-size: 13px;
+  }
+
+  .hargx-search__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 40px 24px;
+  }
+
+  .hargx-search-card {
+    min-width: 0;
+  }
+
+  .hargx-search-card__image-link {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: var(--color-warm-background);
+  }
+
+  .hargx-search-card__image,
+  .hargx-search-card__placeholder,
+  .hargx-search-card__placeholder svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hargx-search-card__image {
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  .hargx-search-card__image-link:hover .hargx-search-card__image {
+    transform: scale(1.03);
+  }
+
+  .hargx-search-card__details {
+    padding-top: 14px;
+  }
+
+  .hargx-search-card__type {
+    margin: 0 0 6px;
+    color: var(--color-muted-text);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .hargx-search-card__title {
+    margin: 0;
+    font-family: var(--font-primary--family);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .hargx-search-card__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .hargx-search-card__title a:hover {
+    color: var(--color-primary);
+  }
+
+  .hargx-search-card__price {
+    margin: 8px 0 0;
+    font-size: 14px;
+  }
+
+  .hargx-search-card__excerpt {
+    margin: 8px 0 0;
+    color: var(--color-muted-text);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .hargx-search__empty {
+    padding: 56px 20px;
+    border: 1px solid var(--color-border);
+    text-align: center;
+  }
+
+  .hargx-search__empty-icon {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    color: var(--color-muted-text);
+  }
+
+  .hargx-search__empty h3 {
+    margin: 16px 0 8px;
+    font-family: var(--font-heading--family);
+    font-size: 22px;
+  }
+
+  .hargx-search__empty p {
+    margin: 0;
+    color: var(--color-muted-text);
+    font-size: 14px;
+  }
+
+  .hargx-search__pagination,
+  .hargx-search__page-numbers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .hargx-search__pagination {
+    margin-top: 56px;
+  }
+
+  .hargx-search__page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-size: 13px;
+    text-decoration: none;
+  }
+
+  a.hargx-search__page-link:hover,
+  .hargx-search__page-link.is-current {
+    border-color: var(--color-black);
+    background: var(--color-black);
+    color: var(--color-white);
+  }
+
+  @media screen and (max-width: 989px) {
+    .hargx-search__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 32px 18px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .hargx-search {
+      padding: 48px 0 60px;
+    }
+
+    .hargx-search__header {
+      margin-bottom: 44px;
+    }
+
+    .hargx-search__intro {
+      font-size: 14px;
+    }
+
+    .hargx-search__form {
+      min-height: 54px;
+      margin-top: 26px;
+    }
+
+    .hargx-search__input {
+      padding-inline: 10px;
+      font-size: 14px;
+    }
+
+    .hargx-search__submit {
+      min-height: 42px;
+      padding-inline: 13px;
+    }
+
+    .hargx-search__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 12px;
+    }
+
+    .hargx-search__results-header {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hargx-search__results-title {
+      font-size: 21px;
+    }
+
+    .hargx-search__pagination,
+    .hargx-search__page-numbers {
+      gap: 5px;
+    }
+
+    .hargx-search__page-link {
+      min-width: 34px;
+      min-height: 36px;
+      padding-inline: 8px;
+      font-size: 12px;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.search",
-  "settings": []
+  "name": "HARGX Search",
+  "settings": [
+    {
+      "type": "range",
+      "id": "results_per_page",
+      "label": "Results per page",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16
+    }
+  ]
 }
 {% endschema %}
