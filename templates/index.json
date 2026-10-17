@@ -290,6 +290,18 @@
     "hargx_testimonials_wjDjg7": {
       "type": "hargx-testimonials",
       "blocks": {
+        "testimonial_nfU9TL": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "verified": true,
+            "verified_text": "Verified customer",
+            "quote": "<p>Absolutely love it. The quality is amazing and the whole experience was seamless.</p>",
+            "product_name": "Loved their HARGX purchase",
+            "customer_name": "Alex Morgan",
+            "customer_detail": "Verified buyer"
+          }
+        },
         "testimonial_V4q3Jm": {
           "type": "testimonial",
           "settings": {
@@ -328,6 +340,7 @@
         }
       },
       "block_order": [
+        "testimonial_nfU9TL",
         "testimonial_V4q3Jm",
         "testimonial_YKPhGi",
         "testimonial_GMrNTY"
