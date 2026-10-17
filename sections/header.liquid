@@ -199,10 +199,13 @@
     <div class="hargx-header__actions">
 
       <!-- Search -->
-      <a
-        href="{{ routes.search_url }}"
+      <button
+        type="button"
         class="hargx-header__action hargx-header__search"
         aria-label="Search"
+        aria-expanded="false"
+        aria-controls="HargxSearchOverlay-{{ section.id }}"
+        data-hargx-search-open
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -213,7 +216,7 @@
           <circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/>
           <path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
         </svg>
-      </a>
+      </button>
 
       <!-- Account -->
       {% if shop.customer_accounts_enabled %}
@@ -307,6 +310,152 @@
 
     </div>
 
+  </div>
+
+  <div
+    id="HargxSearchOverlay-{{ section.id }}"
+    class="hargx-search-overlay"
+    data-hargx-search-overlay
+    data-suggest-url="{{ routes.predictive_search_url }}.json"
+    aria-hidden="true"
+    hidden
+  >
+    <button
+      type="button"
+      class="hargx-search-overlay__backdrop"
+      data-hargx-search-close
+      aria-label="Close search"
+      tabindex="-1"
+    ></button>
+
+    <div
+      class="hargx-search-overlay__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="HargxSearchTitle-{{ section.id }}"
+    >
+      <div class="hargx-search-overlay__inner">
+        <div class="hargx-search-overlay__top">
+          <h2 id="HargxSearchTitle-{{ section.id }}">Search</h2>
+          <button
+            type="button"
+            class="hargx-search-overlay__close"
+            data-hargx-search-close
+            aria-label="Close search"
+          >
+            ×
+          </button>
+        </div>
+
+        <form
+          action="{{ routes.search_url }}"
+          method="get"
+          class="hargx-search-overlay__form"
+          role="search"
+        >
+          <svg
+            class="hargx-search-overlay__form-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/>
+            <path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <label class="visually-hidden" for="HargxSearchInput-{{ section.id }}">
+            Search products and collections
+          </label>
+          <input
+            id="HargxSearchInput-{{ section.id }}"
+            class="hargx-search-overlay__input"
+            type="search"
+            name="q"
+            placeholder="Search products and collections"
+            autocomplete="off"
+            aria-autocomplete="list"
+            aria-controls="HargxSearchSuggestions-{{ section.id }}"
+            data-hargx-search-input
+          >
+          <button
+            type="submit"
+            class="hargx-search-overlay__submit"
+            aria-label="Submit search"
+          >
+            Search
+          </button>
+        </form>
+
+        <div
+          id="HargxSearchSuggestions-{{ section.id }}"
+          class="hargx-search-overlay__suggestions"
+          data-hargx-search-suggestions
+          role="status"
+          aria-live="polite"
+        ></div>
+
+        <div class="hargx-search-overlay__collections">
+          <div class="hargx-search-overlay__section-heading">
+            <h3>Shop collections</h3>
+            <a href="{{ routes.all_products_collection_url }}">View all</a>
+          </div>
+
+          <div class="hargx-search-overlay__collection-grid">
+            {%- if section.settings.search_collections != blank -%}
+              {%- for collection in section.settings.search_collections -%}
+                {%- assign collection_image = collection.featured_image | default: collection.products.first.featured_image -%}
+                <a
+                  class="hargx-search-overlay__collection"
+                  href="{{ collection.url }}"
+                >
+                  <span class="hargx-search-overlay__collection-image">
+                    {%- if collection_image != blank -%}
+                      {{
+                        collection_image
+                        | image_url: width: 480
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '160, 240, 320, 480',
+                          sizes: '(min-width: 750px) 25vw, 50vw',
+                          alt: collection.title
+                      }}
+                    {%- else -%}
+                      {{ 'collection-1' | placeholder_svg_tag }}
+                    {%- endif -%}
+                  </span>
+                  <span class="hargx-search-overlay__collection-title">
+                    {{ collection.title | escape }}
+                  </span>
+                </a>
+              {%- endfor -%}
+            {%- else -%}
+              {%- assign all_products_collection = collections.all -%}
+              <a
+                class="hargx-search-overlay__collection hargx-search-overlay__collection--all"
+                href="{{ routes.all_products_collection_url }}"
+              >
+                <span class="hargx-search-overlay__collection-image">
+                  {%- if all_products_collection.featured_image != blank -%}
+                    {{
+                      all_products_collection.featured_image
+                      | image_url: width: 480
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '160, 240, 320, 480',
+                        sizes: '(min-width: 750px) 25vw, 50vw',
+                        alt: all_products_collection.title
+                    }}
+                  {%- else -%}
+                    {{ 'collection-1' | placeholder_svg_tag }}
+                  {%- endif -%}
+                </span>
+                <span class="hargx-search-overlay__collection-title">Shop all products</span>
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ========================================
@@ -924,6 +1073,266 @@
   flex: 0 0 40px;
 }
 
+.hargx-search-overlay[hidden] {
+  display: none;
+}
+
+.hargx-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 0 24px 40px;
+}
+
+.hargx-search-overlay__backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(0, 0, 0, 0.48);
+  cursor: default;
+}
+
+.hargx-search-overlay__panel {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  width: min(100%, 1000px);
+  margin-top: 5vh;
+  padding: 28px 36px 36px;
+  border-radius: var(--border-radius);
+  background: var(--color-white);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+}
+
+.hargx-search-overlay__top,
+.hargx-search-overlay__section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hargx-search-overlay__top {
+  margin-bottom: 20px;
+}
+
+.hargx-search-overlay__top h2,
+.hargx-search-overlay__section-heading h3 {
+  margin: 0;
+  font-family: var(--font-heading--family);
+  font-size: 20px;
+  font-weight: var(--font-heading--weight);
+}
+
+.hargx-search-overlay__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hargx-search-overlay__form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 6px 8px 6px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background: var(--color-white);
+}
+
+.hargx-search-overlay__form:focus-within {
+  border-color: var(--color-text);
+}
+
+.hargx-search-overlay__form-icon {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.hargx-search-overlay .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.hargx-search-overlay__input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+}
+
+.hargx-search-overlay__submit {
+  min-height: 44px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: calc(var(--border-radius) * 0.7);
+  background: var(--color-black);
+  color: var(--color-white);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hargx-search-overlay__submit:hover {
+  background: var(--color-primary);
+}
+
+.hargx-search-overlay__suggestions:not(:empty) {
+  margin-top: 24px;
+}
+
+.hargx-search-overlay__suggestion-heading {
+  margin: 0 0 12px;
+  color: var(--color-muted-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hargx-search-overlay__suggestion-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 20px;
+}
+
+.hargx-search-overlay__suggestion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 8px;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.hargx-search-overlay__suggestion:hover {
+  background: var(--color-warm-background);
+}
+
+.hargx-search-overlay__suggestion img,
+.hargx-search-overlay__suggestion-placeholder {
+  display: block;
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  background: var(--color-warm-background);
+}
+
+.hargx-search-overlay__suggestion-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted-text);
+  font-size: 10px;
+}
+
+.hargx-search-overlay__suggestion-title {
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+}
+
+.hargx-search-overlay__suggestion-type {
+  display: block;
+  margin-top: 3px;
+  color: var(--color-muted-text);
+  font-size: 11px;
+}
+
+.hargx-search-overlay__message {
+  margin: 0;
+  color: var(--color-muted-text);
+  font-size: 13px;
+}
+
+.hargx-search-overlay__collections {
+  margin-top: 30px;
+}
+
+.hargx-search-overlay__section-heading {
+  margin-bottom: 14px;
+}
+
+.hargx-search-overlay__section-heading h3 {
+  font-size: 16px;
+}
+
+.hargx-search-overlay__section-heading > a {
+  color: var(--color-text);
+  font-size: 12px;
+  text-underline-offset: 3px;
+}
+
+.hargx-search-overlay__collection-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hargx-search-overlay__collection {
+  min-width: 0;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.hargx-search-overlay__collection-image {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1.25;
+  background: var(--color-warm-background);
+}
+
+.hargx-search-overlay__collection-image img,
+.hargx-search-overlay__collection-image svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.hargx-search-overlay__collection:hover img,
+.hargx-search-overlay__collection:hover svg {
+  transform: scale(1.04);
+}
+
+.hargx-search-overlay__collection-title {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .hargx-header__action svg {
   width: 21px;
   height: 21px;
@@ -1509,6 +1918,39 @@
     display: none;
   }
 
+  .hargx-search-overlay {
+    padding: 0 12px 20px;
+  }
+
+  .hargx-search-overlay__panel {
+    width: 100%;
+    margin-top: 12px;
+    padding: 20px 16px 24px;
+  }
+
+  .hargx-search-overlay__form {
+    gap: 8px;
+    padding-left: 12px;
+  }
+
+  .hargx-search-overlay__input {
+    font-size: 14px;
+  }
+
+  .hargx-search-overlay__submit {
+    padding-inline: 14px;
+  }
+
+  .hargx-search-overlay__suggestion-list {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .hargx-search-overlay__collection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
 }
 
 /* ========================================
@@ -1558,6 +2000,245 @@
   const mobileOverlay = header.querySelector(
     '.hargx-mobile-menu__overlay'
   );
+
+  const searchOverlay = header.querySelector(
+    '[data-hargx-search-overlay]'
+  );
+  const searchOpenButton = header.querySelector(
+    '[data-hargx-search-open]'
+  );
+  const searchInput = header.querySelector(
+    '[data-hargx-search-input]'
+  );
+  const searchSuggestions = header.querySelector(
+    '[data-hargx-search-suggestions]'
+  );
+  const searchCloseButtons = header.querySelectorAll(
+    '[data-hargx-search-close]'
+  );
+
+  if (
+    searchOverlay &&
+    searchOpenButton &&
+    searchInput &&
+    searchSuggestions
+  ) {
+    let searchTimer;
+    let activeRequest;
+    let previousOverflow = '';
+
+    const closeSearch = () => {
+      if (searchOverlay.hidden) {
+        return;
+      }
+
+      searchOverlay.hidden = true;
+      searchOverlay.setAttribute('aria-hidden', 'true');
+      searchOpenButton.setAttribute('aria-expanded', 'false');
+      document.documentElement.style.overflow = previousOverflow;
+      window.clearTimeout(searchTimer);
+
+      if (activeRequest) {
+        activeRequest.abort();
+        activeRequest = null;
+      }
+
+      searchOpenButton.focus();
+    };
+
+    searchOpenButton.addEventListener('click', () => {
+      if (mobileMenu?.classList.contains('is-open')) {
+        mobileClose?.click();
+      }
+
+      previousOverflow = document.documentElement.style.overflow;
+      searchOverlay.hidden = false;
+      searchOverlay.setAttribute('aria-hidden', 'false');
+      searchOpenButton.setAttribute('aria-expanded', 'true');
+      document.documentElement.style.overflow = 'hidden';
+
+      window.requestAnimationFrame(() => {
+        searchInput.focus();
+      });
+    });
+
+    searchCloseButtons.forEach((button) => {
+      button.addEventListener('click', closeSearch);
+    });
+
+    const addSuggestionGroup = (title, results, type) => {
+      if (!results.length) {
+        return;
+      }
+
+      const heading = document.createElement('h3');
+      heading.className = 'hargx-search-overlay__suggestion-heading';
+      heading.textContent = title;
+
+      const list = document.createElement('div');
+      list.className = 'hargx-search-overlay__suggestion-list';
+
+      results.forEach((result) => {
+        const link = document.createElement('a');
+        link.className = 'hargx-search-overlay__suggestion';
+        link.href = result.url;
+
+        const imageUrl =
+          (typeof result.featured_image === 'string'
+            ? result.featured_image
+            : result.featured_image?.url) ||
+          result.image ||
+          result.image_url;
+
+        if (imageUrl) {
+          const image = document.createElement('img');
+          image.src = imageUrl;
+          image.alt = '';
+          image.loading = 'lazy';
+          link.appendChild(image);
+        } else {
+          const placeholder = document.createElement('span');
+          placeholder.className =
+            'hargx-search-overlay__suggestion-placeholder';
+          placeholder.setAttribute('aria-hidden', 'true');
+          placeholder.textContent = type;
+          link.appendChild(placeholder);
+        }
+
+        const details = document.createElement('span');
+        details.className = 'hargx-search-overlay__suggestion-title';
+        details.textContent = result.title;
+
+        const resultType = document.createElement('span');
+        resultType.className = 'hargx-search-overlay__suggestion-type';
+        resultType.textContent = type;
+        details.appendChild(resultType);
+        link.appendChild(details);
+        list.appendChild(link);
+      });
+
+      searchSuggestions.append(heading, list);
+    };
+
+    searchInput.addEventListener('input', () => {
+      window.clearTimeout(searchTimer);
+
+      if (activeRequest) {
+        activeRequest.abort();
+        activeRequest = null;
+      }
+
+      const query = searchInput.value.trim();
+      searchSuggestions.replaceChildren();
+
+      if (query.length < 2) {
+        return;
+      }
+
+      searchTimer = window.setTimeout(async () => {
+        const suggestUrl = new URL(
+          searchOverlay.dataset.suggestUrl,
+          window.location.origin
+        );
+        suggestUrl.searchParams.set('q', query);
+        suggestUrl.searchParams.set(
+          'resources[type]',
+          'product,collection'
+        );
+        suggestUrl.searchParams.set('resources[limit]', '5');
+        suggestUrl.searchParams.set(
+          'resources[options][unavailable_products]',
+          'hide'
+        );
+
+        const requestController = new AbortController();
+        activeRequest = requestController;
+
+        try {
+          const response = await fetch(suggestUrl.toString(), {
+            headers: { Accept: 'application/json' },
+            signal: requestController.signal
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              `Predictive search request failed: ${response.status}`
+            );
+          }
+
+          const data = await response.json();
+
+          if (searchInput.value.trim() !== query) {
+            return;
+          }
+
+          const results = data.resources?.results || {};
+          const products = results.products || [];
+          const collections = results.collections || [];
+
+          addSuggestionGroup('Products', products, 'Product');
+          addSuggestionGroup('Collections', collections, 'Collection');
+
+          if (!products.length && !collections.length) {
+            const message = document.createElement('p');
+            message.className = 'hargx-search-overlay__message';
+            message.textContent = 'No suggestions found. Try another search.';
+            searchSuggestions.appendChild(message);
+          }
+        } catch (error) {
+          if (error.name === 'AbortError') {
+            return;
+          }
+
+          console.error('HARGX predictive search failed:', error);
+          const message = document.createElement('p');
+          message.className = 'hargx-search-overlay__message';
+          message.textContent =
+            'Suggestions could not be loaded. Submit your search to see results.';
+          searchSuggestions.replaceChildren(message);
+        } finally {
+          if (activeRequest === requestController) {
+            activeRequest = null;
+          }
+        }
+      }, 250);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (searchOverlay.hidden) {
+        return;
+      }
+
+      if (event.key === 'Escape') {
+        closeSearch();
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        const focusableElements = Array.from(
+          searchOverlay.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled])'
+          )
+        ).filter((element) => element.offsetParent !== null);
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (
+          event.shiftKey &&
+          document.activeElement === firstElement
+        ) {
+          event.preventDefault();
+          lastElement?.focus();
+        } else if (
+          !event.shiftKey &&
+          document.activeElement === lastElement
+        ) {
+          event.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    });
+  }
 
   if (mobileToggle && mobileMenu) {
 
@@ -1802,6 +2483,13 @@
       "type": "link_list",
       "id": "menu",
       "label": "Main menu"
+    },
+    {
+      "type": "collection_list",
+      "id": "search_collections",
+      "label": "Search overlay collections",
+      "info": "Choose collections to display below search suggestions.",
+      "limit": 4
     },
     {
       "type": "checkbox",
