@@ -1,0 +1,200 @@
+
+/* HARGX Logo Marquee */
+
+[id^="HargxLogoMarquee-"] {
+  position: relative;
+  overflow: hidden;
+  background: var(--hargx-marquee-bg);
+  color: var(--hargx-marquee-text);
+  padding-top: var(--hargx-marquee-padding-top);
+  padding-bottom: var(--hargx-marquee-padding-bottom);
+  border-top: 1px solid var(--hargx-marquee-border);
+  border-bottom: 1px solid var(--hargx-marquee-border);
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__container {
+  width: 100%;
+}
+
+/* Header */
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__header {
+  margin-bottom: 34px;
+  text-align: center;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__eyebrow {
+  margin-bottom: 8px;
+  color: var(--hargx-marquee-accent);
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__heading {
+  margin: 0;
+  color: var(--hargx-marquee-text);
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Viewport */
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__viewport::before,
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__viewport::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__viewport::before {
+  left: 0;
+  background: linear-gradient(to right, var(--hargx-marquee-bg), transparent);
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__viewport::after {
+  right: 0;
+  background: linear-gradient(to left, var(--hargx-marquee-bg), transparent);
+}
+
+/* Track */
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__track {
+  display: flex;
+  width: max-content;
+  animation: hargxLogoMarquee var(--hargx-marquee-speed) linear infinite;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 170px;
+  margin-right: 54px;
+}
+
+/* Logo */
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--hargx-marquee-logo-height) + 20px);
+  color: var(--hargx-marquee-text);
+  text-decoration: none;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__logo {
+  display: block;
+  width: auto;
+  max-width: 180px;
+  height: var(--hargx-marquee-logo-height);
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.48;
+  transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__link:hover .hargx-logo-marquee__logo {
+  filter: grayscale(0%);
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+/* Text fallback */
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__text-logo {
+  display: block;
+  color: var(--hargx-marquee-text);
+  opacity: 0.48;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__link:hover .hargx-logo-marquee__text-logo {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+/* Pause on hover */
+
+[id^="HargxLogoMarquee-"] .hargx-logo-marquee__viewport[data-pause-on-hover]:hover .hargx-logo-marquee__track {
+  animation-play-state: paused;
+}
+
+/* Animation */
+
+@keyframes hargxLogoMarquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Mobile */
+
+@media screen and (max-width: 749px) {
+  [id^="HargxLogoMarquee-"] {
+    padding-top: calc(var(--hargx-marquee-padding-top) * 0.75);
+    padding-bottom: calc(var(--hargx-marquee-padding-bottom) * 0.75);
+  }
+
+  [id^="HargxLogoMarquee-"] .hargx-logo-marquee__header {
+    margin-bottom: 24px;
+  }
+
+  [id^="HargxLogoMarquee-"] .hargx-logo-marquee__heading {
+    font-size: 19px;
+  }
+
+  [id^="HargxLogoMarquee-"] .hargx-logo-marquee__item {
+    min-width: 130px;
+    margin-right: 34px;
+  }
+
+  [id^="HargxLogoMarquee-"] .hargx-logo-marquee__logo {
+    max-width: 140px;
+    height: calc(var(--hargx-marquee-logo-height) * 0.85);
+  }
+
+  [id^="HargxLogoMarquee-"] .hargx-logo-marquee__viewport::before,
+  [id^="HargxLogoMarquee-"] .hargx-logo-marquee__viewport::after {
+    width: 45px;
+  }
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  [id^="HargxLogoMarquee-"] .hargx-logo-marquee__track {
+    animation: none;
+  }
+}
