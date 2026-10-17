@@ -643,6 +643,7 @@
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
+  padding-top: 1rem;
 }
 
 .hargx-complementary-products--slider
