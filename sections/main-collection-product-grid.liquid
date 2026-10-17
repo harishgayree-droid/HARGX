@@ -9,7 +9,10 @@
 
 <section
   id="HargxCollectionGrid-{{ section.id }}"
-  class="hargx-collection"
+  class="
+    hargx-collection
+    {% if desktop_filter_layout == 'drawer' %}hargx-collection--filter-drawer{% endif %}
+  "
   data-section-id="{{ section.id }}"
 >
 
@@ -143,7 +146,7 @@
             <button
               type="button"
               class="hargx-filter-drawer__apply"
-              data-hargx-filter-close
+              data-hargx-filter-apply
             >
               Done
             </button>
@@ -1206,8 +1209,7 @@
   display: none;
 }
 
-.hargx-collection__filter-system--drawer
-~ .hargx-filter-trigger {
+.hargx-collection--filter-drawer > .hargx-filter-trigger {
   display: inline-flex;
 }
 
