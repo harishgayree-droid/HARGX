@@ -305,6 +305,18 @@
   margin: 0;
 }
 
+.hargx-product-card__quick-add-error {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  left: 0;
+  padding: 8px 10px;
+  background: #fff;
+  color: #b42318;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
 .hargx-product-card__media > .hargx-product-card__quick-add {
   position: absolute;
   z-index: 4;

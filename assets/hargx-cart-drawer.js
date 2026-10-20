@@ -191,6 +191,106 @@
       }
     );
 
+    document.addEventListener(
+      'submit',
+      async function (event) {
+        const form = event.target.closest(
+          '[data-hargx-quick-add-form]'
+        );
+
+        if (!form) return;
+
+        const drawer = document.querySelector(
+          SELECTORS.drawer
+        );
+
+        if (!drawer) return;
+
+        event.preventDefault();
+
+        const button = form.querySelector(
+          'button[type="submit"]'
+        );
+        const buttonText = button?.querySelector('span');
+        const errorMessage = form.querySelector(
+          '[data-hargx-quick-add-error]'
+        );
+
+        if (!button || button.disabled) return;
+
+        const originalText = buttonText?.textContent || button.textContent;
+
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.classList.add('is-loading');
+        if (buttonText) buttonText.textContent = 'Adding...';
+        if (errorMessage) {
+          errorMessage.hidden = true;
+          errorMessage.textContent = '';
+        }
+
+        try {
+          const response = await fetch(
+            window.Shopify.routes.root + 'cart/add.js',
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+              },
+              body: new FormData(form)
+            }
+          );
+          const responseData = await response.json().catch(() => null);
+
+          if (!response.ok) {
+            throw new Error(
+              responseData?.description ||
+                responseData?.message ||
+                'Unable to add product to cart.'
+            );
+          }
+
+          if (buttonText) buttonText.textContent = 'Added';
+          document.dispatchEvent(
+            new CustomEvent('hargx:cart-add-success', {
+              bubbles: true,
+              detail: { item: responseData }
+            })
+          );
+          document.dispatchEvent(
+            new CustomEvent('hargx:cart-updated', {
+              bubbles: true,
+              detail: { item: responseData }
+            })
+          );
+        } catch (error) {
+          console.error(
+            'HARGX Featured Collection: Add to cart failed.',
+            error
+          );
+
+          if (errorMessage) {
+            errorMessage.textContent =
+              error.message || 'Unable to add product to cart.';
+            errorMessage.hidden = false;
+          } else {
+            window.alert(
+              error.message || 'Unable to add product to cart.'
+            );
+          }
+        } finally {
+          button.disabled = false;
+          button.removeAttribute('aria-busy');
+          button.classList.remove('is-loading');
+          if (buttonText) {
+            window.setTimeout(() => {
+              buttonText.textContent = originalText.trim();
+            }, 1200);
+          }
+        }
+      }
+    );
 
     document.addEventListener(
       'keydown',

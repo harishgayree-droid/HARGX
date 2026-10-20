@@ -240,6 +240,7 @@
                     action="{{ routes.cart_add_url }}"
                     class="hargx-product-card__quick-add-form"
                     enctype="multipart/form-data"
+                    data-hargx-quick-add-form
                   >
                     <input
                       type="hidden"
@@ -272,6 +273,12 @@
                         />
                       </svg>
                     </button>
+                    <span
+                      class="hargx-product-card__quick-add-error"
+                      data-hargx-quick-add-error
+                      role="alert"
+                      hidden
+                    ></span>
                   </form>
 
                 {%- else -%}
