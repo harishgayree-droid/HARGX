@@ -106,7 +106,7 @@
       ],
       "settings": {
         "media_layout": "thumbnail-slider",
-        "enable_info_scroll": false
+        "enable_info_scroll": true
       }
     },
     "hargx_recommended_products_F4H7zN": {
