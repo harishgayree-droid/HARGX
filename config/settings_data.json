@@ -21,10 +21,12 @@
           "show_upsell": true,
           "upsell_heading": "You may also like",
           "upsell_products": [
-            "bilona-cow-ghee-500g",
-            "care-three-product"
+            "full-cream-cow-milk-1-litre",
+            "low-fat-cow-milk-1-litre",
+            "organic-buffalo-milk-1-litre",
+            "organic-cow-ghee-500g"
           ],
-          "upsell_limit": 2,
+          "upsell_limit": 4,
           "upsell_button_text": "Add",
           "checkout_note": "Taxes and shipping calculated at checkout.",
           "view_cart_text": "View cart",
