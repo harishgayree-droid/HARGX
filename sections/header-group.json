@@ -67,7 +67,7 @@
           "cow-milk",
           "ghee"
         ],
-        "sticky_header": false,
+        "sticky_header": true,
         "customer_account_menu": "customer-account-main-menu"
       }
     }
