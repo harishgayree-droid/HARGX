@@ -370,7 +370,11 @@
 
               {%- for product in collection.products -%}
 
-                {% render 'hargx-product-card', product: product %}
+                {% render 'hargx-product-card',
+                  product: product,
+                  show_add_to_cart: section.settings.show_add_to_cart,
+                  add_to_cart_text: section.settings.add_to_cart_text
+                %}
 
               {%- endfor -%}
 
@@ -417,7 +421,11 @@
 
             {%- for product in collection.products -%}
 
-              {% render 'hargx-product-card', product: product %}
+              {% render 'hargx-product-card',
+                product: product,
+                show_add_to_cart: section.settings.show_add_to_cart,
+                add_to_cart_text: section.settings.add_to_cart_text
+              %}
 
             {%- endfor -%}
 
@@ -561,6 +569,18 @@
         }
       ],
       "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_add_to_cart",
+      "label": "Show add to cart button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "label": "Add to cart button text",
+      "default": "Add to cart"
     },
     {
         "type": "select",

@@ -266,7 +266,7 @@
           );
         } catch (error) {
           console.error(
-            'HARGX Featured Collection: Add to cart failed.',
+            'HARGX Quick Add: Add to cart failed.',
             error
           );
 

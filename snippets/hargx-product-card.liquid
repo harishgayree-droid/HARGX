@@ -106,4 +106,64 @@
 
   </a>
 
+  {%- if show_add_to_cart -%}
+    <form
+      method="post"
+      action="{{ routes.cart_add_url }}"
+      class="hargx-product-card__quick-add-form"
+      enctype="multipart/form-data"
+      data-hargx-quick-add-form
+    >
+      {%- if product.variants.size > 1 -%}
+        <label class="hargx-product-card__variant-label" for="HargxProductVariant-{{ section.id }}-{{ product.id }}">
+          Options
+        </label>
+        <select
+          id="HargxProductVariant-{{ section.id }}-{{ product.id }}"
+          class="hargx-product-card__variant-select"
+          name="id"
+          aria-label="Choose an option for {{ product.title | escape }}"
+          {% unless product.available %}disabled{% endunless %}
+        >
+          {%- for variant in product.variants -%}
+            <option
+              value="{{ variant.id }}"
+              {% if variant.id == product.selected_or_first_available_variant.id %}selected{% endif %}
+              {% unless variant.available %}disabled{% endunless %}
+            >
+              {{ variant.title | escape }}{% unless variant.available %} - Sold out{% endunless %}
+            </option>
+          {%- endfor -%}
+        </select>
+      {%- else -%}
+        <input
+          type="hidden"
+          name="id"
+          value="{{ product.selected_or_first_available_variant.id }}"
+        >
+      {%- endif -%}
+
+      <button
+        type="submit"
+        class="hargx-product-card__quick-add"
+        aria-label="Add {{ product.title | escape }} to cart"
+        {% unless product.available %}disabled{% endunless %}
+      >
+        <span>
+          {%- if product.available -%}
+            {{ add_to_cart_text | default: 'Add to cart' | escape }}
+          {%- else -%}
+            Sold out
+          {%- endif -%}
+        </span>
+      </button>
+      <span
+        class="hargx-product-card__quick-add-error"
+        data-hargx-quick-add-error
+        role="alert"
+        hidden
+      ></span>
+    </form>
+  {%- endif -%}
+
 </article>
