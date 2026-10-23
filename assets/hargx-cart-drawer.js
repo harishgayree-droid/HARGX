@@ -171,6 +171,59 @@
     document.addEventListener(
       'click',
       function (event) {
+        const variantSwatch = event.target.closest(
+          '[data-hargx-card-variant]'
+        );
+
+        if (!variantSwatch) return;
+
+        const card = variantSwatch.closest(
+          '.hargx-product-card'
+        );
+
+        const variantInput = card?.querySelector(
+          '[data-hargx-card-variant-id]'
+        );
+
+        if (!card || !variantInput) return;
+
+        variantInput.value = variantSwatch.dataset.variantId;
+
+        card.querySelectorAll(
+          '[data-hargx-card-variant]'
+        ).forEach((swatch) => {
+          const isSelected = swatch === variantSwatch;
+
+          swatch.setAttribute('aria-pressed', String(isSelected));
+          swatch.toggleAttribute('data-selected', isSelected);
+        });
+
+        const currentPrice = card.querySelector(
+          '[data-hargx-card-current-price]'
+        );
+
+        const comparePrice = card.querySelector(
+          '[data-hargx-card-compare-price]'
+        );
+
+        if (currentPrice) {
+          currentPrice.textContent = variantSwatch.dataset.variantPrice;
+        }
+
+        if (comparePrice) {
+          const hasComparePrice =
+            variantSwatch.dataset.variantOnSale === 'true';
+
+          comparePrice.textContent =
+            variantSwatch.dataset.variantComparePrice;
+          comparePrice.hidden = !hasComparePrice;
+        }
+      }
+    );
+
+    document.addEventListener(
+      'click',
+      function (event) {
         const openTrigger =
           event.target.closest(
             '[data-hargx-cart-drawer-open]'

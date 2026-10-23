@@ -1,4 +1,5 @@
 <article class="hargx-product-card">
+  {%- assign selected_variant = product.selected_or_first_available_variant -%}
 
   <div class="hargx-product-card__media">
     <a
@@ -73,40 +74,19 @@
 
     {%- if show_add_to_cart -%}
       <form
+        id="HargxQuickAdd-{{ section.id }}-{{ product.id }}"
         method="post"
         action="{{ routes.cart_add_url }}"
         class="hargx-product-card__quick-add-form"
         enctype="multipart/form-data"
         data-hargx-quick-add-form
       >
-        {%- if product.variants.size > 1 -%}
-          <label class="hargx-product-card__variant-label" for="HargxProductVariant-{{ section.id }}-{{ product.id }}">
-            Options
-          </label>
-          <select
-            id="HargxProductVariant-{{ section.id }}-{{ product.id }}"
-            class="hargx-product-card__variant-select"
-            name="id"
-            aria-label="Choose an option for {{ product.title | escape }}"
-            {% unless product.available %}disabled{% endunless %}
-          >
-            {%- for variant in product.variants -%}
-              <option
-                value="{{ variant.id }}"
-                {% if variant.id == product.selected_or_first_available_variant.id %}selected{% endif %}
-                {% unless variant.available %}disabled{% endunless %}
-              >
-                {{ variant.title | escape }}{% unless variant.available %} - Sold out{% endunless %}
-              </option>
-            {%- endfor -%}
-          </select>
-        {%- else -%}
-          <input
-            type="hidden"
-            name="id"
-            value="{{ product.selected_or_first_available_variant.id }}"
-          >
-        {%- endif -%}
+        <input
+          type="hidden"
+          name="id"
+          value="{{ selected_variant.id }}"
+          data-hargx-card-variant-id
+        >
 
         <button
           type="submit"
@@ -158,25 +138,51 @@
 
     <div class="hargx-product-card__price">
 
-        {%- if product.compare_at_price > product.price -%}
+        {%- if selected_variant.compare_at_price > selected_variant.price -%}
 
-          <span class="hargx-product-card__price-current">
-            {{ product.price | money }}
+          <span class="hargx-product-card__price-current" data-hargx-card-current-price>
+            {{ selected_variant.price | money }}
           </span>
 
-          <s class="hargx-product-card__price-compare">
-            {{ product.compare_at_price | money }}
+          <s class="hargx-product-card__price-compare" data-hargx-card-compare-price>
+            {{ selected_variant.compare_at_price | money }}
           </s>
 
         {%- else -%}
 
-          <span class="hargx-product-card__price-current">
-            {{ product.price | money }}
+          <span class="hargx-product-card__price-current" data-hargx-card-current-price>
+            {{ selected_variant.price | money }}
           </span>
+          <s class="hargx-product-card__price-compare" data-hargx-card-compare-price hidden></s>
 
         {%- endif -%}
 
     </div>
+
+    {%- if show_add_to_cart and product.variants.size > 1 -%}
+      <fieldset class="hargx-product-card__variants">
+        <legend class="hargx-product-card__variants-label">Options</legend>
+        <div class="hargx-product-card__variant-swatches">
+          {%- for variant in product.variants -%}
+            <button
+              type="button"
+              class="hargx-product-card__variant-swatch"
+              data-hargx-card-variant
+              data-variant-id="{{ variant.id }}"
+              data-variant-price="{{ variant.price | money | escape }}"
+              data-variant-compare-price="{{ variant.compare_at_price | money | escape }}"
+              data-variant-on-sale="{% if variant.compare_at_price > variant.price %}true{% else %}false{% endif %}"
+              aria-pressed="{% if variant.id == selected_variant.id %}true{% else %}false{% endif %}"
+              aria-label="{{ variant.title | escape }}{% unless variant.available %} - Sold out{% endunless %}"
+              {% if variant.id == selected_variant.id %}data-selected{% endif %}
+              {% unless variant.available %}disabled{% endunless %}
+            >
+              {{ variant.title | escape }}
+            </button>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endif -%}
 
   </div>
 </article>
