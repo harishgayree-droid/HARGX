@@ -1,83 +1,483 @@
-{% comment %}
-  This section is used in the list-collections template to render a list of
-  collections.
+{{ 'hargx-collection-list.css' | asset_url | stylesheet_tag }}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
-{% endcomment %}
-
-<h1>{{ 'collections.title' | t }}</h1>
-
-<div
-  class="collections {{ section.settings.grid_item_width }}"
-  style="--grid-gap: {{ section.settings.grid_gap }}px"
+<section
+  id="HargxCollectionList-{{ section.id }}"
+  class="hargx-collection-list hargx-collection-list--{{ section.settings.card_style }}"
+  style="
+    --hargx-collection-list-columns: {{ section.settings.columns_desktop }};
+    --hargx-collection-list-columns-tablet: {{ section.settings.columns_tablet }};
+    --hargx-collection-list-columns-mobile: {{ section.settings.columns_mobile }};
+    --hargx-collection-list-image-ratio: {{ section.settings.image_ratio }};
+    --hargx-collection-list-image-fit: {{ section.settings.image_fit }};
+    --hargx-collection-list-card-text-alignment: {{ section.settings.card_text_alignment }};
+    --hargx-collection-list-gap: {{ section.settings.gap }}px;
+    --hargx-collection-list-gap-mobile: {{ section.settings.gap_mobile }}px;
+    --hargx-collection-list-radius: {{ section.settings.card_radius }}px;
+    --hargx-collection-list-background: {{ section.settings.background_color }};
+    --hargx-collection-list-text: {{ section.settings.text_color }};
+    --hargx-collection-list-card-background: {{ section.settings.card_background_color }};
+    --hargx-collection-list-accent: {{ section.settings.accent_color }};
+    --hargx-collection-list-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-collection-list-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --hargx-collection-list-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --hargx-collection-list-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
 >
-  {% for collection in collections %}
-    <a class="collection-card" href="{{ collection.url }}">
-      {% if collection.featured_image %}
-        {% render 'image',
-          class: 'collection-card__image',
-          image: collection.featured_image,
-          width: 600,
-          height: 600,
-          crop: 'center'
-        %}
-      {% endif %}
+  <div class="hargx-collection-list__container{% if section.settings.container_width == 'wide' %} hargx-collection-list__container--wide{% endif %}">
+    {%- if section.settings.eyebrow != blank
+      or section.settings.heading != blank
+      or section.settings.description != blank
+    -%}
+      <div class="hargx-collection-list__header hargx-collection-list__header--{{ section.settings.text_alignment }}">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hargx-collection-list__eyebrow">
+            {{ section.settings.eyebrow | escape }}
+          </p>
+        {%- endif -%}
 
-      <div class="collection-card__content">
-        <p>{{ collection.title }}</p>
+        {%- if section.settings.heading != blank -%}
+          <{{ section.settings.heading_tag }} class="hargx-collection-list__heading hargx-collection-list__heading--{{ section.settings.heading_size }}">
+            {{ section.settings.heading | escape }}
+          </{{ section.settings.heading_tag }}>
+        {%- endif -%}
 
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
-        {% endif %}
+        {%- if section.settings.description != blank -%}
+          <div class="hargx-collection-list__description">
+            {{ section.settings.description }}
+          </div>
+        {%- endif -%}
       </div>
-    </a>
-  {% endfor %}
-</div>
+    {%- endif -%}
 
-{% stylesheet %}
-  .collections {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
-    gap: var(--grid-gap);
-  }
-  .collections--compact {
-    --collection-card-size: 160px;
-  }
-  .collections--full {
-    --collection-card-size: 280px;
-  }
-  .collection-card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-{% endstylesheet %}
+    <div class="hargx-collection-list__grid">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.collection != blank -%}
+            {% render 'hargx-collection-list-card',
+              collection: block.settings.collection,
+              section_settings: section.settings,
+              block_attributes: block.shopify_attributes
+            %}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for collection in collections -%}
+          {% render 'hargx-collection-list-card',
+            collection: collection,
+            section_settings: section.settings
+          %}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
 
 {% schema %}
 {
-  "name": "t:general.collections_grid",
+  "name": "HARGX Collection List",
+  "tag": "section",
+  "class": "section-hargx-collection-list",
+  "max_blocks": 16,
   "settings": [
     {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Collections"
+    },
+    {
       "type": "select",
-      "id": "grid_item_width",
-      "label": "t:labels.grid_item_width",
+      "id": "heading_tag",
+      "label": "Heading level",
       "options": [
-        { "value": "collections--compact", "label": "t:options.size.small" },
-        { "value": "collections--full", "label": "t:options.size.large" }
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        }
       ],
-      "default": "collections--full"
+      "default": "h1"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Header alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "container_width",
+      "label": "Content width",
+      "options": [
+        {
+          "value": "page",
+          "label": "Page width"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "options": [
+        {
+          "value": "2",
+          "label": "2 columns"
+        },
+        {
+          "value": "3",
+          "label": "3 columns"
+        },
+        {
+          "value": "4",
+          "label": "4 columns"
+        },
+        {
+          "value": "5",
+          "label": "5 columns"
+        }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "columns_tablet",
+      "label": "Tablet columns",
+      "options": [
+        {
+          "value": "2",
+          "label": "2 columns"
+        },
+        {
+          "value": "3",
+          "label": "3 columns"
+        },
+        {
+          "value": "4",
+          "label": "4 columns"
+        }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobile columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Fill image area"
+        },
+        {
+          "value": "contain",
+          "label": "Show full image"
+        }
+      ],
+      "default": "cover"
     },
     {
       "type": "range",
-      "id": "grid_gap",
-      "label": "t:labels.grid_gap",
+      "id": "gap",
+      "label": "Desktop grid gap",
       "min": 0,
-      "max": 50,
-      "step": 5,
+      "max": 48,
+      "step": 2,
       "unit": "px",
-      "default": 10
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Mobile grid gap",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Collection cards"
+    },
+    {
+      "type": "select",
+      "id": "card_text_alignment",
+      "label": "Card text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "1 / 1",
+          "label": "Square"
+        },
+        {
+          "value": "4 / 5",
+          "label": "Portrait"
+        },
+        {
+          "value": "3 / 4",
+          "label": "Tall portrait"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Landscape"
+        },
+        {
+          "value": "16 / 9",
+          "label": "Wide"
+        }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Card style",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "soft",
+          "label": "Soft border"
+        },
+        {
+          "value": "sharp",
+          "label": "Sharp corners"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "label": "Show collection description",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "description_words",
+      "label": "Description length",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "default": 15
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "card_background_color",
+      "label": "Card background",
+      "default": "#F5F3EF"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#FE7442"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom spacing",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
     }
   ],
-  "presets": [{ "name": "t:general.collections_grid" }]
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Collection List",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

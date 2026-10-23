@@ -1,0 +1,178 @@
+.hargx-collection-list {
+  background: var(--hargx-collection-list-background);
+  color: var(--hargx-collection-list-text);
+}
+
+.hargx-collection-list__container {
+  max-width: var(--page-width, 1200px);
+  margin: 0 auto;
+  padding: var(--hargx-collection-list-padding-top) 20px var(--hargx-collection-list-padding-bottom);
+}
+
+.hargx-collection-list__container--wide {
+  max-width: 1600px;
+}
+
+.hargx-collection-list__header {
+  max-width: 760px;
+  margin-bottom: 36px;
+}
+
+.hargx-collection-list__header--left {
+  margin-right: auto;
+  text-align: left;
+}
+
+.hargx-collection-list__header--center {
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+}
+
+.hargx-collection-list__header--right {
+  margin-left: auto;
+  text-align: right;
+}
+
+.hargx-collection-list__eyebrow {
+  margin: 0 0 10px;
+  color: var(--hargx-collection-list-accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.hargx-collection-list__heading {
+  margin: 0;
+  color: inherit;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.hargx-collection-list__heading--small {
+  font-size: clamp(24px, 3vw, 32px);
+}
+
+.hargx-collection-list__heading--medium {
+  font-size: clamp(28px, 3.5vw, 40px);
+}
+
+.hargx-collection-list__heading--large {
+  font-size: clamp(32px, 4vw, 48px);
+}
+
+.hargx-collection-list__description {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.7;
+  opacity: 0.72;
+}
+
+.hargx-collection-list__description p {
+  margin: 0;
+}
+
+.hargx-collection-list__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--hargx-collection-list-columns), minmax(0, 1fr));
+  gap: var(--hargx-collection-list-gap);
+}
+
+.hargx-collection-list__card {
+  display: block;
+  overflow: hidden;
+  min-width: 0;
+  border-radius: var(--hargx-collection-list-radius);
+  background: var(--hargx-collection-list-card-background);
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.hargx-collection-list__card:hover {
+  transform: translateY(-3px);
+}
+
+.hargx-collection-list--soft .hargx-collection-list__card {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.hargx-collection-list--sharp .hargx-collection-list__card {
+  border-radius: 0;
+}
+
+.hargx-collection-list__media {
+  overflow: hidden;
+  aspect-ratio: var(--hargx-collection-list-image-ratio);
+}
+
+.hargx-collection-list__image,
+.hargx-collection-list__placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--hargx-collection-list-image-fit);
+  transition: transform 0.5s ease;
+}
+
+.hargx-collection-list__card:hover .hargx-collection-list__image {
+  transform: scale(1.04);
+}
+
+.hargx-collection-list__placeholder {
+  background: var(--hargx-collection-list-card-background);
+}
+
+.hargx-collection-list__card-content {
+  padding: 18px;
+  text-align: var(--hargx-collection-list-card-text-alignment);
+}
+
+.hargx-collection-list__card-title {
+  margin: 0;
+  color: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.hargx-collection-list__product-count,
+.hargx-collection-list__card-description {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  opacity: 0.72;
+}
+
+@media screen and (max-width: 989px) {
+  .hargx-collection-list__grid {
+    grid-template-columns: repeat(var(--hargx-collection-list-columns-tablet), minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .hargx-collection-list__container {
+    padding: var(--hargx-collection-list-padding-top-mobile) 16px var(--hargx-collection-list-padding-bottom-mobile);
+  }
+
+  .hargx-collection-list__header {
+    margin-bottom: 26px;
+  }
+
+  .hargx-collection-list__grid {
+    grid-template-columns: repeat(var(--hargx-collection-list-columns-mobile), minmax(0, 1fr));
+    gap: var(--hargx-collection-list-gap-mobile);
+  }
+
+  .hargx-collection-list__card-content {
+    padding: 14px;
+  }
+
+  .hargx-collection-list__card-title {
+    font-size: 16px;
+  }
+}

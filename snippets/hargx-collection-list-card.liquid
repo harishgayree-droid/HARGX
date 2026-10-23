@@ -1,0 +1,51 @@
+{%- liquid
+  assign collection_image = collection.featured_image | default: collection.products.first.featured_image
+-%}
+
+<a
+  class="hargx-collection-list__card"
+  href="{{ collection.url }}"
+  {% if block_attributes != blank %}
+    {{ block_attributes }}
+  {% endif %}
+>
+  <div class="hargx-collection-list__media">
+    {%- if collection_image != blank -%}
+      {{
+        collection_image
+        | image_url: width: 1200
+        | image_tag:
+          loading: 'lazy',
+          widths: '320, 480, 640, 800, 1000, 1200',
+          sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+          class: 'hargx-collection-list__image',
+          alt: collection_image.alt | default: collection.title | escape
+      }}
+    {%- else -%}
+      {{ 'collection-1' | placeholder_svg_tag: 'hargx-collection-list__image hargx-collection-list__placeholder' }}
+    {%- endif -%}
+  </div>
+
+  <div class="hargx-collection-list__card-content">
+    <h3 class="hargx-collection-list__card-title">
+      {{ collection.title | escape }}
+    </h3>
+
+    {%- if section_settings.show_product_count -%}
+      <p class="hargx-collection-list__product-count">
+        {{ collection.products_count }}
+        {%- if collection.products_count == 1 -%}
+          product
+        {%- else -%}
+          products
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+
+    {%- if section_settings.show_collection_description and collection.description != blank -%}
+      <div class="hargx-collection-list__card-description">
+        {{ collection.description | strip_html | truncatewords: section_settings.description_words }}
+      </div>
+    {%- endif -%}
+  </div>
+</a>
