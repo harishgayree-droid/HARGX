@@ -423,13 +423,20 @@
   .hargx-product-card__quick-add-form {
     right: 8px;
     bottom: 8px;
-    left: 8px;
+    left: auto;
+    width: 44px;
     transform: none;
     opacity: 1;
     pointer-events: auto;
   }
 
-  .hargx-product-card__quick-add > span:not([data-hargx-quick-add-error]),
+  .hargx-product-card__quick-add {
+    width: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
+
+  .hargx-product-card__quick-add > span,
   .hargx-product-card__quick-add-arrow {
     display: none;
   }
@@ -437,6 +444,8 @@
   .hargx-product-card__quick-add-cart-icon {
     display: block;
     flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
     transform: none;
   }
 }
