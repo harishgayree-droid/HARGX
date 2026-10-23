@@ -289,12 +289,30 @@
 }
 
 .hargx-product-card__quick-add-form {
+  position: absolute;
+  z-index: 4;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
   display: grid;
   gap: 8px;
-  margin-top: 12px;
+  margin: 0;
+  transform: translateY(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.hargx-product-card:hover .hargx-product-card__quick-add-form,
+.hargx-product-card:focus-within .hargx-product-card__quick-add-form {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .hargx-product-card__variant-label {
+  padding: 8px 10px 0;
+  background: #FFFFFF;
   font-size: 12px;
 }
 
@@ -308,34 +326,45 @@
   color: inherit;
   font: inherit;
   font-size: 13px;
+  pointer-events: auto;
 }
 
 .hargx-product-card__quick-add {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   width: 100%;
   min-height: 44px;
-  padding: 10px 16px;
-  border: 1px solid #000000;
-  background: #000000;
-  color: #FFFFFF;
+  padding: 0 16px;
+  border: 0;
+  background: #FFFFFF;
+  color: #000000;
   font: inherit;
   font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.06em;
+  line-height: 1;
   text-align: center;
-  text-transform: uppercase;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .hargx-product-card__quick-add:hover:not(:disabled) {
   background: #FE7442;
-  border-color: #FE7442;
+  color: #FFFFFF;
+}
+
+.hargx-product-card__quick-add svg {
+  transition: transform 0.25s ease;
+}
+
+.hargx-product-card__quick-add:hover svg {
+  transform: translateX(3px);
 }
 
 .hargx-product-card__quick-add:disabled {
-  opacity: 0.55;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
@@ -345,9 +374,26 @@
 }
 
 .hargx-product-card__quick-add-error {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  left: 0;
+  padding: 8px 10px;
+  background: #FFFFFF;
   color: #B42318;
   font-size: 12px;
   line-height: 1.4;
+}
+
+@media screen and (max-width: 749px) {
+  .hargx-product-card__quick-add-form {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
   /* Pagination */
