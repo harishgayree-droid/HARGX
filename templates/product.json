@@ -121,8 +121,8 @@
         "mobile_columns": "2",
         "show_view_all": true,
         "view_all_text": "View all products",
-        "section_spacing_top": 80,
-        "section_spacing_bottom": 80
+        "section_spacing_top": 36,
+        "section_spacing_bottom": 36
       }
     }
   },
