@@ -517,6 +517,14 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "collections_HxJDci": {
+      "type": "collections",
+      "name": "t:general.collections_grid",
+      "settings": {
+        "grid_item_width": "collections--full",
+        "grid_gap": 10
+      }
     }
   },
   "order": [
@@ -528,6 +536,7 @@
     "hargx_testimonials_wjDjg7",
     "hargx_logo_marquee_94aKjL",
     "hargx_shop_cta_GtHRtx",
-    "hargx_newsletter_4WGDYB"
+    "hargx_newsletter_4WGDYB",
+    "collections_HxJDci"
   ]
 }
