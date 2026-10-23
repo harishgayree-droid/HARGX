@@ -912,7 +912,7 @@
     .hargx-filter-trigger {
       display: flex;
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 0;
     }
 
 
@@ -927,6 +927,8 @@
 
     .hargx-collection__toolbar-sort {
       gap: 5px;
+      flex-wrap: wrap;
+      justify-content: end;
     }
 
     .hargx-collection__sort-label {
