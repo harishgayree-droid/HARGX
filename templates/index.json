@@ -290,6 +290,12 @@
     "collections_HxJDci": {
       "type": "collections",
       "blocks": {
+        "collection_gJLVNg": {
+          "type": "collection",
+          "settings": {
+            "collection": "all-dairy-products"
+          }
+        },
         "collection_kjpwUA": {
           "type": "collection",
           "settings": {
@@ -313,13 +319,21 @@
           "settings": {
             "collection": "buffalo-milk"
           }
+        },
+        "collection_xHn674": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
         }
       },
       "block_order": [
+        "collection_gJLVNg",
         "collection_kjpwUA",
         "collection_fLrKE3",
         "collection_zriiKd",
-        "collection_7M8WL9"
+        "collection_7M8WL9",
+        "collection_xHn674"
       ],
       "name": "t:general.collections_grid",
       "settings": {
