@@ -289,6 +289,38 @@
     },
     "collections_HxJDci": {
       "type": "collections",
+      "blocks": {
+        "collection_kjpwUA": {
+          "type": "collection",
+          "settings": {
+            "collection": "ghee"
+          }
+        },
+        "collection_fLrKE3": {
+          "type": "collection",
+          "settings": {
+            "collection": "all-product"
+          }
+        },
+        "collection_zriiKd": {
+          "type": "collection",
+          "settings": {
+            "collection": "cow-milk"
+          }
+        },
+        "collection_7M8WL9": {
+          "type": "collection",
+          "settings": {
+            "collection": "buffalo-milk"
+          }
+        }
+      },
+      "block_order": [
+        "collection_kjpwUA",
+        "collection_fLrKE3",
+        "collection_zriiKd",
+        "collection_7M8WL9"
+      ],
       "name": "t:general.collections_grid",
       "settings": {
         "eyebrow": "",
