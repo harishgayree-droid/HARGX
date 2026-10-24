@@ -13,8 +13,7 @@
       "type": "hargx-hero",
       "name": "HARGX Hero Banner",
       "settings": {
-        "image": "shopify://shop_images/image_2.png",
-        "mobile_image": "shopify://shop_images/cow-milk-500ml.png",
+        "image": "shopify://shop_images/Timeless_Black_A-Line_Midi_Dress.png",
         "image_alt": "HARGX hero banner",
         "image_loading": "eager",
         "image_position": "center center",
