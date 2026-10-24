@@ -52,7 +52,7 @@
       "type": "hargx-featured-collection",
       "name": "HARGX Featured Collection",
       "settings": {
-        "collection": "buffalo-milk",
+        "collection": "dresses",
         "products_to_show": 8,
         "show_header": true,
         "eyebrow": "Featured",
@@ -343,7 +343,7 @@
         "show_collection_description": false,
         "description_words": 15,
         "show_product_count": false,
-        "background_color": "#FFFFFF",
+        "background_color": "#ffffff",
         "text_color": "#1a1a1a",
         "card_background_color": "#f5f3ef",
         "accent_color": "#fe7442",
