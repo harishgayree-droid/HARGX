@@ -6,7 +6,7 @@
 .hargx-collection-list__container {
   max-width: var(--page-width, 1200px);
   margin: 0 auto;
-  padding: var(--hargx-collection-list-padding-top) 20px var(--hargx-collection-list-padding-bottom);
+  padding: var(--hargx-collection-list-padding-top) 10px var(--hargx-collection-list-padding-bottom);
 }
 
 .hargx-collection-list__container--wide {
@@ -156,7 +156,7 @@
 
 @media screen and (max-width: 749px) {
   .hargx-collection-list__container {
-    padding: var(--hargx-collection-list-padding-top-mobile) 16px var(--hargx-collection-list-padding-bottom-mobile);
+    padding: var(--hargx-collection-list-padding-top-mobile) 10px var(--hargx-collection-list-padding-bottom-mobile);
   }
 
   .hargx-collection-list__header {
