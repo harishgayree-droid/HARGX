@@ -10,8 +10,8 @@
   }
 
   .hargx-shop-category .hargx-shop-category__container {
-    padding-top: var(--hargx-category-padding-top, 80px);
-    padding-bottom: var(--hargx-category-padding-bottom, 80px);
+    padding-top: var(--hargx-category-padding-top, 36px);
+    padding-bottom: var(--hargx-category-padding-bottom, 36px);
   }
 
   /* Header */
@@ -235,9 +235,9 @@
 
   @media screen and (max-width: 749px) {
     .hargx-shop-category .hargx-shop-category__container {
-      padding-top: var(--hargx-category-padding-top-mobile, 52px);
-      padding-bottom: var(--hargx-category-padding-bottom-mobile, 52px);
-    }
+      padding-top: var(--hargx-category-padding-top-mobile, 32px);
+      padding-bottom: var(--hargx-category-padding-bottom-mobile, 32px);
+    } 
 
     .hargx-shop-category .hargx-shop-category__header {
       margin-bottom: 28px;
