@@ -293,25 +293,25 @@
         "collection_gJLVNg": {
           "type": "collection",
           "settings": {
-            "collection": "all-dairy-products"
+            "collection": "best-sellers"
           }
         },
         "collection_kjpwUA": {
           "type": "collection",
           "settings": {
-            "collection": "ghee"
+            "collection": "clothing"
           }
         },
         "collection_zriiKd": {
           "type": "collection",
           "settings": {
-            "collection": "cow-milk"
+            "collection": "t-shirts"
           }
         },
         "collection_7M8WL9": {
           "type": "collection",
           "settings": {
-            "collection": "buffalo-milk"
+            "collection": "new-arrivals"
           }
         }
       },
