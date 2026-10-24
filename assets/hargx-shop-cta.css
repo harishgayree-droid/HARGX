@@ -9,10 +9,6 @@
   overflow: hidden;
 }
 
-[id^="HargxShopCta-"] .hargx-shop-cta__container {
-  width: 100%;
-}
-
 [id^="HargxShopCta-"] .hargx-shop-cta__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
