@@ -343,7 +343,7 @@
         "show_collection_description": false,
         "description_words": 15,
         "show_product_count": false,
-        "background_color": "#ffffff",
+        "background_color": "#FFFFFF",
         "text_color": "#1a1a1a",
         "card_background_color": "#f5f3ef",
         "accent_color": "#fe7442",
