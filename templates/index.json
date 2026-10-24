@@ -96,10 +96,10 @@
         "category_kFU4Nw": {
           "type": "category",
           "settings": {
-            "image": "shopify://shop_images/buffalo-milk-2-litre.png",
-            "title": "Buffalo Milk",
+            "image": "shopify://shop_images/image_ecb1afd4-4c60-4809-83c6-cc09e7f784ca.png",
+            "title": "Best Sellers",
             "description": "Discover the latest additions.",
-            "link": "shopify://collections/buffalo-milk",
+            "link": "shopify://collections/best-sellers",
             "show_link": true,
             "link_text": "Shop now",
             "content_position": "bottom"
@@ -108,10 +108,10 @@
         "category_nrYhaM": {
           "type": "category",
           "settings": {
-            "image": "shopify://shop_images/buffalo-milk-1-litre.png",
+            "image": "shopify://shop_images/BlackA-LineDress_FrontandBackViews_1.png",
             "title": "New Arrivals",
             "description": "Discover the latest additions.",
-            "link": "shopify://collections/all-product",
+            "link": "shopify://collections/new-arrivals",
             "show_link": true,
             "link_text": "Shop now",
             "content_position": "bottom"
@@ -120,10 +120,10 @@
         "category_HQyUgd": {
           "type": "category",
           "settings": {
-            "image": "shopify://shop_images/cow-milk-500ml.png",
-            "title": "Cow Milk",
+            "image": "shopify://shop_images/image_dd9b1b00-734a-41d0-8651-0b70be4302e3.png",
+            "title": "Clothing",
             "description": "Discover the latest additions.",
-            "link": "shopify://collections/cow-milk",
+            "link": "shopify://collections/clothing",
             "show_link": true,
             "link_text": "Shop now",
             "content_position": "bottom"
@@ -132,10 +132,10 @@
         "category_3UiQT6": {
           "type": "category",
           "settings": {
-            "image": "shopify://shop_images/image_971323be-44b8-4015-9e86-8ba80c4bf6fb.png",
+            "image": "shopify://shop_images/TerracottaTieredMaxiDressFrontandBack_1.png",
             "title": "Ghee",
             "description": "Discover the latest additions.",
-            "link": "shopify://collections/ghee",
+            "link": "shopify://collections/dresses",
             "show_link": true,
             "link_text": "Shop now",
             "content_position": "bottom"
