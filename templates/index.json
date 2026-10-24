@@ -31,7 +31,7 @@
         "button_link": "shopify://collections/all-dairy-products",
         "secondary_button_label": "",
         "secondary_button_link": "shopify://collections",
-        "overlay_enabled": true,
+        "overlay_enabled": false,
         "overlay_opacity": 25,
         "text_color": "#ffffff",
         "button_background": "#fe7442",
