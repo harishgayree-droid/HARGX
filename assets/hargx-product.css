@@ -497,7 +497,7 @@
 .hargx-product__trust-item {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   gap: 7px;
 
   min-height: 64px;
