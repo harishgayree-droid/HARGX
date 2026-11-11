@@ -54,15 +54,11 @@
             "show_dynamic_checkout": true
           }
         },
-        "description_FQdaMF": {
-          "type": "description",
-          "settings": {}
-        },
         "collapsible_tab_nj8wYm": {
           "type": "collapsible_tab",
           "settings": {
             "heading": "Product information",
-            "content": "<p>Add your product information here.</p>"
+            "content": "{{ product.description }}"
           }
         },
         "trust_item_aX879d": {
@@ -99,7 +95,6 @@
         "variant_picker_xetgzf",
         "quantity_cprgyK",
         "buy_buttons_dU9heg",
-        "description_FQdaMF",
         "collapsible_tab_nj8wYm",
         "trust_item_aX879d",
         "complementary_products_EfzC3A"
