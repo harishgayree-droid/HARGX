@@ -63,9 +63,10 @@
         "logo_width": 150,
         "menu": "main-menu",
         "search_collections": [
-          "buffalo-milk",
-          "cow-milk",
-          "ghee"
+          "best-sellers",
+          "clothing",
+          "dresses",
+          "new-arrivals"
         ],
         "sticky_header": true,
         "customer_account_menu": "customer-account-main-menu"
