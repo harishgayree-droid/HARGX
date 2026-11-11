@@ -116,6 +116,14 @@ function initHargxProduct(section) {
     '[data-hargx-inventory]'
   );
 
+  const bundleContainer = section.querySelector(
+    '[data-hargx-bundle-container]'
+  );
+
+  let recalculateBundleTotals = null;
+  let bundleAddButton = null;
+  let bundleAddText = null;
+
 
   /*
    * ------------------------------------------------------------
@@ -276,6 +284,25 @@ function initHargxProduct(section) {
         priceCompare.textContent = '';
 
         saleBadge.hidden = true;
+      }
+    }
+
+    if (bundleContainer) {
+      bundleContainer.dataset.mainPrice = variant.price;
+      bundleContainer.dataset.mainComparePrice =
+        variant.compare_at_price || variant.price;
+
+      const mainBundlePrice = bundleContainer.querySelector(
+        '[data-bundle-main-price]'
+      );
+
+      if (mainBundlePrice) {
+        mainBundlePrice.textContent =
+          formatMoney(variant.price);
+      }
+
+      if (typeof recalculateBundleTotals === 'function') {
+        recalculateBundleTotals();
       }
     }
   }
@@ -519,6 +546,217 @@ function initHargxProduct(section) {
 
   /*
    * ------------------------------------------------------------
+   * BUNDLE PRODUCTS
+   * ------------------------------------------------------------
+   */
+
+  if (bundleContainer) {
+    bundleAddButton = bundleContainer.querySelector(
+      '[data-hargx-bundle-add]'
+    );
+
+    bundleAddText = bundleContainer.querySelector(
+      '[data-bundle-button-text]'
+    );
+
+    const bundleItemCheckboxes = bundleContainer.querySelectorAll(
+      '[data-bundle-item-checkbox]'
+    );
+
+    const mainBundleCheckbox = bundleContainer.querySelector(
+      '[data-bundle-main-checkbox]'
+    );
+
+    const bundleVariantSelects = bundleContainer.querySelectorAll(
+      '[data-bundle-variant-select]'
+    );
+
+    const totalPriceEl = bundleContainer.querySelector(
+      '[data-bundle-total-price]'
+    );
+
+    const comparePriceEl = bundleContainer.querySelector(
+      '[data-bundle-total-compare-price]'
+    );
+
+    const countLabelEl = bundleContainer.querySelector(
+      '[data-bundle-count-label]'
+    );
+
+    recalculateBundleTotals = function () {
+      let selectedCount = 0;
+      let totalPrice = 0;
+      let totalComparePrice = 0;
+
+      // Main product
+      const mainPrice = Number(
+        activeVariant?.price || bundleContainer.dataset.mainPrice || 0
+      );
+      const mainCompare = Number(
+        activeVariant?.compare_at_price ||
+          bundleContainer.dataset.mainComparePrice ||
+          mainPrice
+      );
+      const mainThumb = bundleContainer.querySelector(
+        '[data-bundle-thumb="main"]'
+      );
+
+      if (mainBundleCheckbox && mainBundleCheckbox.checked) {
+        selectedCount += 1;
+        totalPrice += mainPrice;
+        totalComparePrice +=
+          mainCompare > mainPrice ? mainCompare : mainPrice;
+
+        if (mainThumb) {
+          mainThumb.classList.add('is-active');
+        }
+      } else if (mainBundleCheckbox) {
+        if (mainThumb) {
+          mainThumb.classList.remove('is-active');
+        }
+      } else {
+        selectedCount += 1;
+        totalPrice += mainPrice;
+        totalComparePrice +=
+          mainCompare > mainPrice ? mainCompare : mainPrice;
+      }
+
+      // Bundle items
+      const bundleItemRows = bundleContainer.querySelectorAll(
+        '[data-bundle-item]:not([data-bundle-item="main"])'
+      );
+
+      bundleItemRows.forEach((row) => {
+        const checkbox = row.querySelector(
+          '[data-bundle-item-checkbox]'
+        );
+        const pId = row.dataset.productId;
+        const thumb = bundleContainer.querySelector(
+          `[data-bundle-thumb="${pId}"]`
+        );
+
+        if (checkbox && checkbox.checked) {
+          selectedCount += 1;
+          const price = Number(row.dataset.price || 0);
+          const compare = Number(row.dataset.comparePrice || price);
+
+          totalPrice += price;
+          totalComparePrice += compare > price ? compare : price;
+
+          row.classList.add('is-selected');
+          if (thumb) {
+            thumb.classList.add('is-active');
+          }
+        } else {
+          row.classList.remove('is-selected');
+          if (thumb) {
+            thumb.classList.remove('is-active');
+          }
+        }
+      });
+
+      if (totalPriceEl) {
+        totalPriceEl.textContent = formatMoney(totalPrice);
+      }
+
+      if (comparePriceEl) {
+        if (totalComparePrice > totalPrice) {
+          comparePriceEl.textContent = formatMoney(totalComparePrice);
+          comparePriceEl.hidden = false;
+        } else {
+          comparePriceEl.textContent = '';
+          comparePriceEl.hidden = true;
+        }
+      }
+
+      if (countLabelEl) {
+        countLabelEl.textContent =
+          selectedCount > 0
+            ? `(${selectedCount} ${selectedCount === 1 ? 'item' : 'items'} selected)`
+            : '(No items selected)';
+      }
+
+      if (bundleAddButton) {
+        bundleAddButton.disabled = selectedCount === 0;
+      }
+    };
+
+    // Checkbox events
+    bundleItemCheckboxes.forEach((cb) => {
+      cb.addEventListener('change', recalculateBundleTotals);
+    });
+
+    if (mainBundleCheckbox) {
+      mainBundleCheckbox.addEventListener('change', recalculateBundleTotals);
+    }
+
+    // Variant dropdown change
+    bundleVariantSelects.forEach((select) => {
+      select.addEventListener('change', () => {
+        const selectedOpt = select.options[select.selectedIndex];
+        const row = select.closest('[data-bundle-item]');
+        if (!row || !selectedOpt) {
+          return;
+        }
+
+        row.dataset.variantId = selectedOpt.value;
+        row.dataset.price = selectedOpt.dataset.price || '0';
+        row.dataset.comparePrice =
+          selectedOpt.dataset.comparePrice ||
+          selectedOpt.dataset.price ||
+          '0';
+
+        const priceEl = row.querySelector('[data-bundle-item-price]');
+        if (priceEl) {
+          priceEl.textContent = formatMoney(
+            Number(selectedOpt.dataset.price || 0)
+          );
+        }
+
+        const compEl = row.querySelector(
+          '[data-bundle-item-compare-price]'
+        );
+        const p = Number(selectedOpt.dataset.price || 0);
+        const cp = Number(selectedOpt.dataset.comparePrice || 0);
+
+        if (compEl) {
+          if (cp > p) {
+            compEl.textContent = formatMoney(cp);
+            compEl.hidden = false;
+          } else {
+            compEl.hidden = true;
+          }
+        }
+
+        recalculateBundleTotals();
+      });
+    });
+
+    // Bundle add button click
+    if (bundleAddButton) {
+      bundleAddButton.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        if (productForm.dataset.hargxSubmitting === 'true') {
+          return;
+        }
+
+        if (typeof productForm.requestSubmit === 'function') {
+          productForm.requestSubmit();
+        } else {
+          productForm.dispatchEvent(
+            new Event('submit', { cancelable: true, bubbles: true })
+          );
+        }
+      });
+    }
+
+    recalculateBundleTotals();
+  }
+
+
+  /*
+   * ------------------------------------------------------------
    * ADD TO CART
    *
    * Uses the existing product form.
@@ -591,6 +829,11 @@ function initHargxProduct(section) {
           ? addToCartText.textContent
           : '';
 
+      const originalBundleButtonText =
+        bundleAddText
+          ? bundleAddText.textContent
+          : '';
+
       if (addToCartButton) {
         addToCartButton.disabled =
           true;
@@ -610,59 +853,130 @@ function initHargxProduct(section) {
           'Adding...';
       }
 
+      if (bundleAddButton) {
+        bundleAddButton.disabled = true;
+        bundleAddButton.classList.add('is-loading');
+      }
+
+      if (bundleAddText) {
+        bundleAddText.textContent = 'Adding...';
+      }
+
 
       try {
-        /*
-         * Use the existing Shopify product
-         * form data so all hidden inputs,
-         * variant ID, quantity and line-item
-         * properties are preserved.
-         */
+        let response;
 
-        const formData =
-          new FormData(
-            productForm
+        const checkedBundleBoxes = bundleContainer
+          ? Array.from(
+              bundleContainer.querySelectorAll(
+                '[data-bundle-item-checkbox]:checked'
+              )
+            )
+          : [];
+
+        const isBundleActive =
+          bundleContainer && checkedBundleBoxes.length > 0;
+
+        if (isBundleActive) {
+          /*
+           * Multi-item bundle add to cart
+           */
+          const itemsToAdd = [];
+
+          const mainCheckbox = bundleContainer.querySelector(
+            '[data-bundle-main-checkbox]'
           );
+          const isMainIncluded =
+            !mainCheckbox || mainCheckbox.checked;
 
+          if (isMainIncluded && variant.available) {
+            itemsToAdd.push({
+              id: Number(variant.id),
+              quantity: Number(getQuantity())
+            });
+          }
 
-        /*
-         * Make absolutely sure the
-         * selected variant and quantity
-         * are correct.
-         */
+          checkedBundleBoxes.forEach((cb) => {
+            const row = cb.closest('[data-bundle-item]');
+            if (!row) {
+              return;
+            }
 
-        if (variantInput) {
-          formData.set(
-            'id',
-            variant.id
-          );
-        }
+            const select = row.querySelector(
+              '[data-bundle-variant-select]'
+            );
+            const vId = select ? select.value : row.dataset.variantId;
 
-        formData.set(
-          'quantity',
-          getQuantity()
-        );
+            if (vId) {
+              itemsToAdd.push({
+                id: Number(vId),
+                quantity: 1
+              });
+            }
+          });
 
+          if (itemsToAdd.length === 0) {
+            throw new Error('Please select at least one item.');
+          }
 
-        /*
-         * AJAX Add to Cart
-         */
-
-        const response =
-          await fetch(
-            window.Shopify.routes.root +
-              'cart/add.js',
+          response = await fetch(
+            window.Shopify.routes.root + 'cart/add.js',
             {
               method: 'POST',
               headers: {
-                Accept:
-                  'application/json',
-                'X-Requested-With':
-                  'XMLHttpRequest'
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
               },
-              body: formData
+              body: JSON.stringify({ items: itemsToAdd })
             }
           );
+
+        } else {
+          /*
+           * Use the existing Shopify product
+           * form data so all hidden inputs,
+           * variant ID, quantity and line-item
+           * properties are preserved.
+           */
+
+          const formData =
+            new FormData(
+              productForm
+            );
+
+          if (variantInput) {
+            formData.set(
+              'id',
+              variant.id
+            );
+          }
+
+          formData.set(
+            'quantity',
+            getQuantity()
+          );
+
+          /*
+           * AJAX Add to Cart
+           */
+
+          response =
+            await fetch(
+              window.Shopify.routes.root +
+                'cart/add.js',
+              {
+                method: 'POST',
+                headers: {
+                  Accept:
+                    'application/json',
+                  'X-Requested-With':
+                    'XMLHttpRequest'
+                },
+                body: formData
+              }
+            );
+        }
 
 
         const responseData =
@@ -697,6 +1011,21 @@ function initHargxProduct(section) {
           );
 
           addToCartButton.classList.add(
+            'is-added'
+          );
+        }
+
+        if (bundleAddText) {
+          bundleAddText.textContent =
+            'Added!';
+        }
+
+        if (bundleAddButton) {
+          bundleAddButton.classList.remove(
+            'is-loading'
+          );
+
+          bundleAddButton.classList.add(
             'is-added'
           );
         }
@@ -780,6 +1109,20 @@ function initHargxProduct(section) {
                 !activeVariant?.available;
             }
 
+            if (bundleAddText) {
+              bundleAddText.textContent =
+                originalBundleButtonText ||
+                'Add Bundle to Cart';
+            }
+
+            if (bundleAddButton) {
+              bundleAddButton.classList.remove(
+                'is-added'
+              );
+
+              bundleAddButton.disabled = false;
+            }
+
             productForm.dataset
               .hargxSubmitting = 'false';
           },
@@ -815,6 +1158,19 @@ function initHargxProduct(section) {
             'Try again';
         }
 
+        if (bundleAddButton) {
+          bundleAddButton.classList.remove(
+            'is-loading'
+          );
+
+          bundleAddButton.disabled = false;
+        }
+
+        if (bundleAddText) {
+          bundleAddText.textContent =
+            'Try again';
+        }
+
 
         /*
          * Reset submission state.
@@ -834,6 +1190,12 @@ function initHargxProduct(section) {
               addToCartText.textContent =
                 originalButtonText ||
                 'Add to cart';
+            }
+
+            if (bundleAddText) {
+              bundleAddText.textContent =
+                originalBundleButtonText ||
+                'Add Bundle to Cart';
             }
           },
           1800

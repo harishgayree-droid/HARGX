@@ -838,6 +838,239 @@
 
                   {%- endif -%}
 
+
+                {%- when 'bundle_products' -%}
+
+                  {%- assign bundle_products = block.settings.products -%}
+
+                  {%- if bundle_products != blank -%}
+
+                    <div
+                      class="hargx-product-bundle"
+                      data-hargx-bundle-container
+                      data-main-price="{{ current_variant.price }}"
+                      data-main-compare-price="{{ current_variant.compare_at_price | default: current_variant.price }}"
+                      {{ block.shopify_attributes }}
+                    >
+
+                      {%- if block.settings.heading != blank or block.settings.bundle_badge != blank -%}
+                        <div class="hargx-product-bundle__header">
+                          <div class="hargx-product-bundle__title-row">
+                            {%- if block.settings.heading != blank -%}
+                              <h3 class="hargx-product-bundle__heading">
+                                {{ block.settings.heading }}
+                              </h3>
+                            {%- endif -%}
+
+                            {%- if block.settings.bundle_badge != blank -%}
+                              <span class="hargx-product-bundle__badge">
+                                {{ block.settings.bundle_badge }}
+                              </span>
+                            {%- endif -%}
+                          </div>
+
+                          {%- if block.settings.subheading != blank -%}
+                            <div class="hargx-product-bundle__subheading">
+                              {{ block.settings.subheading }}
+                            </div>
+                          {%- endif -%}
+                        </div>
+                      {%- endif -%}
+
+                      {%- comment -%}
+                        Visual image flow with '+' signs
+                      {%- endcomment -%}
+                      <div class="hargx-product-bundle__visual-gallery">
+                        {%- if block.settings.show_main_product -%}
+                          <div
+                            class="hargx-product-bundle__thumb-wrapper is-active"
+                            data-bundle-thumb="main"
+                          >
+                            {%- if product.featured_image != blank -%}
+                              {{
+                                product.featured_image
+                                | image_url: width: 240
+                                | image_tag:
+                                  loading: 'lazy',
+                                  widths: '80, 120, 160, 240',
+                                  sizes: '80px',
+                                  class: 'hargx-product-bundle__thumb-image',
+                                  alt: product.title | escape
+                              }}
+                            {%- else -%}
+                              <div class="hargx-product-bundle__thumb-placeholder">
+                                {{ 'product-1' | placeholder_svg_tag }}
+                              </div>
+                            {%- endif -%}
+                            <span class="hargx-product-bundle__thumb-tag">{{ block.settings.main_product_label | default: 'This item' }}</span>
+                          </div>
+                        {%- endif -%}
+
+                        {%- for b_product in bundle_products -%}
+                          {%- if b_product.id != product.id -%}
+                            <span class="hargx-product-bundle__visual-plus" aria-hidden="true">+</span>
+
+                            <div
+                              class="hargx-product-bundle__thumb-wrapper is-active"
+                              data-bundle-thumb="{{ b_product.id }}"
+                            >
+                              {%- if b_product.featured_image != blank -%}
+                                {{
+                                  b_product.featured_image
+                                  | image_url: width: 240
+                                  | image_tag:
+                                    loading: 'lazy',
+                                    widths: '80, 120, 160, 240',
+                                    sizes: '80px',
+                                    class: 'hargx-product-bundle__thumb-image',
+                                    alt: b_product.title | escape
+                                }}
+                              {%- else -%}
+                                <div class="hargx-product-bundle__thumb-placeholder">
+                                  {{ 'product-2' | placeholder_svg_tag }}
+                                </div>
+                              {%- endif -%}
+                            </div>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+
+                      {%- comment -%}
+                        Bundle Items Checklist
+                      {%- endcomment -%}
+                      <div class="hargx-product-bundle__items-list">
+                        {%- if block.settings.show_main_product -%}
+                          <div
+                            class="hargx-product-bundle__item hargx-product-bundle__item--main is-selected"
+                            data-bundle-item="main"
+                            data-product-id="{{ product.id }}"
+                            data-variant-id="{{ current_variant.id }}"
+                            data-price="{{ current_variant.price }}"
+                            data-compare-price="{{ current_variant.compare_at_price | default: current_variant.price }}"
+                          >
+                            <label class="hargx-product-bundle__item-checkbox-label">
+                              <input
+                                type="checkbox"
+                                class="hargx-product-bundle__checkbox"
+                                data-bundle-main-checkbox
+                                checked
+                              >
+                              <span class="hargx-product-bundle__checkbox-custom"></span>
+                              <span class="hargx-product-bundle__item-text">
+                                <strong class="hargx-product-bundle__item-label">{{ block.settings.main_product_label | default: 'This item:' }}</strong>
+                                <span class="hargx-product-bundle__item-title">{{ product.title }}</span>
+                                <span class="hargx-product-bundle__item-price-wrap">
+                                  <span class="hargx-product-bundle__item-price" data-bundle-main-price>{{ current_variant.price | money }}</span>
+                                </span>
+                              </span>
+                            </label>
+                          </div>
+                        {%- endif -%}
+
+                        {%- for b_product in bundle_products -%}
+                          {%- if b_product.id != product.id -%}
+                            {%- assign b_variant = b_product.selected_or_first_available_variant -%}
+                            <div
+                              class="hargx-product-bundle__item is-selected"
+                              data-bundle-item="{{ b_product.id }}"
+                              data-product-id="{{ b_product.id }}"
+                              data-variant-id="{{ b_variant.id }}"
+                              data-price="{{ b_variant.price }}"
+                              data-compare-price="{{ b_variant.compare_at_price | default: b_variant.price }}"
+                            >
+                              <div class="hargx-product-bundle__item-main">
+                                <label class="hargx-product-bundle__item-checkbox-label">
+                                  <input
+                                    type="checkbox"
+                                    class="hargx-product-bundle__checkbox"
+                                    data-bundle-item-checkbox
+                                    data-product-id="{{ b_product.id }}"
+                                    {% if b_variant.available %}checked{% else %}disabled{% endif %}
+                                  >
+                                  <span class="hargx-product-bundle__checkbox-custom"></span>
+                                  <span class="hargx-product-bundle__item-text">
+                                    <a href="{{ b_product.url }}" class="hargx-product-bundle__item-title" target="_blank" rel="noopener">
+                                      {{ b_product.title }}
+                                    </a>
+                                    <span class="hargx-product-bundle__item-price-wrap">
+                                      <span class="hargx-product-bundle__item-price" data-bundle-item-price>
+                                        {{ b_variant.price | money }}
+                                      </span>
+                                      {%- if b_variant.compare_at_price > b_variant.price -%}
+                                        <span class="hargx-product-bundle__item-compare-price" data-bundle-item-compare-price>
+                                          {{ b_variant.compare_at_price | money }}
+                                        </span>
+                                      {%- endif -%}
+                                      {%- unless b_variant.available -%}
+                                        <span class="hargx-product-bundle__item-sold-out">
+                                          ({{ 'products.product.sold_out' | t | default: 'Sold out' }})
+                                        </span>
+                                      {%- endunless -%}
+                                    </span>
+                                  </span>
+                                </label>
+
+                                {%- if b_product.variants.size > 1 -%}
+                                  <div class="hargx-product-bundle__item-variant-select-wrapper">
+                                    <select
+                                      class="hargx-product-bundle__variant-select"
+                                      data-bundle-variant-select
+                                      aria-label="{{ b_product.title | escape }} variant"
+                                    >
+                                      {%- for v in b_product.variants -%}
+                                        <option
+                                          value="{{ v.id }}"
+                                          data-price="{{ v.price }}"
+                                          data-compare-price="{{ v.compare_at_price | default: v.price }}"
+                                          {% if v == b_variant %}selected{% endif %}
+                                          {% unless v.available %}disabled{% endunless %}
+                                        >
+                                          {{ v.title }}{% unless v.available %} (Sold out){% endunless %}
+                                        </option>
+                                      {%- endfor -%}
+                                    </select>
+                                  </div>
+                                {%- endif -%}
+                              </div>
+                            </div>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+
+                      {%- comment -%}
+                        Bundle Summary & Action Button
+                      {%- endcomment -%}
+                      <div class="hargx-product-bundle__summary">
+                        <div class="hargx-product-bundle__pricing">
+                          <span class="hargx-product-bundle__total-label">
+                            Total price:
+                          </span>
+                          <span class="hargx-product-bundle__total-price" data-bundle-total-price>
+                            {{ current_variant.price | money }}
+                          </span>
+                          <span class="hargx-product-bundle__total-compare-price" data-bundle-total-compare-price hidden>
+                          </span>
+                          <span class="hargx-product-bundle__count-label" data-bundle-count-label>
+                          </span>
+                        </div>
+
+                        {%- if block.settings.show_bundle_button -%}
+                          <button
+                            type="button"
+                            class="hargx-product-bundle__add-button"
+                            data-hargx-bundle-add
+                          >
+                            <span data-bundle-button-text>
+                              {{ block.settings.button_text | default: 'Add Bundle to Cart' }}
+                            </span>
+                          </button>
+                        {%- endif -%}
+                      </div>
+
+                    </div>
+
+                  {%- endif -%}
+
               {%- endcase -%}
 
             {%- endfor -%}
@@ -1153,6 +1386,61 @@
           "id": "select_options_text",
           "label": "Select options text",
           "default": "Select options"
+        }
+      ]
+    },
+    {
+      "type": "bundle_products",
+      "name": "Bundle products",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Frequently bought together"
+        },
+        {
+          "type": "richtext",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "<p>Select bundle items to add with this product.</p>"
+        },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "Bundle products",
+          "limit": 6
+        },
+        {
+          "type": "checkbox",
+          "id": "show_main_product",
+          "label": "Include main product in bundle",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "main_product_label",
+          "label": "Main product label",
+          "default": "This item:"
+        },
+        {
+          "type": "text",
+          "id": "bundle_badge",
+          "label": "Badge text",
+          "default": "Bundle & Save"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_bundle_button",
+          "label": "Show bundle add to cart button",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Bundle button text",
+          "default": "Add Bundle to Cart"
         }
       ]
     }
