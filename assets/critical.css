@@ -247,8 +247,12 @@ p, li {
 }
 
 h2 {
-    margin-top: 10px;
-    margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.shopify-policy__title {
+  margin: 2rem 0;
 }
 
 @media screen and (max-width: 989px) {
