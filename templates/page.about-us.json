@@ -11,10 +11,62 @@
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {}
+    },
+    "hargx_editorial_6pMnLN": {
+      "type": "hargx-editorial",
+      "blocks": {
+        "feature_MVirNR": {
+          "type": "feature",
+          "settings": {
+            "title": "Thoughtful design",
+            "text": "Every detail is considered with purpose."
+          }
+        },
+        "feature_nqTwkf": {
+          "type": "feature",
+          "settings": {
+            "title": "Thoughtful design",
+            "text": "Every detail is considered with purpose."
+          }
+        },
+        "feature_AbQNMB": {
+          "type": "feature",
+          "settings": {
+            "title": "Thoughtful design",
+            "text": "Every detail is considered with purpose."
+          }
+        }
+      },
+      "block_order": [
+        "feature_MVirNR",
+        "feature_nqTwkf",
+        "feature_AbQNMB"
+      ],
+      "name": "HARGX Editorial",
+      "settings": {
+        "image_position": "left",
+        "image_ratio": "4 / 5",
+        "show_badge": true,
+        "badge_text": "Designed with purpose",
+        "eyebrow": "The HARGX difference",
+        "heading": "Designed to make every detail feel intentional.",
+        "description": "<p>Thoughtful design, distinctive details and a better everyday experience.</p>",
+        "button_label": "Discover more",
+        "button_link": "",
+        "background_color": "#FAF8F4",
+        "text_color": "#000000",
+        "column_gap": 72,
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_mobile": 52,
+        "padding_bottom_mobile": 52
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "hargx_editorial_6pMnLN"
   ]
 }
