@@ -12,6 +12,19 @@
     "sections": {
       "cart-drawer": {
         "type": "cart-drawer",
+        "blocks": {
+          "trust_item_G3cUp8": {
+            "type": "trust_item",
+            "settings": {
+              "icon": "check",
+              "heading": "Secure checkout",
+              "text": "Your payment information is protected."
+            }
+          }
+        },
+        "block_order": [
+          "trust_item_G3cUp8"
+        ],
         "settings": {
           "enable_cart_drawer": true,
           "heading": "Your cart",
