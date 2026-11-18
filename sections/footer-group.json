@@ -18,7 +18,7 @@
           "type": "menu",
           "settings": {
             "heading": "Quick Link",
-            "menu": "customer-account-main-menu"
+            "menu": "quick-links"
           }
         },
         "menu_R883Mm": {
@@ -32,7 +32,7 @@
           "type": "menu",
           "settings": {
             "heading": "Shop",
-            "menu": "main-menu"
+            "menu": "main-menu-copy"
           }
         }
       },
