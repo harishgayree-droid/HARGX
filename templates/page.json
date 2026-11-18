@@ -11,7 +11,12 @@
   "sections": {
     "main": {
       "type": "page",
-      "settings": {}
+      "settings": {
+        "heading_alignment": "center",
+        "content_alignment": "left",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
     }
   },
   "order": [
