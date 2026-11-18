@@ -57,7 +57,7 @@
         "eyebrow": "Featured",
         "heading": "Shop our favorites",
         "description": "<p>Explore our most-loved products, selected for you.</p>",
-        "heading_alignment": "left",
+        "heading_alignment": "center",
         "show_view_all": true,
         "view_all_text": "View all",
         "desktop_layout": "slider",
