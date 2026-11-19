@@ -34,9 +34,9 @@
           "show_upsell": true,
           "upsell_heading": "You may also like",
           "upsell_products": [
-            "low-fat-cow-milk-1-litre",
-            "organic-buffalo-milk-1-litre",
-            "organic-cow-ghee-500g"
+            "ivory-belted-shirt-dress-sample",
+            "indigo-straight-leg-jeans-sample",
+            "navy-polka-dot-midi-dress-sample"
           ],
           "upsell_limit": 3,
           "upsell_button_text": "Add",
