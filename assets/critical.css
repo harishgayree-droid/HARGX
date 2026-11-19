@@ -1040,24 +1040,17 @@ h2 {
 
 .hargx-header__cart-count {
   position: absolute;
-
-  top: -9px;
-  right: -10px;
-
+  top: -2px;
+  right: -2px;
   min-width: 17px;
   height: 17px;
-
   padding: 0 4px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: var(--color-primary);
   color: var(--color-white);
-
   border-radius: 50%;
-
   font-size: 9px;
   line-height: 1;
   font-weight: 700;
