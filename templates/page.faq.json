@@ -11,6 +11,7 @@
   "sections": {
     "main": {
       "type": "page",
+      "disabled": true,
       "settings": {
         "heading_alignment": "center",
         "content_alignment": "left",
@@ -62,8 +63,8 @@
       ],
       "name": "HARGX Contact FAQ",
       "settings": {
-        "eyebrow": "Frequently Asked Questions",
-        "heading": "Have a question?",
+        "eyebrow": "",
+        "heading": "FAQ's",
         "text": "<p>Find quick answers to the questions we hear most often.</p>"
       }
     }
