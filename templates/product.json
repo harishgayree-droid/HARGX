@@ -36,6 +36,16 @@
             "out_of_stock_text": "Out of stock"
           }
         },
+        "variant_picker_xetgzf": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "quantity_cprgyK": {
+          "type": "quantity",
+          "settings": {
+            "label": "Quantity"
+          }
+        },
         "bundle_products_HgjtbQ": {
           "type": "bundle_products",
           "settings": {
@@ -51,16 +61,6 @@
             "bundle_badge": "Bundle & Save",
             "show_bundle_button": true,
             "button_text": "Add Bundle to Cart"
-          }
-        },
-        "variant_picker_xetgzf": {
-          "type": "variant_picker",
-          "settings": {}
-        },
-        "quantity_cprgyK": {
-          "type": "quantity",
-          "settings": {
-            "label": "Quantity"
           }
         },
         "buy_buttons_dU9heg": {
@@ -109,9 +109,9 @@
         "rating_dB4P8h",
         "price_Cg8niP",
         "inventory_status_xQt6U8",
-        "bundle_products_HgjtbQ",
         "variant_picker_xetgzf",
         "quantity_cprgyK",
+        "bundle_products_HgjtbQ",
         "buy_buttons_dU9heg",
         "collapsible_tab_nj8wYm",
         "trust_item_aX879d",
