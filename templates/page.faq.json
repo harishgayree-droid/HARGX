@@ -53,13 +53,22 @@
             "answer": "<p>Absolutely. If you have questions about a product, sizing, availability, or anything else, feel free to contact us before ordering.</p>",
             "open_by_default": false
           }
+        },
+        "faq_tcAVPp": {
+          "type": "faq",
+          "settings": {
+            "question": "How quickly will I receive a response?",
+            "answer": "<p>We usually respond to enquiries within one business day.</p>",
+            "open_by_default": false
+          }
         }
       },
       "block_order": [
         "faq_mrQRxH",
         "faq_3GYRNp",
         "faq_nrQCwW",
-        "faq_LFMnXj"
+        "faq_LFMnXj",
+        "faq_tcAVPp"
       ],
       "name": "HARGX Contact FAQ",
       "settings": {
