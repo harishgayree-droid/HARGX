@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "border_radius": 0,
     "button_radius": 0,
     "sections": {
       "cart-drawer": {
