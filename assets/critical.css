@@ -1453,6 +1453,43 @@ h2 {
 }
 
 /* ========================================
+   ACCOUNT ICON — ALL DEVICES
+   ======================================== */
+
+.hargx-header__account {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.hargx-header__account shopify-account {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.hargx-header__account-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: inherit;
+}
+
+.hargx-header__account-avatar svg {
+  display: block;
+  width: 25px;
+  height: 25px;
+}
+
+/* ========================================
    MOBILE
    ======================================== */
 
