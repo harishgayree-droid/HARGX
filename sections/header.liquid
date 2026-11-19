@@ -217,80 +217,20 @@
           <path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
         </svg>
       </button>
-
-      <!-- Account -->
+      
+      <!-- Shopify Account -->
       {% if shop.customer_accounts_enabled %}
-
         <div class="hargx-header__account">
-
-          <button
-            type="button"
-            class="hargx-header__action hargx-header__account-button"
-            aria-label="Account"
-            aria-expanded="false"
-            aria-haspopup="true"
+          <shopify-account
+            menu="{{ section.settings.customer_account_menu }}"
           >
-            {{ 'icon-account.svg' | inline_asset_content }}
-          </button>
-
-          <div class="hargx-header__account-menu">
-
-            <div class="hargx-header__account-menu-inner">
-
-              <a
-                href="{{ routes.account_url }}"
-                class="hargx-header__account-title"
-              >
-                {% if customer %}
-                  My Account
-                {% else %}
-                  Account
-                {% endif %}
-              </a>
-
-              {% if section.settings.customer_account_menu != blank %}
-
-                <nav
-                  class="hargx-header__account-links"
-                  aria-label="Customer account menu"
-                >
-
-                  {% for account_link in section.settings.customer_account_menu.links %}
-
-                    <a
-                      href="{{ account_link.url }}"
-                      class="hargx-header__account-link"
-                      {% if account_link.current %}
-                        aria-current="page"
-                      {% endif %}
-                    >
-                      {{ account_link.title }}
-                    </a>
-
-                  {% endfor %}
-
-                </nav>
-
-              {% endif %}
-
-              {% if customer %}
-
-                <a
-                  href="{{ routes.account_logout_url }}"
-                  class="hargx-header__account-link hargx-header__account-logout"
-                >
-                  Log out
-                </a>
-
-              {% endif %}
-
-            </div>
-
-          </div>
-
+            <span slot="signed-out-avatar" class="hargx-header__account-avatar">
+              {{ 'icon-account.svg' | inline_asset_content }}
+            </span>
+          </shopify-account>
         </div>
-
       {% endif %}
+
 
       <!-- Cart -->
       <a
@@ -612,51 +552,6 @@
 
       </nav>
 
-      <!-- Mobile Account -->
-      {% if shop.customer_accounts_enabled %}
-
-        <div class="hargx-mobile-menu__account">
-
-          <div class="hargx-mobile-menu__account-title">
-            Account
-          </div>
-
-          <a
-            href="{{ routes.account_url }}"
-            class="hargx-mobile-menu__account-link"
-          >
-            My Account
-          </a>
-
-          {% if section.settings.customer_account_menu != blank %}
-
-            {% for account_link in section.settings.customer_account_menu.links %}
-
-              <a
-                href="{{ account_link.url }}"
-                class="hargx-mobile-menu__account-link"
-              >
-                {{ account_link.title }}
-              </a>
-
-            {% endfor %}
-
-          {% endif %}
-
-          {% if customer %}
-
-            <a
-              href="{{ routes.account_logout_url }}"
-              class="hargx-mobile-menu__account-link"
-            >
-              Log out
-            </a>
-
-          {% endif %}
-
-        </div>
-
-      {% endif %}
 
     </div>
 
@@ -1039,84 +934,6 @@
         if (event.key === 'Escape') {
 
           closeMenu();
-
-        }
-
-      }
-    );
-
-  }
-
-  /* ========================================
-     ACCOUNT DROPDOWN
-     ======================================== */
-
-  const account = header.querySelector(
-    '.hargx-header__account'
-  );
-
-  const accountButton = header.querySelector(
-    '.hargx-header__account-button'
-  );
-
-  if (account && accountButton) {
-
-    accountButton.addEventListener(
-      'click',
-      function (event) {
-
-        event.preventDefault();
-
-        const isOpen =
-          account.classList.contains('is-open');
-
-        account.classList.toggle(
-          'is-open',
-          !isOpen
-        );
-
-        accountButton.setAttribute(
-          'aria-expanded',
-          String(!isOpen)
-        );
-
-      }
-    );
-
-    document.addEventListener(
-      'click',
-      function (event) {
-
-        if (!account.contains(event.target)) {
-
-          account.classList.remove(
-            'is-open'
-          );
-
-          accountButton.setAttribute(
-            'aria-expanded',
-            'false'
-          );
-
-        }
-
-      }
-    );
-
-    document.addEventListener(
-      'keydown',
-      function (event) {
-
-        if (event.key === 'Escape') {
-
-          account.classList.remove(
-            'is-open'
-          );
-
-          accountButton.setAttribute(
-            'aria-expanded',
-            'false'
-          );
 
         }
 

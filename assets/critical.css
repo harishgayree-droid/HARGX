@@ -1500,7 +1500,27 @@ h2 {
   }
 
   .hargx-header__account {
-    display: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .hargx-header__account shopify-account {
+    display: flex;
+    align-items: center;
+  }
+
+  .hargx-header__account-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: inherit;
+  }
+
+  .hargx-header__account-avatar svg {
+    width: 25px;
+    height: 25px;
   }
 
   .hargx-header__action:nth-child(2) {
