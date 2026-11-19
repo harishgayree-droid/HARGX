@@ -25,7 +25,7 @@
           "type": "menu",
           "settings": {
             "heading": "Find",
-            "menu": "footer"
+            "menu": "customer-account-main-menu"
           }
         },
         "menu_PGAJJY": {
