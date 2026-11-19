@@ -1515,16 +1515,13 @@ h2 {
 
   .hargx-header__logo {
     position: absolute;
-
     left: 50%;
-
     transform: translateX(-50%);
   }
 
   .hargx-header__actions {
     margin-left: auto;
-
-    gap: 14px;
+    gap: 0;
   }
 
   .hargx-header__action svg {
