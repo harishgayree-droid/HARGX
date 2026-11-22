@@ -39,7 +39,7 @@
         "variant_picker_xetgzf": {
           "type": "variant_picker",
           "settings": {
-            "variant_display": "image"
+            "variant_display": "color"
           }
         },
         "quantity_cprgyK": {
