@@ -1,6 +1,16 @@
 <article class="hargx-product-card">
   {%- assign selected_variant = product.selected_or_first_available_variant -%}
   {%- assign variant_display = variant_display | default: 'name' -%}
+  {%- assign color_option_index = -1 -%}
+  {%- assign image_option_index = 0 -%}
+  {%- for product_option in product.options_with_values -%}
+    {%- assign product_option_name = product_option.name | downcase | strip -%}
+    {%- if product_option_name == 'color' or product_option_name == 'colour' -%}
+      {%- assign color_option_index = forloop.index0 -%}
+      {%- assign image_option_index = forloop.index0 -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
   <script type="application/json" data-hargx-card-variants>[
     {%- for variant in product.variants -%}
       {
@@ -202,14 +212,17 @@
       <fieldset class="hargx-product-card__variants hargx-product-card__variants--{{ variant_display }}">
         {%- for option in product.options_with_values -%}
           {%- assign option_index = forloop.index0 -%}
+          {%- assign option_name_down = option.name | downcase | strip -%}
+          {%- if variant_display == 'color' and option_index != color_option_index -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- if variant_display == 'image' and option_index != image_option_index -%}
+            {%- continue -%}
+          {%- endif -%}
           <div
             class="hargx-product-card__option"
             data-hargx-card-option
           >
-            <span class="hargx-product-card__variants-label">
-              {{ option.name | escape }}
-            </span>
-
             <div class="hargx-product-card__variant-swatches">
               {%- for option_value in option.values -%}
                 {%- assign selected_option_value = blank -%}
@@ -295,7 +308,6 @@
                       {% endif %}
                       aria-hidden="true"
                     ></span>
-                    <span class="hargx-product-card__variant-swatch-name">{{ option_value | escape }}</span>
                   {%- elsif variant_display == 'image' -%}
                     {%- if variant_option_image != blank -%}
                       {{
@@ -309,7 +321,6 @@
                     {%- else -%}
                       <span class="hargx-product-card__variant-swatch-placeholder" aria-hidden="true"></span>
                     {%- endif -%}
-                    <span class="hargx-product-card__variant-swatch-name">{{ option_value | escape }}</span>
                   {%- else -%}
                     {{ option_value | escape }}
                   {%- endif -%}
