@@ -16,6 +16,9 @@
         "products_per_page": 24,
         "desktop_columns": 4,
         "mobile_columns": "2",
+        "show_add_to_cart": true,
+        "add_to_cart_text": "Add to cart",
+        "variant_display": "image",
         "desktop_filter_layout": "drawer"
       }
     }
