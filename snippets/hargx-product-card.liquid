@@ -310,14 +310,14 @@
                     ></span>
                   {%- elsif variant_display == 'image' -%}
                     {%- if variant_option_image != blank -%}
-                      {{
-                        variant_option_image
-                        | image_url: width: 160
-                        | image_tag:
-                          loading: 'lazy',
-                          class: 'hargx-product-card__variant-swatch-image',
-                          alt: option_value
-                      }}
+                      <img
+                        src="{{ variant_option_image | image_url: width: 160 }}"
+                        alt="{{ option_value | escape }}"
+                        width="34"
+                        height="34"
+                        loading="lazy"
+                        class="hargx-product-card__variant-swatch-image"
+                      >
                     {%- else -%}
                       <span class="hargx-product-card__variant-swatch-placeholder" aria-hidden="true"></span>
                     {%- endif -%}

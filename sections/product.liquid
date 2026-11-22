@@ -448,6 +448,12 @@
                               {%- if variant_option_image == blank and matching_variant.featured_media.preview_image != blank -%}
                                 {%- assign variant_option_image = matching_variant.featured_media.preview_image -%}
                               {%- endif -%}
+                              {%- if variant_option_image == blank and matching_variant.featured_image != blank -%}
+                                {%- assign variant_option_image = matching_variant.featured_image -%}
+                              {%- endif -%}
+                              {%- if variant_option_image == blank and product.featured_image != blank -%}
+                                {%- assign variant_option_image = product.featured_image -%}
+                              {%- endif -%}
                               {%- assign swatch_color = value.swatch.color -%}
 
                               {%- assign option_id = 'HargxOption-' | append: section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
@@ -488,14 +494,14 @@
                                   ></span>
                                 {%- elsif block.settings.variant_display == 'image' and is_image_option -%}
                                   {%- if variant_option_image != blank -%}
-                                    {{
-                                      variant_option_image
-                                      | image_url: width: 160
-                                      | image_tag:
-                                        loading: 'lazy',
-                                        class: 'hargx-product__image-swatch',
-                                        alt: value
-                                    }}
+                                    <img
+                                      src="{{ variant_option_image | image_url: width: 160 }}"
+                                      alt="{{ value | escape }}"
+                                      width="34"
+                                      height="34"
+                                      loading="lazy"
+                                      class="hargx-product__image-swatch"
+                                    >
                                   {%- else -%}
                                     <span class="hargx-product__image-swatch-placeholder" aria-hidden="true"></span>
                                   {%- endif -%}
