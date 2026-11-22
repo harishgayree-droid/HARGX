@@ -381,24 +381,71 @@
 
                     <div
                       class="hargx-product__block hargx-product__variants"
+                      data-hargx-variant-display="{{ block.settings.variant_display }}"
                       data-hargx-variants
                       {{ block.shopify_attributes }}
                     >
 
                       {%- for option in product.options_with_values -%}
+                        {%- assign option_name_down = option.name | downcase | strip -%}
+                        {%- assign is_color_option = false -%}
+                        {%- assign is_image_option = false -%}
+                        {%- if option_name_down == 'color' or option_name_down == 'colour' -%}
+                          {%- assign is_color_option = true -%}
+                          {%- assign is_image_option = true -%}
+                        {%- endif -%}
+                        {%- if block.settings.variant_display == 'color' and is_color_option == false -%}
+                          {%- continue -%}
+                        {%- endif -%}
+                        {%- if block.settings.variant_display == 'image' and is_image_option == false -%}
+                          {%- continue -%}
+                        {%- endif -%}
 
                         <fieldset
-                          class="hargx-product__option"
+                          class="hargx-product__option hargx-product__option--{{ block.settings.variant_display }}"
                           data-option-position="{{ option.position }}"
                         >
 
-                          <legend class="hargx-product__option-label">
-                            {{ option.name }}
-                          </legend>
+                          {%- if block.settings.variant_display == 'name' -%}
+                            <legend class="hargx-product__option-label">
+                              {{ option.name }}
+                            </legend>
+                          {%- endif -%}
 
                           <div class="hargx-product__option-values">
 
                             {%- for value in option.values -%}
+                              {%- assign matching_variant = blank -%}
+                              {%- assign variant_option_image = blank -%}
+
+                              {%- for variant in product.variants -%}
+                                {%- assign variant_option_value = blank -%}
+                                {%- case option.position -%}
+                                  {%- when 1 -%}
+                                    {%- assign variant_option_value = variant.option1 -%}
+                                  {%- when 2 -%}
+                                    {%- assign variant_option_value = variant.option2 -%}
+                                  {%- when 3 -%}
+                                    {%- assign variant_option_value = variant.option3 -%}
+                                {%- endcase -%}
+
+                                {%- if variant_option_value == value -%}
+                                  {%- if matching_variant == blank -%}
+                                    {%- assign matching_variant = variant -%}
+                                  {%- endif -%}
+                                  {%- if variant.featured_image != blank and variant_option_image == blank -%}
+                                    {%- assign variant_option_image = variant.featured_image -%}
+                                  {%- endif -%}
+                                {%- endif -%}
+                              {%- endfor -%}
+
+                              {%- if matching_variant == blank -%}
+                                {%- assign matching_variant = product.selected_or_first_available_variant -%}
+                              {%- endif -%}
+                              {%- if variant_option_image == blank -%}
+                                {%- assign variant_option_image = value.swatch.image -%}
+                              {%- endif -%}
+                              {%- assign swatch_color = value.swatch.color -%}
 
                               {%- assign option_id = 'HargxOption-' | append: section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
 
@@ -410,6 +457,11 @@
                                 class="hargx-product__option-input"
                                 data-hargx-option
                                 data-option-position="{{ option.position }}"
+                                {% if matching_variant.featured_image != blank %}
+                                  data-variant-image="{{ matching_variant.featured_image | image_url: width: 1200 | escape }}"
+                                {% elsif variant_option_image != blank %}
+                                  data-variant-image="{{ variant_option_image | image_url: width: 1200 | escape }}"
+                                {% endif %}
                                 {% if option.selected_value == value %}
                                   checked
                                 {% endif %}
@@ -419,7 +471,34 @@
                                 for="{{ option_id }}"
                                 class="hargx-product__option-value"
                               >
-                                {{ value }}
+                                {%- if block.settings.variant_display == 'color' -%}
+                                  <span
+                                    class="hargx-product__color-swatch"
+                                    {% if swatch_color != blank %}
+                                      style="--hargx-swatch-color: {{ swatch_color | escape }};"
+                                    {% elsif variant_option_image != blank %}
+                                      style="--hargx-swatch-image: url('{{ variant_option_image | image_url: width: 80 | escape }}');"
+                                    {% else %}
+                                      style="--hargx-swatch-color: {{ value | downcase | escape }};"
+                                    {% endif %}
+                                    aria-hidden="true"
+                                  ></span>
+                                {%- elsif block.settings.variant_display == 'image' -%}
+                                  {%- if variant_option_image != blank -%}
+                                    {{
+                                      variant_option_image
+                                      | image_url: width: 160
+                                      | image_tag:
+                                        loading: 'lazy',
+                                        class: 'hargx-product__image-swatch',
+                                        alt: value
+                                    }}
+                                  {%- else -%}
+                                    <span class="hargx-product__image-swatch-placeholder" aria-hidden="true"></span>
+                                  {%- endif -%}
+                                {%- else -%}
+                                  {{ value }}
+                                {%- endif -%}
                               </label>
 
                             {%- endfor -%}
@@ -1105,7 +1184,9 @@
             "sku": {{ variant.sku | json }},
             "inventory_quantity": {{ variant.inventory_quantity | json }},
             "inventory_management": {{ variant.inventory_management | json }},
-            "options": {{ variant.options | json }}
+            "options": {{ variant.options | json }},
+            "featured_media_id": {{ variant.featured_media.id | default: nil | json }},
+            "featured_image": {% if variant.featured_image != blank %}{{ variant.featured_image | image_url: width: 1200 | json }}{% else %}null{% endif %}
           }{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       ]
@@ -1191,7 +1272,28 @@
       "type": "variant_picker",
       "name": "Variant picker",
       "limit": 1,
-      "settings": []
+      "settings": [
+        {
+          "type": "select",
+          "id": "variant_display",
+          "label": "Variant display",
+          "options": [
+            {
+              "value": "name",
+              "label": "Variant names"
+            },
+            {
+              "value": "color",
+              "label": "Color variants"
+            },
+            {
+              "value": "image",
+              "label": "Image variants"
+            }
+          ],
+          "default": "name"
+        }
+      ]
     },
     {
       "type": "quantity",

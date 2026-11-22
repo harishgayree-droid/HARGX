@@ -300,6 +300,45 @@
   outline-offset: 3px;
 }
 
+.hargx-product__option--color .hargx-product__option-value,
+.hargx-product__option--image .hargx-product__option-value {
+  min-width: 46px;
+  min-height: 46px;
+  padding: 5px;
+  border-radius: 0;
+}
+
+.hargx-product__option--color .hargx-product__option-input:checked + .hargx-product__option-value,
+.hargx-product__option--image .hargx-product__option-input:checked + .hargx-product__option-value {
+  background: #FFFFFF;
+  border-color: #000000;
+  box-shadow: inset 0 0 0 1px #000000;
+  color: #000000;
+}
+
+.hargx-product__color-swatch {
+  width: 34px;
+  height: 34px;
+  display: block;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 50%;
+  background-color: var(--hargx-swatch-color, #FFFFFF);
+  background-image: var(--hargx-swatch-image, none);
+  background-position: center;
+  background-size: cover;
+  box-shadow: inset 0 0 0 2px #FFFFFF;
+}
+
+.hargx-product__image-swatch,
+.hargx-product__image-swatch-placeholder {
+  width: 34px;
+  height: 34px;
+  display: block;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #F3F3F3;
+}
+
 
 /* =========================================================
    QUANTITY

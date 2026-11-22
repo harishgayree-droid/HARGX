@@ -417,6 +417,27 @@ function initHargxProduct(section) {
       variant
     );
 
+    if (variant.featured_media_id) {
+      const featuredThumbnail =
+        section.querySelector(
+          `[data-hargx-gallery-thumbnail][data-media-id="${variant.featured_media_id}"]`
+        );
+
+      if (featuredThumbnail) {
+        featuredThumbnail.click();
+      }
+    } else if (variant.featured_image) {
+      const galleryImage =
+        section.querySelector(
+          '.hargx-product__gallery-image'
+        );
+
+      if (galleryImage) {
+        galleryImage.src = variant.featured_image;
+        galleryImage.srcset = '';
+      }
+    }
+
 
     /*
      * Update URL
