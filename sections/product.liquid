@@ -394,23 +394,21 @@
                           {%- assign is_color_option = true -%}
                           {%- assign is_image_option = true -%}
                         {%- endif -%}
-                        {%- if block.settings.variant_display == 'color' and is_color_option == false -%}
-                          {%- continue -%}
-                        {%- endif -%}
-                        {%- if block.settings.variant_display == 'image' and is_image_option == false -%}
-                          {%- continue -%}
-                        {%- endif -%}
-
                         <fieldset
-                          class="hargx-product__option hargx-product__option--{{ block.settings.variant_display }}"
+                          class="
+                            hargx-product__option
+                            {%- if block.settings.variant_display == 'color' and is_color_option -%}
+                              hargx-product__option--color
+                            {%- elsif block.settings.variant_display == 'image' and is_image_option -%}
+                              hargx-product__option--image
+                            {%- endif -%}
+                          "
                           data-option-position="{{ option.position }}"
                         >
 
-                          {%- if block.settings.variant_display == 'name' -%}
-                            <legend class="hargx-product__option-label">
-                              {{ option.name }}
-                            </legend>
-                          {%- endif -%}
+                          <legend class="hargx-product__option-label">
+                            {{ option.name }}
+                          </legend>
 
                           <div class="hargx-product__option-values">
 
@@ -471,7 +469,7 @@
                                 for="{{ option_id }}"
                                 class="hargx-product__option-value"
                               >
-                                {%- if block.settings.variant_display == 'color' -%}
+                                {%- if block.settings.variant_display == 'color' and is_color_option -%}
                                   <span
                                     class="hargx-product__color-swatch"
                                     {% if swatch_color != blank %}
@@ -483,7 +481,7 @@
                                     {% endif %}
                                     aria-hidden="true"
                                   ></span>
-                                {%- elsif block.settings.variant_display == 'image' -%}
+                                {%- elsif block.settings.variant_display == 'image' and is_image_option -%}
                                   {%- if variant_option_image != blank -%}
                                     {{
                                       variant_option_image
