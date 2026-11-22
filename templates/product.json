@@ -38,7 +38,9 @@
         },
         "variant_picker_xetgzf": {
           "type": "variant_picker",
-          "settings": {}
+          "settings": {
+            "variant_display": "image"
+          }
         },
         "quantity_cprgyK": {
           "type": "quantity",
