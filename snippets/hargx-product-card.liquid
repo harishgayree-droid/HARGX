@@ -1,15 +1,24 @@
 <article class="hargx-product-card">
   {%- assign selected_variant = product.selected_or_first_available_variant -%}
   {%- assign variant_display = variant_display | default: 'name' -%}
-  {%- assign color_option_index = blank -%}
-
-  {%- for product_option in product.options_with_values -%}
-    {%- assign option_name = product_option.name | downcase | strip -%}
-    {%- if option_name == 'color' or option_name == 'colour' -%}
-      {%- assign color_option_index = forloop.index0 -%}
-      {%- break -%}
-    {%- endif -%}
-  {%- endfor -%}
+  <script type="application/json" data-hargx-card-variants>[
+    {%- for variant in product.variants -%}
+      {
+        "id": {{ variant.id | json }},
+        "available": {{ variant.available | json }},
+        "price": {{ variant.price | money | json }},
+        "compare_at_price": {{ variant.compare_at_price | money | json }},
+        "on_sale": {% if variant.compare_at_price > variant.price %}true{% else %}false{% endif %},
+        "options": [
+          {{ variant.option1 | default: '' | json }},
+          {{ variant.option2 | default: '' | json }},
+          {{ variant.option3 | default: '' | json }}
+        ]{%- if variant.featured_image != blank -%},
+        "image": {{ variant.featured_image | image_url: width: 900 | json }}
+        {%- endif -%}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]</script>
 
   <div class="hargx-product-card__media">
     <a
@@ -191,90 +200,124 @@
 
     {%- if variant_display != 'none' and product.variants.size > 1 -%}
       <fieldset class="hargx-product-card__variants hargx-product-card__variants--{{ variant_display }}">
-        <legend class="hargx-product-card__variants-label">Options</legend>
-        <div class="hargx-product-card__variant-swatches">
-          {%- for variant in product.variants -%}
-            {%- assign variant_option_value = variant.title -%}
-            {%- case color_option_index -%}
-              {%- when 0 -%}
-                {%- assign variant_option_value = variant.option1 -%}
-              {%- when 1 -%}
-                {%- assign variant_option_value = variant.option2 -%}
-              {%- when 2 -%}
-                {%- assign variant_option_value = variant.option3 -%}
-            {%- endcase -%}
+        {%- for option in product.options_with_values -%}
+          {%- assign option_index = forloop.index0 -%}
+          <div
+            class="hargx-product-card__option"
+            data-hargx-card-option
+          >
+            <span class="hargx-product-card__variants-label">
+              {{ option.name | escape }}
+            </span>
 
-            {%- assign swatch_color = blank -%}
-            {%- assign swatch_image = blank -%}
-            {%- if color_option_index != blank -%}
-              {%- assign color_option = product.options_with_values[color_option_index] -%}
-              {%- for option_value in color_option.values -%}
-                {%- if option_value.name == variant_option_value -%}
+            <div class="hargx-product-card__variant-swatches">
+              {%- for option_value in option.values -%}
+                {%- assign selected_option_value = blank -%}
+                {%- case option_index -%}
+                  {%- when 0 -%}
+                    {%- assign selected_option_value = selected_variant.option1 -%}
+                  {%- when 1 -%}
+                    {%- assign selected_option_value = selected_variant.option2 -%}
+                  {%- when 2 -%}
+                    {%- assign selected_option_value = selected_variant.option3 -%}
+                {%- endcase -%}
+
+                {%- assign matching_variant = blank -%}
+                {%- assign swatch_color = blank -%}
+                {%- assign swatch_image = blank -%}
+                {%- assign variant_option_image = blank -%}
+
+                {%- for variant in product.variants -%}
+                  {%- assign variant_option_value = blank -%}
+                  {%- case option_index -%}
+                    {%- when 0 -%}
+                      {%- assign variant_option_value = variant.option1 -%}
+                    {%- when 1 -%}
+                      {%- assign variant_option_value = variant.option2 -%}
+                    {%- when 2 -%}
+                      {%- assign variant_option_value = variant.option3 -%}
+                  {%- endcase -%}
+
+                  {%- if variant_option_value == option_value -%}
+                    {%- if matching_variant == blank -%}
+                      {%- assign matching_variant = variant -%}
+                    {%- endif -%}
+                    {%- if variant.featured_image != blank and variant_option_image == blank -%}
+                      {%- assign variant_option_image = variant.featured_image -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+
+                {%- if matching_variant == blank -%}
+                  {%- assign matching_variant = selected_variant -%}
+                {%- endif -%}
+
+                {%- assign option_name_down = option.name | downcase | strip -%}
+                {%- if option_name_down == 'color' or option_name_down == 'colour' -%}
                   {%- assign swatch_color = option_value.swatch.color -%}
                   {%- assign swatch_image = option_value.swatch.image -%}
-                  {%- break -%}
                 {%- endif -%}
-              {%- endfor -%}
-            {%- endif -%}
 
-            <button
-              type="button"
-              class="hargx-product-card__variant-swatch"
-              data-hargx-card-variant
-              data-variant-id="{{ variant.id }}"
-              data-variant-price="{{ variant.price | money | escape }}"
-              data-variant-compare-price="{{ variant.compare_at_price | money | escape }}"
-              data-variant-on-sale="{% if variant.compare_at_price > variant.price %}true{% else %}false{% endif %}"
-              {% if variant.featured_image != blank %}
-                data-variant-image="{{ variant.featured_image | image_url: width: 900 | escape }}"
-              {% endif %}
-              aria-pressed="{% if variant.id == selected_variant.id %}true{% else %}false{% endif %}"
-              aria-label="{{ variant.title | escape }}{% unless variant.available %} - Sold out{% endunless %}"
-              {% if variant.id == selected_variant.id %}data-selected{% endif %}
-              {% unless variant.available %}disabled{% endunless %}
-            >
-              {%- if variant_display == 'color' -%}
-                <span
-                  class="hargx-product-card__variant-swatch-color"
-                  {% if swatch_color != blank %}
-                    style="--hargx-swatch-color: {{ swatch_color | escape }};"
-                  {% elsif swatch_image != blank %}
-                    style="--hargx-swatch-image: url('{{ swatch_image | image_url: width: 80 | escape }}');"
-                  {% elsif variant_option_value != blank %}
-                    style="--hargx-swatch-color: {{ variant_option_value | downcase | escape }};"
-                  {% endif %}
-                  aria-hidden="true"
-                ></span>
-                <span class="hargx-product-card__variant-swatch-name">{{ variant_option_value | escape }}</span>
-              {%- elsif variant_display == 'image' -%}
-                {%- if variant.featured_image != blank -%}
-                  {{
-                    variant.featured_image
-                    | image_url: width: 160
-                    | image_tag:
-                      loading: 'lazy',
-                      class: 'hargx-product-card__variant-swatch-image',
-                      alt: variant_option_value
-                  }}
-                {%- elsif swatch_image != blank -%}
-                  {{
-                    swatch_image
-                    | image_url: width: 160
-                    | image_tag:
-                      loading: 'lazy',
-                      class: 'hargx-product-card__variant-swatch-image',
-                      alt: variant_option_value
-                  }}
-                {%- else -%}
-                  <span class="hargx-product-card__variant-swatch-placeholder" aria-hidden="true"></span>
+                {%- if variant_option_image == blank -%}
+                  {%- assign variant_option_image = swatch_image -%}
                 {%- endif -%}
-                <span class="hargx-product-card__variant-swatch-name">{{ variant_option_value | escape }}</span>
-              {%- else -%}
-                {{ variant.title | escape }}
-              {%- endif -%}
-            </button>
-          {%- endfor -%}
-        </div>
+                {%- if variant_option_image == blank -%}
+                  {%- assign variant_option_image = product.featured_image -%}
+                {%- endif -%}
+
+                <button
+                  type="button"
+                  class="hargx-product-card__variant-swatch"
+                  data-hargx-card-variant
+                  data-hargx-card-option-position="{{ option.position }}"
+                  data-hargx-card-option-value="{{ option_value | escape }}"
+                  data-variant-id="{{ matching_variant.id }}"
+                  data-variant-price="{{ matching_variant.price | money | escape }}"
+                  data-variant-compare-price="{{ matching_variant.compare_at_price | money | escape }}"
+                  data-variant-on-sale="{% if matching_variant.compare_at_price > matching_variant.price %}true{% else %}false{% endif %}"
+                  {% if variant_option_image != blank %}
+                    data-variant-image="{{ variant_option_image | image_url: width: 900 | escape }}"
+                  {% endif %}
+                  aria-pressed="{% if selected_option_value == option_value %}true{% else %}false{% endif %}"
+                  aria-label="{{ option.name | escape }}: {{ option_value | escape }}{% unless matching_variant.available %} - Sold out{% endunless %}"
+                  {% if selected_option_value == option_value %}data-selected{% endif %}
+                  {% unless matching_variant.available %}disabled{% endunless %}
+                >
+                  {%- if variant_display == 'color' -%}
+                    <span
+                      class="hargx-product-card__variant-swatch-color"
+                      {% if swatch_color != blank %}
+                        style="--hargx-swatch-color: {{ swatch_color | escape }};"
+                      {% elsif swatch_image != blank %}
+                        style="--hargx-swatch-image: url('{{ swatch_image | image_url: width: 80 | escape }}');"
+                      {% elsif option_value != blank %}
+                        style="--hargx-swatch-color: {{ option_value | downcase | escape }};"
+                      {% endif %}
+                      aria-hidden="true"
+                    ></span>
+                    <span class="hargx-product-card__variant-swatch-name">{{ option_value | escape }}</span>
+                  {%- elsif variant_display == 'image' -%}
+                    {%- if variant_option_image != blank -%}
+                      {{
+                        variant_option_image
+                        | image_url: width: 160
+                        | image_tag:
+                          loading: 'lazy',
+                          class: 'hargx-product-card__variant-swatch-image',
+                          alt: option_value
+                      }}
+                    {%- else -%}
+                      <span class="hargx-product-card__variant-swatch-placeholder" aria-hidden="true"></span>
+                    {%- endif -%}
+                    <span class="hargx-product-card__variant-swatch-name">{{ option_value | escape }}</span>
+                  {%- else -%}
+                    {{ option_value | escape }}
+                  {%- endif -%}
+                </button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endfor -%}
       </fieldset>
     {%- endif -%}
 

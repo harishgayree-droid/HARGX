@@ -323,6 +323,15 @@
   gap: 6px;
 }
 
+.hargx-product-card__option {
+  display: block;
+  min-width: 0;
+}
+
+.hargx-product-card__option + .hargx-product-card__option {
+  margin-top: 8px;
+}
+
 .hargx-product-card__variant-swatch {
   display: inline-flex;
   align-items: center;

@@ -187,16 +187,112 @@
 
         if (!card || !variantInput) return;
 
-        variantInput.value = variantSwatch.dataset.variantId;
-
         card.querySelectorAll(
           '[data-hargx-card-variant]'
         ).forEach((swatch) => {
-          const isSelected = swatch === variantSwatch;
-
-          swatch.setAttribute('aria-pressed', String(isSelected));
-          swatch.toggleAttribute('data-selected', isSelected);
+          if (
+            swatch.dataset.hargxCardOptionPosition ===
+            variantSwatch.dataset.hargxCardOptionPosition
+          ) {
+            const isSelected = swatch === variantSwatch;
+            swatch.setAttribute('aria-pressed', String(isSelected));
+            swatch.toggleAttribute('data-selected', isSelected);
+          }
         });
+
+        const selectedOptions = {};
+        card.querySelectorAll(
+          '[data-hargx-card-option-position][aria-pressed="true"]'
+        ).forEach((swatch) => {
+          selectedOptions[
+            Number(swatch.dataset.hargxCardOptionPosition)
+          ] = swatch.dataset.hargxCardOptionValue;
+        });
+
+        selectedOptions[
+          Number(variantSwatch.dataset.hargxCardOptionPosition)
+        ] = variantSwatch.dataset.hargxCardOptionValue;
+
+        const variantsData = card.querySelector(
+          '[data-hargx-card-variants]'
+        );
+        let matchingVariant = null;
+
+        if (variantsData) {
+          try {
+            const variants = JSON.parse(variantsData.textContent);
+            const matchesSelection = (variant) =>
+              variant.options.every((value, index) =>
+                selectedOptions[index + 1] === undefined ||
+                String(value) === String(selectedOptions[index + 1])
+              );
+
+            matchingVariant =
+              variants.find(
+                (variant) =>
+                  matchesSelection(variant) && variant.available
+              ) ||
+              variants.find(matchesSelection) ||
+              null;
+          } catch (error) {
+            matchingVariant = null;
+          }
+        }
+
+        if (matchingVariant) {
+          variantInput.value = matchingVariant.id;
+
+          card.querySelectorAll(
+            '[data-hargx-card-option-position]'
+          ).forEach((swatch) => {
+            const position =
+              Number(swatch.dataset.hargxCardOptionPosition);
+            const isSelected =
+              String(swatch.dataset.hargxCardOptionValue) ===
+              String(matchingVariant.options[position - 1]);
+
+            swatch.setAttribute('aria-pressed', String(isSelected));
+            swatch.toggleAttribute('data-selected', isSelected);
+          });
+
+          const currentPrice = card.querySelector(
+            '[data-hargx-card-current-price]'
+          );
+          const comparePrice = card.querySelector(
+            '[data-hargx-card-compare-price]'
+          );
+
+          if (currentPrice) {
+            currentPrice.textContent = matchingVariant.price;
+          }
+
+          if (comparePrice) {
+            const onSale = matchingVariant.on_sale === true;
+
+            comparePrice.textContent =
+              matchingVariant.compare_at_price;
+            comparePrice.hidden = !onSale;
+          }
+
+          const cardVariantImage =
+            matchingVariant.image ||
+            variantSwatch.dataset.variantImage;
+
+          if (cardVariantImage) {
+            const primaryImage = card.querySelector(
+              '.hargx-product-card__image--primary'
+            );
+
+            if (primaryImage) {
+              primaryImage.src = cardVariantImage;
+              primaryImage.srcset = '';
+            }
+          }
+
+          return;
+        }
+
+        variantInput.value = variantSwatch.dataset.variantId;
 
         const currentPrice = card.querySelector(
           '[data-hargx-card-current-price]'
