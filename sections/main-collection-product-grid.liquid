@@ -373,7 +373,8 @@
                 {% render 'hargx-product-card',
                   product: product,
                   show_add_to_cart: section.settings.show_add_to_cart,
-                  add_to_cart_text: section.settings.add_to_cart_text
+                  add_to_cart_text: section.settings.add_to_cart_text,
+                  variant_display: section.settings.variant_display
                 %}
 
               {%- endfor -%}
@@ -424,7 +425,8 @@
               {% render 'hargx-product-card',
                 product: product,
                 show_add_to_cart: section.settings.show_add_to_cart,
-                add_to_cart_text: section.settings.add_to_cart_text
+                add_to_cart_text: section.settings.add_to_cart_text,
+                variant_display: section.settings.variant_display
               %}
 
             {%- endfor -%}
@@ -581,6 +583,31 @@
       "id": "add_to_cart_text",
       "label": "Add to cart button text",
       "default": "Add to cart"
+    },
+    {
+      "type": "select",
+      "id": "variant_display",
+      "label": "Collection variant display",
+      "info": "Choose how product variants appear below each card.",
+      "options": [
+        {
+          "value": "name",
+          "label": "Variant names"
+        },
+        {
+          "value": "color",
+          "label": "Variant colors"
+        },
+        {
+          "value": "image",
+          "label": "Variant images"
+        },
+        {
+          "value": "none",
+          "label": "Hide variants"
+        }
+      ],
+      "default": "name"
     },
     {
         "type": "select",

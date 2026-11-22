@@ -218,6 +218,18 @@
             variantSwatch.dataset.variantComparePrice;
           comparePrice.hidden = !hasComparePrice;
         }
+
+        const variantImage = variantSwatch.dataset.variantImage;
+        if (variantImage) {
+          const primaryImage = card.querySelector(
+            '.hargx-product-card__image--primary'
+          );
+
+          if (primaryImage) {
+            primaryImage.src = variantImage;
+            primaryImage.srcset = '';
+          }
+        }
       }
     );
 
