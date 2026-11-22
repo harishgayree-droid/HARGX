@@ -433,6 +433,8 @@
                                   {%- endif -%}
                                   {%- if variant.featured_image != blank and variant_option_image == blank -%}
                                     {%- assign variant_option_image = variant.featured_image -%}
+                                  {%- elsif variant.featured_media.preview_image != blank and variant_option_image == blank -%}
+                                    {%- assign variant_option_image = variant.featured_media.preview_image -%}
                                   {%- endif -%}
                                 {%- endif -%}
                               {%- endfor -%}
@@ -442,6 +444,9 @@
                               {%- endif -%}
                               {%- if variant_option_image == blank -%}
                                 {%- assign variant_option_image = value.swatch.image -%}
+                              {%- endif -%}
+                              {%- if variant_option_image == blank and matching_variant.featured_media.preview_image != blank -%}
+                                {%- assign variant_option_image = matching_variant.featured_media.preview_image -%}
                               {%- endif -%}
                               {%- assign swatch_color = value.swatch.color -%}
 
