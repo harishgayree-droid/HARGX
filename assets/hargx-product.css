@@ -338,8 +338,8 @@
 
 .hargx-product__image-swatch,
 .hargx-product__image-swatch-placeholder {
-  width: 34px;
-  height: 34px;
+  width: 50px;
+  height: 50px;
   display: block;
   object-fit: cover;
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -1183,6 +1183,10 @@
     display: block;
   }
 
+  .hargx-product__optionhargx-product__option--image .hargx-product__option-input:checked+.hargx-product__option-value {
+    background: none;
+    padding: 0;
+  }
 
   /* Media */
 
