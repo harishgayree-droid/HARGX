@@ -31,7 +31,7 @@
           "enable_cart_drawer": true,
           "heading": "Your cart",
           "show_free_shipping": true,
-          "free_shipping_threshold": 100,
+          "free_shipping_threshold": 1000,
           "show_order_note": true,
           "show_upsell": true,
           "upsell_heading": "You may also like",
