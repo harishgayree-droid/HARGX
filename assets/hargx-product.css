@@ -1183,7 +1183,7 @@
     display: block;
   }
 
-  .hargx-product__optionhargx-product__option--image .hargx-product__option-input:checked+.hargx-product__option-value {
+  .hargx-product__optionhargx-product__option--image .hargx-product__option-input:checked + .hargx-product__option-value {
     background: none;
     padding: 0;
   }
