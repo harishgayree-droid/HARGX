@@ -1668,14 +1668,6 @@ h2 {
   border-color: var(--color-primary);
 }
 
-.hargx-product__option--color .hargx-product__option-input:checked + .hargx-product__option-value,
-.hargx-product__option--image .hargx-product__option-input:checked + .hargx-product__option-value {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  color: #000000;
-}
-
 
 /*
  * Solid
