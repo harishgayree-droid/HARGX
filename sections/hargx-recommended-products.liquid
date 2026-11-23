@@ -49,7 +49,7 @@
         data-hargx-recommendations-grid
       >
         {%- for recommendation in recommendations.products -%}
-          {% render 'hargx-product-card', product: recommendation %}
+          {% render 'hargx-product-card', product: recommendation, variant_display: 'none' %}
         {%- endfor -%}
       </div>
 
