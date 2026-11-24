@@ -1,0 +1,171 @@
+.hargx-order-tracking {
+  display: block;
+  width: 100%;
+  max-width: none;
+  padding-block: var(--hargx-order-tracking-padding-top, 80px) var(--hargx-order-tracking-padding-bottom, 80px);
+  background: var(--hargx-order-tracking-background, #FAF8F4);
+  color: var(--hargx-order-tracking-text, #000000);
+  text-align: var(--hargx-order-tracking-desktop-alignment, center);
+}
+
+.hargx-order-tracking__inner {
+  width: min(var(--hargx-order-tracking-content-width, 1040px), calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.hargx-order-tracking__header {
+  max-width: 800px;
+  margin: 0 auto 48px;
+}
+
+.hargx-order-tracking__heading {
+  color: var(--hargx-order-tracking-text, #000000);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.hargx-order-tracking__heading--visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hargx-order-tracking__description {
+  max-width: 680px;
+  margin: 18px auto 0;
+  color: var(--hargx-order-tracking-muted-text, #404040);
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.hargx-order-tracking__description p,
+.hargx-order-tracking__card-description p,
+.hargx-order-tracking__instructions p {
+  margin: 0;
+}
+
+.hargx-order-tracking__options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.hargx-order-tracking__card {
+  min-width: 0;
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 20px;
+  background: var(--hargx-order-tracking-surface, #FFFFFF);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.04);
+}
+
+.hargx-order-tracking__card-heading {
+  margin: 0 0 14px;
+  color: var(--hargx-order-tracking-text, #000000);
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.hargx-order-tracking__card-description,
+.hargx-order-tracking__instructions {
+  color: var(--hargx-order-tracking-muted-text, #404040);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.hargx-order-tracking__button {
+  display: inline-flex;
+  min-height: 52px;
+  max-width: 100%;
+  margin-top: 24px;
+  padding: 14px 24px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--hargx-order-tracking-button-background, #FE7442);
+  color: var(--hargx-order-tracking-button-text, #000000);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.hargx-order-tracking__button:hover {
+  filter: brightness(0.94);
+}
+
+.hargx-order-tracking__button:focus-visible {
+  outline: 3px solid var(--hargx-order-tracking-text, #000000);
+  outline-offset: 4px;
+}
+
+.hargx-order-tracking__instructions {
+  margin-top: 20px;
+}
+
+.hargx-order-tracking__instructions ol,
+.hargx-order-tracking__instructions ul {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0 0 16px;
+  padding-left: 1.5em;
+  text-align: left;
+}
+
+.hargx-order-tracking__instructions li + li {
+  margin-top: 8px;
+}
+
+.hargx-order-tracking__instructions p + p {
+  margin-top: 12px;
+}
+
+@media screen and (max-width: 749px) {
+  .hargx-order-tracking {
+    text-align: var(--hargx-order-tracking-mobile-alignment, left);
+  }
+
+  .hargx-order-tracking__inner {
+    width: min(var(--hargx-order-tracking-content-width, 1040px), calc(100% - 32px));
+  }
+
+  .hargx-order-tracking__header {
+    margin-bottom: 32px;
+  }
+
+  .hargx-order-tracking__heading {
+    font-size: clamp(34px, 9vw, 48px);
+  }
+
+  .hargx-order-tracking__description {
+    font-size: 16px;
+  }
+
+  .hargx-order-tracking__options {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .hargx-order-tracking__card {
+    padding: 24px 20px;
+  }
+
+  .hargx-order-tracking__button {
+    width: 100%;
+    max-width: 360px;
+  }
+}

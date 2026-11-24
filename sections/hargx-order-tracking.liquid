@@ -1,0 +1,269 @@
+{{ 'hargx-order-tracking.css' | asset_url | stylesheet_tag }}
+
+{% assign tracking_heading = section.settings.heading | default: page.title %}
+
+<section
+  class="hargx-order-tracking"
+  id="HargxOrderTracking-{{ section.id }}"
+  style="
+    --hargx-order-tracking-background: {{ section.settings.background_color }};
+    --hargx-order-tracking-surface: {{ section.settings.surface_color }};
+    --hargx-order-tracking-text: {{ section.settings.text_color }};
+    --hargx-order-tracking-muted-text: {{ section.settings.muted_text_color }};
+    --hargx-order-tracking-button-background: {{ section.settings.button_color }};
+    --hargx-order-tracking-button-text: {{ section.settings.button_text_color }};
+    --hargx-order-tracking-padding-top: {{ section.settings.padding_top }}px;
+    --hargx-order-tracking-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --hargx-order-tracking-content-width: {{ section.settings.content_width }}px;
+    --hargx-order-tracking-desktop-alignment: {{ section.settings.desktop_alignment }};
+    --hargx-order-tracking-mobile-alignment: {{ section.settings.mobile_alignment }};
+  "
+>
+  <div class="hargx-order-tracking__inner">
+    <header class="hargx-order-tracking__header">
+      <h1 class="hargx-order-tracking__heading{% unless section.settings.show_heading %} hargx-order-tracking__heading--visually-hidden{% endunless %}">
+        {{ tracking_heading | escape }}
+      </h1>
+
+      {% if section.settings.description != blank %}
+        <div class="hargx-order-tracking__description">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+    </header>
+
+    <div class="hargx-order-tracking__options">
+      <section
+        class="hargx-order-tracking__card"
+        aria-labelledby="HargxOrderTrackingAccountHeading-{{ section.id }}"
+      >
+        <h2
+          class="hargx-order-tracking__card-heading"
+          id="HargxOrderTrackingAccountHeading-{{ section.id }}"
+        >
+          {{ section.settings.account_heading | escape }}
+        </h2>
+
+        {% if section.settings.account_description != blank %}
+          <div class="hargx-order-tracking__card-description">
+            {{ section.settings.account_description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.login_button_text != blank %}
+          <a
+            class="hargx-order-tracking__button"
+            href="{{ routes.account_url }}"
+          >
+            {{ section.settings.login_button_text | escape }}
+          </a>
+        {% endif %}
+      </section>
+
+      <section
+        class="hargx-order-tracking__card"
+        aria-labelledby="HargxOrderTrackingGuestHeading-{{ section.id }}"
+      >
+        <h2
+          class="hargx-order-tracking__card-heading"
+          id="HargxOrderTrackingGuestHeading-{{ section.id }}"
+        >
+          {{ section.settings.guest_heading | escape }}
+        </h2>
+
+        {% if section.settings.guest_description != blank %}
+          <div class="hargx-order-tracking__card-description">
+            {{ section.settings.guest_description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.guest_instructions != blank %}
+          <div class="hargx-order-tracking__instructions">
+            {{ section.settings.guest_instructions }}
+          </div>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HARGX Order Tracking",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show section heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Where is my order?"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Track your recent purchase and stay updated on your delivery.</p>"
+    },
+    {
+      "type": "text",
+      "id": "account_heading",
+      "label": "Customer account heading",
+      "default": "For customers with an account"
+    },
+    {
+      "type": "richtext",
+      "id": "account_description",
+      "label": "Customer account description",
+      "default": "<p>View your order history and open an order to check its latest status and available fulfillment details.</p>"
+    },
+    {
+      "type": "text",
+      "id": "login_button_text",
+      "label": "Login button text",
+      "default": "View My Orders"
+    },
+    {
+      "type": "text",
+      "id": "guest_heading",
+      "label": "Guest customer heading",
+      "default": "Checking out as a guest?"
+    },
+    {
+      "type": "richtext",
+      "id": "guest_description",
+      "label": "Guest customer description",
+      "default": "<p>Guest orders are not shown in a customer account. Use the secure order link in Shopify's email notifications to view your order.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "guest_instructions",
+      "label": "Guest tracking instructions",
+      "default": "<ol><li>Open your order confirmation or shipping confirmation email.</li><li>Select <strong>View your order</strong> or <strong>Track shipment</strong> to open Shopify's secure order status page.</li><li>Check the page for available order processing and fulfillment status, shipment tracking number, carrier information, and carrier tracking link.</li></ol><p>Delivery updates appear when provided by Shopify and supported by the carrier. Tracking details and update timing vary by carrier.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "surface_color",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "muted_text_color",
+      "label": "Description text color",
+      "default": "#404040"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button background",
+      "default": "#FE7442"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Section top spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Section bottom spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "min": 600,
+      "max": 1280,
+      "step": 40,
+      "unit": "px",
+      "default": 1040
+    },
+    {
+      "type": "select",
+      "id": "desktop_alignment",
+      "label": "Desktop alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "mobile_alignment",
+      "label": "Mobile alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARGX Order Tracking"
+    }
+  ]
+}
+{% endschema %}
