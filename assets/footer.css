@@ -91,10 +91,21 @@
 }
 
 .hargx-footer__social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+
   color: var(--footer-text);
   text-decoration: none;
+  line-height: 0;
+}
 
-  font-size: 13px;
+.hargx-footer__social-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
 }
 
 .hargx-footer__social a:hover,
