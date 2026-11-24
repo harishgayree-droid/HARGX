@@ -18,7 +18,10 @@
         },
         "title_eKptiE": {
           "type": "title",
-          "settings": {}
+          "settings": {
+            "desktop_font_size": 40,
+            "mobile_font_size": 26
+          }
         },
         "rating_dB4P8h": {
           "type": "rating",
