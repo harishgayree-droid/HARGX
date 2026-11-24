@@ -252,6 +252,9 @@
                       style="
                         --hargx-product-title-size-desktop: {{ block.settings.desktop_font_size }}px;
                         --hargx-product-title-size-mobile: {{ block.settings.mobile_font_size }}px;
+                        --hargx-product-title-transform: {{ block.settings.text_transform }};
+                        --hargx-product-title-weight: {{ block.settings.font_weight }};
+                        --hargx-product-title-alignment: {{ block.settings.text_alignment }};
                       "
                     >
                       {{ product.title | escape }}
@@ -1270,6 +1273,78 @@
           "step": 1,
           "unit": "px",
           "default": 26
+        },
+        {
+          "type": "select",
+          "id": "text_transform",
+          "label": "Text transform",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "uppercase",
+              "label": "Uppercase"
+            },
+            {
+              "value": "lowercase",
+              "label": "Lowercase"
+            },
+            {
+              "value": "capitalize",
+              "label": "Capitalize"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "select",
+          "id": "font_weight",
+          "label": "Font weight",
+          "options": [
+            {
+              "value": "300",
+              "label": "Light"
+            },
+            {
+              "value": "400",
+              "label": "Regular"
+            },
+            {
+              "value": "500",
+              "label": "Medium"
+            },
+            {
+              "value": "600",
+              "label": "Semi-bold"
+            },
+            {
+              "value": "700",
+              "label": "Bold"
+            }
+          ],
+          "default": "500"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
         }
       ]
     },
