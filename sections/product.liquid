@@ -247,7 +247,13 @@
                     class="hargx-product__block"
                     {{ block.shopify_attributes }}
                   >
-                    <h1 class="hargx-product__title">
+                    <h1
+                      class="hargx-product__title"
+                      style="
+                        --hargx-product-title-size-desktop: {{ block.settings.desktop_font_size }}px;
+                        --hargx-product-title-size-mobile: {{ block.settings.mobile_font_size }}px;
+                      "
+                    >
                       {{ product.title | escape }}
                     </h1>
                   </div>
@@ -1244,7 +1250,28 @@
       "type": "title",
       "name": "Title",
       "limit": 1,
-      "settings": []
+      "settings": [
+        {
+          "type": "range",
+          "id": "desktop_font_size",
+          "label": "Desktop font size",
+          "min": 24,
+          "max": 64,
+          "step": 1,
+          "unit": "px",
+          "default": 46
+        },
+        {
+          "type": "range",
+          "id": "mobile_font_size",
+          "label": "Mobile font size",
+          "min": 16,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 26
+        }
+      ]
     },
     {
       "type": "rating",
