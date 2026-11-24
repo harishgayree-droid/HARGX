@@ -614,7 +614,7 @@
 
             updateDrawerLine(
               drawer,
-              getLineNumber(item),
+              getLineKey(item),
               newQuantity,
               item
             );
@@ -654,7 +654,7 @@
 
             updateDrawerLine(
               drawer,
-              getLineNumber(item),
+              getLineKey(item),
               newQuantity,
               item
             );
@@ -696,7 +696,7 @@
 
             updateDrawerLine(
               drawer,
-              getLineNumber(item),
+              getLineKey(item),
               quantity,
               item
             );
@@ -736,7 +736,7 @@
 
             updateDrawerLine(
               drawer,
-              getLineNumber(item),
+              getLineKey(item),
               0,
               item
             );
@@ -753,13 +753,13 @@
 
   async function updateDrawerLine(
     drawer,
-    line,
+    lineKey,
     quantity,
     item
   ) {
     if (
-      !line ||
-      Number.isNaN(line)
+      !lineKey ||
+      typeof lineKey !== 'string'
     ) {
       return;
     }
@@ -793,7 +793,7 @@
                 'application/json'
             },
             body: JSON.stringify({
-              line: line,
+              id: lineKey,
               quantity: quantity
             })
           }
@@ -825,7 +825,7 @@
         updateDrawerItem(
           item,
           cartData,
-          line
+          lineKey
         );
       }
 
@@ -895,14 +895,16 @@
   function updateDrawerItem(
     item,
     cartData,
-    line
+    lineKey
   ) {
     if (!item) return;
 
     const cartItem =
-      cartData.items[
-        line - 1
-      ];
+      cartData.items.find(
+        function (cartItem) {
+          return cartItem.key === lineKey;
+        }
+      );
 
     if (!cartItem) return;
 
@@ -2020,13 +2022,10 @@
      HELPERS
      ========================================================= */
 
-  function getLineNumber(
+  function getLineKey(
     item
   ) {
-    return parseInt(
-      item?.dataset?.line,
-      10
-    );
+    return item?.dataset?.key || '';
   }
 
 
