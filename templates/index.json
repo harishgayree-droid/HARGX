@@ -574,7 +574,7 @@
         "success_message": "Thanks for subscribing!",
         "disclaimer": "By subscribing, you agree to receive emails from HARGX.",
         "layout_style": "standard",
-        "card_radius": 14,
+        "card_radius": 30,
         "background_color": "#faf8f4",
         "input_background": "#ffffff",
         "text_color": "#000000",
