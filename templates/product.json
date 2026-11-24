@@ -19,8 +19,11 @@
         "title_eKptiE": {
           "type": "title",
           "settings": {
-            "desktop_font_size": 40,
-            "mobile_font_size": 26
+            "desktop_font_size": 36,
+            "mobile_font_size": 26,
+            "text_transform": "uppercase",
+            "font_weight": "500",
+            "text_alignment": "left"
           }
         },
         "rating_dB4P8h": {
