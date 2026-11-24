@@ -374,7 +374,7 @@
 .hargx-product-card__variant-swatch {
   min-height: 44px;
   gap: 7px;
-  padding: 5px 7px;
+  padding: 5px;
   background: #FFFFFF;
   color: inherit;
 }
