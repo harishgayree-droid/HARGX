@@ -11,7 +11,28 @@
   "sections": {
     "main": {
       "type": "hargx-order-tracking",
-      "settings": {}
+      "settings": {
+        "show_heading": true,
+        "heading": "Where is my order?",
+        "description": "<p>Track your recent purchase and stay updated on your delivery.</p>",
+        "account_heading": "For customers with an account",
+        "account_description": "<p>View your order history and open an order to check its latest status and available fulfillment details.</p>",
+        "login_button_text": "View My Orders",
+        "guest_heading": "Checking out as a guest?",
+        "guest_description": "<p>Guest orders are not shown in a customer account. Use the secure order link in Shopify's email notifications to view your order.</p>",
+        "guest_instructions": "<ol><li>Open your order confirmation or shipping confirmation email.</li><li>Select <strong>View your order</strong> or <strong>Track shipment</strong> to open Shopify's secure order status page.</li><li>Check the page for available order processing and fulfillment status, shipment tracking number, carrier information, and carrier tracking link.</li></ol><p>Delivery updates appear when provided by Shopify and supported by the carrier. Tracking details and update timing vary by carrier.</p>",
+        "background_color": "#faf8f4",
+        "surface_color": "#ffffff",
+        "text_color": "#000000",
+        "muted_text_color": "#404040",
+        "button_color": "#fe7442",
+        "button_text_color": "#FFFFFF",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "content_width": 1040,
+        "desktop_alignment": "center",
+        "mobile_alignment": "left"
+      }
     }
   },
   "order": [
