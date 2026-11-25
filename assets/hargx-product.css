@@ -1539,26 +1539,20 @@
 
 .hargx-product__gallery-thumbnail {
   position: relative;
-
   flex: 0 0 76px;
-
   width: 76px;
   height: 76px;
-
   padding: 0;
-
   border: 1px solid transparent;
-
   background: transparent;
-
   cursor: pointer;
-
   overflow: hidden;
-
   transition:
     border-color 0.2s ease,
     opacity 0.2s ease;
+  border-radius: 0;
 }
+
 
 .hargx-product__gallery-thumbnail:hover {
   opacity: 0.75;
