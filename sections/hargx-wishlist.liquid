@@ -40,7 +40,7 @@
       hidden
     >
       <h2>{{ section.settings.empty_heading | default: 'Your wishlist is empty' | escape }}</h2>
-      <p>{{ section.settings.empty_description | default: 'Save your favorite products and come back to them whenever you're ready.' | escape }}</p>
+      <p>{{ section.settings.empty_description | default: 'Save your favorite products and come back to them whenever youre ready.' | escape }}</p>
       <a
         class="hargx-wishlist-page__empty-button"
         href="{% if section.settings.continue_shopping_url != blank %}{{ section.settings.continue_shopping_url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}"
