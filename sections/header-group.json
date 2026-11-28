@@ -71,7 +71,7 @@
         "sticky_header": true,
         "show_wishlist": true,
         "show_wishlist_counter": true,
-        "wishlist_page": "",
+        "wishlist_page": "wishlist",
         "customer_account_menu": "customer-account-main-menu"
       }
     }
