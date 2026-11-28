@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "hargx-product-compare",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

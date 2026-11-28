@@ -1,0 +1,71 @@
+{%- if settings.hargx_compare_enabled and product != blank -%}
+  {%- assign compare_variant = product.selected_or_first_available_variant -%}
+  {%- capture compare_payload -%}
+    {
+      "id": {{ product.id | append: '' | json }},
+      "handle": {{ product.handle | json }},
+      "title": {{ product.title | json }},
+      "vendor": {{ product.vendor | json }},
+      "type": {{ product.type | json }},
+      "description": {{ product.description | strip_html | strip_newlines | json }},
+      "url": {{ product.url | json }},
+      "image": {% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 720 | json }}{% else %}null{% endif %},
+      "available": {{ product.available | json }},
+      "price": {{ compare_variant.price | default: 0 | json }},
+      "compareAtPrice": {{ compare_variant.compare_at_price | default: 0 | json }},
+      "moneyFormat": {{ shop.money_format | json }},
+      "optionNames": {{ product.options | json }},
+      "variant": {
+        "id": {{ compare_variant.id | append: '' | json }},
+        "title": {{ compare_variant.title | json }},
+        "available": {{ compare_variant.available | json }},
+        "price": {{ compare_variant.price | default: 0 | json }},
+        "compareAtPrice": {{ compare_variant.compare_at_price | default: 0 | json }},
+        "options": {{ compare_variant.options | json }}
+      },
+      "specifications": [
+        {%- assign compare_spec_count = 0 -%}
+        {%- for spec_index in (1..6) -%}
+          {%- assign compare_label_setting = 'hargx_compare_spec_' | append: spec_index | append: '_label' -%}
+          {%- assign compare_namespace_setting = 'hargx_compare_spec_' | append: spec_index | append: '_namespace' -%}
+          {%- assign compare_key_setting = 'hargx_compare_spec_' | append: spec_index | append: '_key' -%}
+          {%- assign compare_spec_label = settings[compare_label_setting] -%}
+          {%- assign compare_spec_namespace = settings[compare_namespace_setting] -%}
+          {%- assign compare_spec_key = settings[compare_key_setting] -%}
+          {%- if compare_spec_label != blank and compare_spec_namespace != blank and compare_spec_key != blank -%}
+            {%- assign compare_namespace_fields = product.metafields[compare_spec_namespace] -%}
+            {%- assign compare_metafield = compare_namespace_fields[compare_spec_key] -%}
+            {%- if compare_spec_count > 0 -%},{%- endif -%}
+            {
+              "label": {{ compare_spec_label | json }},
+              "value":
+                {%- if compare_metafield == blank -%}
+                  ""
+                {%- elsif compare_metafield.type == 'boolean' -%}
+                  {%- if compare_metafield.value -%}
+                    {{ 'compare.page.yes' | t | json }}
+                  {%- else -%}
+                    {{ 'compare.page.no' | t | json }}
+                  {%- endif -%}
+                {%- elsif compare_metafield.type == 'list.single_line_text_field' or compare_metafield.type == 'list.number_integer' or compare_metafield.type == 'list.number_decimal' -%}
+                  {{ compare_metafield.value | join: ', ' | json }}
+                {%- else -%}
+                  {{ compare_metafield | metafield_tag | strip_html | strip | json }}
+                {%- endif -%}
+            }
+            {%- assign compare_spec_count = compare_spec_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    }
+  {%- endcapture -%}
+  <div data-hargx-compare-product-data>{{ compare_payload | escape }}</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:general.compare_product_data",
+  "class": "hargx-compare-product-data",
+  "settings": []
+}
+{% endschema %}

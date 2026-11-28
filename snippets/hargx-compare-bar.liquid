@@ -1,0 +1,80 @@
+{%- if settings.hargx_compare_enabled -%}
+    {%- if settings.hargx_compare_page != blank -%}
+      {%- assign compare_page_url = settings.hargx_compare_page.url -%}
+    {%- else -%}
+      {%- assign compare_page_url = routes.root_url | append: 'pages/compare' -%}
+    {%- endif -%}
+    {%- if settings.hargx_compare_button_label != blank -%}
+      {%- assign compare_add_label = settings.hargx_compare_button_label -%}
+    {%- else -%}
+      {%- assign compare_add_label = 'compare.actions.add' | t -%}
+    {%- endif -%}
+  <div
+    class="hargx-compare-root"
+    data-hargx-compare-root
+    data-max-products="{{ settings.hargx_compare_max_products | default: 4 }}"
+    data-root-url="{{ routes.root_url }}"
+    data-page-url="{{ compare_page_url | escape }}"
+    data-label-add="{{ compare_add_label | escape }}"
+    data-label-remove="{{ 'compare.actions.remove' | t | escape }}"
+    data-label-add-product="{{ 'compare.aria.add_product' | t | escape }}"
+    data-label-clear="{{ 'compare.actions.clear_all' | t | escape }}"
+    data-label-compare="{{ 'compare.actions.compare_now' | t | escape }}"
+    data-label-remove-product="{{ 'compare.aria.remove_product' | t | escape }}"
+    data-label-bar="{{ 'compare.aria.bar' | t | escape }}"
+    data-label-selected="{{ 'compare.page.selected_count' | t | escape }}"
+    data-label-remaining="{{ 'compare.page.remaining' | t | escape }}"
+    data-label-added="{{ 'compare.status.added' | t | escape }}"
+    data-label-removed="{{ 'compare.status.removed' | t | escape }}"
+    data-label-cleared="{{ 'compare.status.cleared' | t | escape }}"
+    data-label-limit="{{ 'compare.status.limit' | t | escape }}"
+    data-label-storage-error="{{ 'compare.status.storage_error' | t | escape }}"
+    data-label-loading="{{ 'compare.status.loading' | t | escape }}"
+    data-label-network-error="{{ 'compare.status.network_error' | t | escape }}"
+    data-label-unavailable="{{ 'compare.status.unavailable' | t | escape }}"
+    data-label-adding="{{ 'compare.status.adding' | t | escape }}"
+    data-label-added-to-cart="{{ 'compare.status.added_to_cart' | t | escape }}"
+    data-label-cart-error="{{ 'compare.status.cart_error' | t | escape }}"
+    data-label-product="{{ 'compare.page.product' | t | escape }}"
+    data-label-vendor="{{ 'compare.page.vendor' | t | escape }}"
+    data-label-price="{{ 'compare.page.price' | t | escape }}"
+    data-label-compare-at="{{ 'compare.page.compare_at' | t | escape }}"
+    data-label-availability="{{ 'compare.page.availability' | t | escape }}"
+    data-label-available="{{ 'compare.page.available' | t | escape }}"
+    data-label-sold-out="{{ 'compare.page.sold_out' | t | escape }}"
+    data-label-product-type="{{ 'compare.page.product_type' | t | escape }}"
+    data-label-description="{{ 'compare.page.description_label' | t | escape }}"
+    data-label-variant="{{ 'compare.page.variant' | t | escape }}"
+    data-label-specifications="{{ 'compare.page.specifications' | t | escape }}"
+    data-label-page-unavailable="{{ 'compare.page.unavailable' | t | escape }}"
+    data-label-not-available="{{ 'compare.page.not_available' | t | escape }}"
+    data-label-empty-value="{{ 'compare.page.empty_value' | t | escape }}"
+    data-label-page-remove="{{ 'compare.page.remove' | t | escape }}"
+    data-label-add-to-cart="{{ 'compare.actions.add_to_cart' | t | escape }}"
+    data-label-sold-out="{{ 'compare.page.sold_out' | t | escape }}"
+    data-label-table="{{ 'compare.aria.table' | t | escape }}"
+    data-show-bar="{{ settings.hargx_compare_show_bar }}"
+  >
+    <aside
+      class="hargx-compare-bar"
+      data-hargx-compare-bar
+      aria-label="{{ 'compare.aria.bar' | t | escape }}"
+      hidden
+    >
+      <div class="hargx-compare-bar__products" data-hargx-compare-bar-products></div>
+      <div class="hargx-compare-bar__summary">
+        <p class="hargx-compare-bar__count" data-hargx-compare-count></p>
+        <p class="hargx-compare-bar__remaining" data-hargx-compare-remaining></p>
+      </div>
+      <div class="hargx-compare-bar__actions">
+        <button type="button" class="hargx-compare-bar__clear" data-hargx-compare-clear>
+          {{ 'compare.actions.clear_all' | t }}
+        </button>
+        <a class="hargx-compare-bar__submit" data-hargx-compare-now href="{{ compare_page_url | escape }}">
+          {{ 'compare.actions.compare_now' | t }}
+        </a>
+      </div>
+    </aside>
+    <p class="hargx-compare-status visually-hidden" data-hargx-compare-status role="status" aria-live="polite"></p>
+  </div>
+{%- endif -%}
