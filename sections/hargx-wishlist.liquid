@@ -1,0 +1,84 @@
+{{ 'hargx-wishlist.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.enabled -%}
+<section
+  class="hargx-wishlist-page"
+  data-hargx-wishlist-section
+  data-show-card-buttons="{{ section.settings.show_card_buttons }}"
+  data-show-product-button="{{ section.settings.show_product_button }}"
+  data-show-add-to-cart="{{ section.settings.show_add_to_cart }}"
+  data-section-id="{{ section.id }}"
+  style="
+    --hargx-wishlist-bg: {{ section.settings.background_color }};
+    --hargx-wishlist-spacing-top: {{ section.settings.padding_top }}px;
+    --hargx-wishlist-spacing-bottom: {{ section.settings.padding_bottom }}px;
+    --hargx-wishlist-columns-desktop: {{ section.settings.desktop_columns }};
+    --hargx-wishlist-columns-mobile: {{ section.settings.mobile_columns }};
+    --hargx-wishlist-button-bg: {{ section.settings.button_background }};
+    --hargx-wishlist-button-text: {{ section.settings.button_text_color }};
+  "
+>
+  <div class="hargx-wishlist-page__container">
+    <h1 class="hargx-wishlist-page__heading">
+      {{ section.settings.heading | default: 'My Wishlist' | escape }}
+    </h1>
+    {%- if section.settings.description != blank -%}
+      <p class="hargx-wishlist-page__description">
+        {{ section.settings.description | escape }}
+      </p>
+    {%- endif -%}
+
+    <div
+      class="hargx-wishlist-page__grid"
+      data-hargx-wishlist-grid
+      aria-label="Wishlist products"
+    ></div>
+
+    <div
+      class="hargx-wishlist-page__empty"
+      data-hargx-wishlist-empty
+      hidden
+    >
+      <h2>{{ section.settings.empty_heading | default: 'Your wishlist is empty' | escape }}</h2>
+      <p>{{ section.settings.empty_description | default: 'Save your favorite products and come back to them whenever you're ready.' | escape }}</p>
+      {%- if section.settings.continue_shopping_url != blank -%}
+        <a
+          class="hargx-wishlist-page__empty-button"
+          href="{{ section.settings.continue_shopping_url }}"
+        >
+          {{ section.settings.continue_shopping_text | default: 'Explore Products' | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "HARGX Wishlist",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable wishlist", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "My Wishlist" },
+    { "type": "text", "id": "description", "label": "Description", "default": "Your favorite products, all in one place." },
+    { "type": "text", "id": "empty_heading", "label": "Empty state heading", "default": "Your wishlist is empty" },
+    { "type": "text", "id": "empty_description", "label": "Empty state description", "default": "Save your favorite products and come back to them whenever you're ready." },
+    { "type": "text", "id": "continue_shopping_text", "label": "Continue shopping button text", "default": "Explore Products" },
+    { "type": "url", "id": "continue_shopping_url", "label": "Continue shopping destination" },
+    { "type": "color", "id": "background_color", "label": "Page background", "default": "#FAF8F4" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#FE7442" },
+    { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#FFFFFF" },
+    { "type": "range", "id": "desktop_columns", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "select", "id": "mobile_columns", "label": "Mobile columns", "options": [{"value":"1","label":"1"},{"value":"2","label":"2"}], "default": "2" },
+    { "type": "range", "id": "padding_top", "label": "Top spacing", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom spacing", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "checkbox", "id": "show_counter", "label": "Show wishlist counter", "default": true },
+    { "type": "checkbox", "id": "show_card_buttons", "label": "Show wishlist buttons on product cards", "default": true },
+    { "type": "checkbox", "id": "show_product_button", "label": "Show wishlist button on product pages", "default": true },
+    { "type": "checkbox", "id": "show_add_to_cart", "label": "Show Add to Cart on wishlist products", "default": true }
+  ],
+  "presets": [
+    { "name": "HARGX Wishlist" }
+  ]
+}
+{% endschema %}
