@@ -164,12 +164,10 @@
   }
 
   function formatMoney(cents) {
-    var format = window.Shopify && window.Shopify.formatMoney
-      ? window.Shopify.formatMoney
-      : function (value) { return (value / 100).toFixed(2); };
-    return format(cents, window.Shopify && window.Shopify.currency
-      ? window.Shopify.money_format
-      : undefined);
+    if (window.Shopify && typeof window.Shopify.formatMoney === 'function') {
+      return window.Shopify.formatMoney(cents);
+    }
+    return (Number(cents || 0) / 100).toFixed(2);
   }
 
   function escapeHtml(value) {
@@ -184,9 +182,7 @@
     if (!grid) return;
     var showAddToCart = section.dataset.showAddToCart !== 'false';
 
-    var savedItems = wishlist.filter(function (item) {
-      return item.handle;
-    });
+    var savedItems = wishlist.slice();
 
     if (!savedItems.length) {
       grid.hidden = true;
@@ -198,13 +194,47 @@
     if (empty) empty.hidden = true;
     grid.innerHTML = '';
 
-    Promise.all(savedItems.map(function (item) {
+    var productRequests = savedItems.filter(function (item) {
+      return item.handle;
+    }).map(function (item) {
       return fetch(cartUrl('products/' + encodeURIComponent(item.handle) + '.js'), {
         headers: { Accept: 'application/json' }
       }).then(function (response) {
         return response.ok ? response.json() : null;
       }).catch(function () { return null; });
-    })).then(function (products) {
+    });
+
+    Promise.all(productRequests).then(function (products) {
+      var missingItems = savedItems.filter(function (item) {
+        if (!item.handle) return true;
+        return !products.some(function (product) {
+          return product && String(product.id) === String(item.id);
+        });
+      });
+
+      if (!missingItems.length) {
+        renderLoadedProducts(products.filter(Boolean));
+        return;
+      }
+
+      fetch(cartUrl('products.js'), {
+        headers: { Accept: 'application/json' }
+      }).then(function (response) {
+        return response.ok ? response.json() : [];
+      }).catch(function () {
+        return [];
+      }).then(function (allProducts) {
+        missingItems.forEach(function (item) {
+          var matched = allProducts.find(function (product) {
+            return String(product.id) === String(item.id);
+          });
+          if (matched) products.push(matched);
+        });
+        renderLoadedProducts(products.filter(Boolean));
+      });
+    });
+
+    function renderLoadedProducts(products) {
       var validProducts = products.filter(Boolean);
       if (!validProducts.length) {
         grid.hidden = true;
@@ -217,14 +247,19 @@
         var saved = findItem(product.id);
         var availableVariant = variants.find(function (variant) {
           return variant.available && variant.id === Number(saved && saved.variantId);
-        }) || variants.find(function (variant) { return variant.available; });
+        }) || variants.find(function (variant) { return variant.available; }) ||
+          variants.find(function (variant) { return variant.id === Number(saved && saved.variantId); }) ||
+          variants[0];
         if (!availableVariant) return;
 
         var card = document.createElement('article');
         card.className = 'hargx-wishlist-card';
-        var image = product.featured_image
+        var featuredImage = product.featured_image ||
+          (product.images && product.images[0]) ||
+          (availableVariant.featured_image || '');
+        var image = featuredImage
           ? '<img class="hargx-wishlist-card__image" src="' +
-            escapeHtml(product.featured_image) + '" alt="' +
+            escapeHtml(featuredImage) + '" alt="' +
             escapeHtml(product.title) + '" loading="lazy">'
           : '<div class="hargx-wishlist-card__placeholder" aria-hidden="true"></div>';
         var compare = availableVariant.compare_at > availableVariant.price
@@ -269,7 +304,7 @@
       });
 
       updateButtons();
-    });
+    }
   }
 
   function init() {
