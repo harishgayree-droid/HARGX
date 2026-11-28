@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "hargx-wishlist",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
