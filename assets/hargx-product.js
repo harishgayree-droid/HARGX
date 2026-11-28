@@ -404,6 +404,28 @@ function initHargxProduct(section) {
         variant.id;
     }
 
+    const compareButton = section.querySelector(
+      '[data-hargx-compare-toggle]'
+    );
+
+    if (compareButton) {
+      compareButton.dataset.variantId = String(variant.id);
+      compareButton.dataset.variantTitle = variant.title || '';
+      compareButton.dataset.variantAvailable =
+        String(Boolean(variant.available));
+
+      document.dispatchEvent(
+        new CustomEvent('hargx:compare-variant-changed', {
+          detail: {
+            productId: compareButton.dataset.productId,
+            variantId: compareButton.dataset.variantId,
+            variantTitle: compareButton.dataset.variantTitle,
+            available: compareButton.dataset.variantAvailable === 'true'
+          }
+        })
+      );
+    }
+
 
     /*
      * Update UI

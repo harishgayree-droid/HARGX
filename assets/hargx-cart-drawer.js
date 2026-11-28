@@ -187,6 +187,29 @@
 
         if (!card || !variantInput) return;
 
+        const updateCompareVariant = (variantId, variantTitle, available) => {
+          const compareButton = card.querySelector(
+            '[data-hargx-compare-toggle]'
+          );
+
+          if (!compareButton) return;
+
+          compareButton.dataset.variantId = String(variantId);
+          compareButton.dataset.variantTitle = variantTitle || '';
+          compareButton.dataset.variantAvailable = String(Boolean(available));
+
+          document.dispatchEvent(
+            new CustomEvent('hargx:compare-variant-changed', {
+              detail: {
+                productId: compareButton.dataset.productId,
+                variantId: compareButton.dataset.variantId,
+                variantTitle: compareButton.dataset.variantTitle,
+                available: compareButton.dataset.variantAvailable === 'true'
+              }
+            })
+          );
+        };
+
         card.querySelectorAll(
           '[data-hargx-card-variant]'
         ).forEach((swatch) => {
@@ -241,6 +264,11 @@
 
         if (matchingVariant) {
           variantInput.value = matchingVariant.id;
+          updateCompareVariant(
+            matchingVariant.id,
+            matchingVariant.title,
+            matchingVariant.available
+          );
 
           card.querySelectorAll(
             '[data-hargx-card-option-position]'
@@ -293,6 +321,11 @@
         }
 
         variantInput.value = variantSwatch.dataset.variantId;
+        updateCompareVariant(
+          variantSwatch.dataset.variantId,
+          variantSwatch.dataset.variantTitle,
+          variantSwatch.dataset.variantAvailable === 'true'
+        );
 
         const currentPrice = card.querySelector(
           '[data-hargx-card-current-price]'

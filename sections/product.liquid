@@ -221,6 +221,33 @@
             </button>
           {% endif %}
 
+          {% if settings.hargx_compare_enabled and settings.hargx_compare_show_product_pages %}
+            {% if settings.hargx_compare_button_label != blank %}
+              {% assign compare_button_label = settings.hargx_compare_button_label %}
+            {% else %}
+              {% assign compare_button_label = 'compare.actions.add' | t %}
+            {% endif %}
+            <button
+              type="button"
+              class="hargx-compare-button hargx-product-compare-action"
+              data-hargx-compare-toggle
+              data-product-id="{{ product.id }}"
+              data-product-handle="{{ product.handle | escape }}"
+              data-product-title="{{ product.title | escape }}"
+              data-product-image="{% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 180 | escape }}{% endif %}"
+              data-product-url="{{ product.url | escape }}"
+              data-variant-id="{{ current_variant.id }}"
+              data-variant-title="{{ current_variant.title | escape }}"
+              data-variant-price="{{ current_variant.price }}"
+              data-variant-compare-at-price="{{ current_variant.compare_at_price | default: 0 }}"
+              data-variant-available="{{ current_variant.available }}"
+              aria-label="{{ compare_button_label | escape }}"
+              aria-pressed="false"
+            >
+              <span data-hargx-compare-label>{{ compare_button_label | escape }}</span>
+            </button>
+          {% endif %}
+
           {%- form 'product',
             product,
             id: product_form_id,

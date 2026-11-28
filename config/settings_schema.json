@@ -208,5 +208,170 @@
         "default": 24
       }
     ]
+  },
+  {
+    "name": "t:general.product_comparison",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "hargx_compare_enabled",
+        "label": "t:labels.compare_enabled",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "hargx_compare_max_products",
+        "label": "t:labels.compare_max_products",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "checkbox",
+        "id": "hargx_compare_show_cards",
+        "label": "t:labels.compare_show_cards",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "hargx_compare_show_product_pages",
+        "label": "t:labels.compare_show_product_pages",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "hargx_compare_show_bar",
+        "label": "t:labels.compare_show_bar",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_button_label",
+        "label": "t:labels.compare_button_label",
+        "default": ""
+      },
+      {
+        "type": "page",
+        "id": "hargx_compare_page",
+        "label": "t:labels.compare_page"
+      },
+      {
+        "type": "header",
+        "content": "t:labels.compare_specifications"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:labels.compare_specifications_info"
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_1_label",
+        "label": "t:labels.compare_spec_1_label",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_1_namespace",
+        "label": "t:labels.compare_spec_namespace",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_1_key",
+        "label": "t:labels.compare_spec_key",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_2_label",
+        "label": "t:labels.compare_spec_2_label",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_2_namespace",
+        "label": "t:labels.compare_spec_namespace",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_2_key",
+        "label": "t:labels.compare_spec_key",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_3_label",
+        "label": "t:labels.compare_spec_3_label",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_3_namespace",
+        "label": "t:labels.compare_spec_namespace",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_3_key",
+        "label": "t:labels.compare_spec_key",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_4_label",
+        "label": "t:labels.compare_spec_4_label",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_4_namespace",
+        "label": "t:labels.compare_spec_namespace",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_4_key",
+        "label": "t:labels.compare_spec_key",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_5_label",
+        "label": "t:labels.compare_spec_5_label",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_5_namespace",
+        "label": "t:labels.compare_spec_namespace",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_5_key",
+        "label": "t:labels.compare_spec_key",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_6_label",
+        "label": "t:labels.compare_spec_6_label",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_6_namespace",
+        "label": "t:labels.compare_spec_namespace",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "hargx_compare_spec_6_key",
+        "label": "t:labels.compare_spec_key",
+        "default": ""
+      }
+    ]
   }
 ]

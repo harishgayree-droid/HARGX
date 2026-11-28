@@ -120,6 +120,9 @@
     {{ 'hargx-cart.css' | asset_url | stylesheet_tag }}
     {{ 'hargx-cart-drawer.css' | asset_url | stylesheet_tag }}
     {{ 'hargx-wishlist.css' | asset_url | stylesheet_tag }}
+    {% if settings.hargx_compare_enabled %}
+      {{ 'hargx-product-compare.css' | asset_url | stylesheet_tag }}
+    {% endif %}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
@@ -133,12 +136,19 @@
     <script src="{{ 'hargx-cart-drawer.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'hargx-announcement-bar.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'hargx-wishlist.js' | asset_url }}" defer="defer"></script>
+    {% if settings.hargx_compare_enabled %}
+      <script src="{{ 'hargx-product-compare.js' | asset_url }}" defer="defer"></script>
+    {% endif %}
   </head>
 
   <body>
     {% sections 'header-group' %}
 
     {{ content_for_layout }}
+
+    {% section 'hargx-compare-product-data' %}
+
+    {% render 'hargx-compare-bar' %}
 
     {% section 'cart-drawer' %}
 

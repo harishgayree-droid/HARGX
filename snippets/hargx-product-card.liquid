@@ -1,6 +1,11 @@
 <article class="hargx-product-card">
   {%- assign selected_variant = product.selected_or_first_available_variant -%}
   {%- assign variant_display = variant_display | default: 'name' -%}
+  {%- if settings.hargx_compare_button_label != blank -%}
+    {%- assign compare_button_label = settings.hargx_compare_button_label -%}
+  {%- else -%}
+    {%- assign compare_button_label = 'compare.actions.add' | t -%}
+  {%- endif -%}
   {%- assign color_option_index = -1 -%}
   {%- assign image_option_index = 0 -%}
   {%- for product_option in product.options_with_values -%}
@@ -15,6 +20,7 @@
     {%- for variant in product.variants -%}
       {
         "id": {{ variant.id | json }},
+        "title": {{ variant.title | json }},
         "available": {{ variant.available | json }},
         "price": {{ variant.price | money | json }},
         "compare_at_price": {{ variant.compare_at_price | money | json }},
@@ -223,6 +229,28 @@
 
     </div>
 
+    {%- if settings.hargx_compare_enabled and settings.hargx_compare_show_cards -%}
+      <button
+        type="button"
+        class="hargx-compare-button hargx-product-card__compare-action"
+        data-hargx-compare-toggle
+        data-product-id="{{ product.id }}"
+        data-product-handle="{{ product.handle | escape }}"
+        data-product-title="{{ product.title | escape }}"
+        data-product-image="{% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 180 | escape }}{% endif %}"
+        data-product-url="{{ product.url | escape }}"
+        data-variant-id="{{ selected_variant.id }}"
+        data-variant-title="{{ selected_variant.title | escape }}"
+        data-variant-price="{{ selected_variant.price }}"
+        data-variant-compare-at-price="{{ selected_variant.compare_at_price | default: 0 }}"
+        data-variant-available="{{ selected_variant.available }}"
+        aria-label="{{ compare_button_label | escape }}"
+        aria-pressed="false"
+      >
+        <span data-hargx-compare-label>{{ compare_button_label | escape }}</span>
+      </button>
+    {%- endif -%}
+
     {%- if variant_display != 'none' and product.variants.size > 1 -%}
       <fieldset class="hargx-product-card__variants hargx-product-card__variants--{{ variant_display }}">
         {%- for option in product.options_with_values -%}
@@ -300,6 +328,8 @@
                   data-hargx-card-option-position="{{ option.position }}"
                   data-hargx-card-option-value="{{ option_value | escape }}"
                   data-variant-id="{{ matching_variant.id }}"
+                  data-variant-title="{{ matching_variant.title | escape }}"
+                  data-variant-available="{{ matching_variant.available }}"
                   data-variant-price="{{ matching_variant.price | money | escape }}"
                   data-variant-compare-price="{{ matching_variant.compare_at_price | money | escape }}"
                   data-variant-on-sale="{% if matching_variant.compare_at_price > matching_variant.price %}true{% else %}false{% endif %}"

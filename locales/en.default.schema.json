@@ -31,7 +31,9 @@
     "sidebar": "Sidebar",
     "text": "Text",
     "theme": "Theme",
-    "typography": "Typography"
+    "typography": "Typography",
+    "product_comparison": "Product comparison",
+    "compare_product_data": "Compare data"
   },
   "labels": {
     "alignment": "Alignment",
@@ -48,7 +50,34 @@
     "page_width": "Page width",
     "show_payment_icons": "Show payment icons",
     "text_style": "Text style",
-    "text": "Text"
+    "text": "Text",
+    "compare_enabled": "Enable product comparison",
+    "compare_max_products": "Maximum products to compare",
+    "compare_show_cards": "Show Compare button on product cards",
+    "compare_show_product_pages": "Show Compare button on product pages",
+    "compare_show_bar": "Show floating comparison bar",
+    "compare_button_label": "Compare button label (blank uses translation)",
+    "compare_page": "Comparison page",
+    "compare_specifications": "Product specifications",
+    "compare_specifications_info": "Configure up to six product metafield rows. Use the metafield namespace and key from Settings > Custom data > Products.",
+    "compare_spec_1_label": "Specification 1 label",
+    "compare_spec_2_label": "Specification 2 label",
+    "compare_spec_3_label": "Specification 3 label",
+    "compare_spec_4_label": "Specification 4 label",
+    "compare_spec_5_label": "Specification 5 label",
+    "compare_spec_6_label": "Specification 6 label",
+    "compare_spec_namespace": "Metafield namespace",
+    "compare_spec_key": "Metafield key",
+    "compare_heading": "Comparison heading",
+    "compare_description": "Introduction",
+    "compare_empty_heading": "Empty state heading",
+    "compare_empty_description": "Empty state description",
+    "compare_continue_shopping": "Continue shopping label",
+    "compare_continue_url": "Continue shopping link",
+    "compare_show_vendor": "Show vendor",
+    "compare_show_availability": "Show availability",
+    "compare_show_type": "Show product type",
+    "compare_show_description": "Show description"
   },
   "options": {
     "alignment": {

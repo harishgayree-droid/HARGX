@@ -109,6 +109,33 @@
                   </h3>
                   {% if result.object_type == 'product' and result.price %}
                     <p class="hargx-search-card__price">{{ result.price | money }}</p>
+                    {% if settings.hargx_compare_enabled and settings.hargx_compare_show_cards %}
+                      {% assign compare_variant = result.selected_or_first_available_variant %}
+                      {% if settings.hargx_compare_button_label != blank %}
+                        {% assign compare_button_label = settings.hargx_compare_button_label %}
+                      {% else %}
+                        {% assign compare_button_label = 'compare.actions.add' | t %}
+                      {% endif %}
+                      <button
+                        type="button"
+                        class="hargx-compare-button hargx-search-card__compare-action"
+                        data-hargx-compare-toggle
+                        data-product-id="{{ result.id }}"
+                        data-product-handle="{{ result.handle | escape }}"
+                        data-product-title="{{ result.title | escape }}"
+                        data-product-image="{% if result_image != blank %}{{ result_image | image_url: width: 180 | escape }}{% endif %}"
+                        data-product-url="{{ result.url | escape }}"
+                        data-variant-id="{{ compare_variant.id }}"
+                        data-variant-title="{{ compare_variant.title | escape }}"
+                        data-variant-price="{{ compare_variant.price }}"
+                        data-variant-compare-at-price="{{ compare_variant.compare_at_price | default: 0 }}"
+                        data-variant-available="{{ compare_variant.available }}"
+                        aria-label="{{ compare_button_label | escape }}"
+                        aria-pressed="false"
+                      >
+                        <span data-hargx-compare-label>{{ compare_button_label | escape }}</span>
+                      </button>
+                    {% endif %}
                   {% elsif result.content != blank %}
                     <p class="hargx-search-card__excerpt">
                       {{ result.content | strip_html | truncate: 110 }}

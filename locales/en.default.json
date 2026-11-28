@@ -39,6 +39,64 @@
   "collections": {
     "title": "Collections"
   },
+  "compare": {
+    "actions": {
+      "add": "Compare",
+      "remove": "Remove from comparison",
+      "clear_all": "Clear all",
+      "compare_now": "Compare now",
+      "add_to_cart": "Add to cart",
+      "retry": "Retry"
+    },
+    "aria": {
+      "bar": "Product comparison",
+      "table": "Product comparison",
+      "add_product": "Add {product} to comparison",
+      "remove_product": "Remove {product} from comparison",
+      "selected_count": "{{ count }} products selected"
+    },
+    "status": {
+      "added": "{{ product }} added to comparison.",
+      "removed": "{{ product }} removed from comparison.",
+      "cleared": "Comparison selection cleared.",
+      "limit": "You can compare up to {{ count }} products.",
+      "storage_error": "Your selection is available for this visit but couldn't be saved.",
+      "loading": "Loading product comparison.",
+      "network_error": "Some product details couldn't be loaded. Your selection is saved. Try again.",
+      "unavailable": "This product is unavailable.",
+      "adding": "Adding to cart.",
+      "added_to_cart": "Added to cart.",
+      "cart_error": "Could not add this product to the cart."
+    },
+    "page": {
+      "heading": "Compare products",
+      "description": "Review your selected products side by side.",
+      "empty_heading": "No products to compare",
+      "empty_description": "Choose products from a collection and add them to comparison.",
+      "continue_shopping": "Continue shopping",
+      "loading": "Loading comparison.",
+      "retry": "Retry",
+      "remove": "Remove",
+      "product": "Product",
+      "vendor": "Vendor",
+      "price": "Price",
+      "compare_at": "Compare-at price",
+      "availability": "Availability",
+      "available": "Available",
+      "sold_out": "Sold out",
+      "product_type": "Product type",
+      "description_label": "Description",
+      "variant": "Selected variant",
+      "specifications": "Specifications",
+      "unavailable": "Unavailable",
+      "not_available": "Not available",
+      "selected_count": "{{ count }} selected",
+      "remaining": "{{ count }} more can be added",
+      "empty_value": "—",
+      "yes": "Yes",
+      "no": "No"
+    }
+  },
   "products": {
     "product": {
       "sold_out": "Sold out"
